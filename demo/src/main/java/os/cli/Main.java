@@ -5,32 +5,32 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
-        CLI cli = new CLI("D:// >");
-        boolean run = true;
-        String arg;
-        String command;
-        while (run) {
-            System.out.print(cli.currentDir);
-            command = input.next();
-            arg = input.nextLine();
-            switch (command) {
-                case "pwd" -> cli.pwd(arg);
-                case "cd" -> cli.cd(arg);
-                case "mkdir" -> cli.mkdir(arg);
-                case "touch" -> cli.touch(arg);
-                case "mv" -> cli.mv(arg);
-                case "rm" -> cli.rm(arg);
-                case "rmdir" -> cli.rmdir(arg);
-                case "cat" -> cli.cat(arg);
-                case "ls" -> cli.ls(arg);
-                case "uname" -> cli.uname(arg);
-                case "cp" -> cli.cp(arg);
-                case "<" -> cli.inputOp(arg);
-                default ->  cli.UndefinedInput(arg);
+        try (Scanner input = new Scanner(System.in)) {
+            CLI cli = new CLI("D:// >");
+            boolean run = true;
+            String arg;
+            String command;
+            while (run) {
+                System.out.print(cli.currentDir);
+                command = input.next();
+                arg = input.nextLine();
+                switch (command) {
+                    case "pwd" -> cli.pwd(arg);
+                    case "cd" -> cli.cd(arg);
+                    case "mkdir" -> cli.mkdir(arg);
+                    case "touch" -> cli.touch(arg);
+                    case "mv" -> cli.mv(arg);
+                    case "rm" -> cli.rm(arg);
+                    case "rmdir" -> cli.rmdir(arg);
+                    case "cat" -> cli.cat(arg);
+                    case "ls" -> cli.ls(arg);
+                    case "uname" -> cli.uname(arg);
+                    case "cp" -> cli.cp(arg);
+                    case "<" -> cli.inputOp(arg);
+                    default ->  cli.UndefinedInput(arg);
+                }
             }
         }
-        input.close();
     }
 }
 
