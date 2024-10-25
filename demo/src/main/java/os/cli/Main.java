@@ -224,14 +224,16 @@ class CLI {
 
 
     public void uname(String com) {
-        System.out.println("uname called");
-        System.out.println("args in comm: " + com);
+        // System.out.println("uname called");
+        // System.out.println("args in comm: " + com);
 
-        String[] MyArgs = proccess_args(com);
+        // String[] MyArgs = proccess_args(com);
 
-        for(int i = 1; i < MyArgs.length; i++) {
-            System.out.println(MyArgs[i]);
-        }
+        // for(int i = 1; i < MyArgs.length; i++) {
+        //     System.out.println(MyArgs[i]);
+        // }
+
+        System.out.println(System.getProperty("os.name"));
     }
 
     public void cp(String com) {
