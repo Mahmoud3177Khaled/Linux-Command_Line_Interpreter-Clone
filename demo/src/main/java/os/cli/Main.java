@@ -1,5 +1,6 @@
 package os.cli;
 
+import java.io.File;
 import java.util.Scanner;
 
 public class Main {
@@ -7,13 +8,13 @@ public class Main {
     public static void main(String[] args) {
         try (Scanner input = new Scanner(System.in)) {
 
-            CLI cli = new CLI("D:// >");
+            CLI cli = new CLI("C:\\");
             boolean run = true;
             String arg;
             String command;
 
             while (run) {
-                System.out.print(cli.getCurrentDir());
+                System.out.print(cli.getCurrentDir() + ">");
 
                 command = input.next();
                 arg = input.nextLine();
@@ -47,7 +48,7 @@ class CLI {
     }
 
     public String getCurrentDir() {
-        return currentDir;
+        return this.currentDir;
     }
 
     public void UndefinedInput(String com) {
@@ -74,14 +75,33 @@ class CLI {
     }
 
     public void cd(String com) {
-        System.out.println("cd called");
-        System.out.println("args in comm: " + com);
+        // System.out.println("cd called");
+        // System.out.println("args in comm: " + com);
 
-        String[] MyArgs = proccess_args(com);
+        // String[] MyArgs = proccess_args(com);
 
-        for(int i = 1; i < MyArgs.length; i++) {
-            System.out.println(MyArgs[i]);
+        // for(int i = 1; i < MyArgs.length; i++) {
+        //     System.out.println(MyArgs[i]);
+        // }
+
+        if("..".equals(com.trim())) {
+            File newdir = new File(this.currentDir).getParentFile();
+            if (newdir != null) {
+                this.currentDir = newdir.getAbsolutePath();
+            }
+        } else {
+            File newdir = new File(this.currentDir, com.trim());
+            if (newdir.isDirectory() && newdir.exists()) {
+                this.currentDir = newdir.getAbsolutePath();
+    
+            } else {
+                System.out.println("Directory " + com.trim() + " does not exists in " + this.currentDir);
+                // System.out.println(newdir.exists());
+                // System.out.println(newdir.isDirectory());
+            }
+
         }
+
     }
 
     public void mkdir(String com) {
@@ -131,6 +151,7 @@ class CLI {
     // --------------------------- # Mahmoud Khaled 20220317 # --------------------------- //
 
     public void rmdir(String com) {
+
         System.out.println("rmdir called");
         System.out.println("args in comm: " + com);
 
@@ -138,6 +159,10 @@ class CLI {
 
         for(int i = 1; i < MyArgs.length; i++) {
             System.out.println(MyArgs[i]);
+        }
+
+        for(int i = 1; i < MyArgs.length; i++) {
+            
         }
     }
 
