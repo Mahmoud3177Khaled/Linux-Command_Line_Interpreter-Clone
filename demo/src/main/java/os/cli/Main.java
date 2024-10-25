@@ -6,14 +6,18 @@ public class Main {
 
     public static void main(String[] args) {
         try (Scanner input = new Scanner(System.in)) {
+
             CLI cli = new CLI("D:// >");
             boolean run = true;
             String arg;
             String command;
+
             while (run) {
-                System.out.print(cli.currentDir);
+                System.out.print(cli.getCurrentDir());
+
                 command = input.next();
                 arg = input.nextLine();
+
                 switch (command) {
                     case "pwd" -> cli.pwd(arg);
                     case "cd" -> cli.cd(arg);
@@ -27,7 +31,7 @@ public class Main {
                     case "uname" -> cli.uname(arg);
                     case "cp" -> cli.cp(arg);
                     case "<" -> cli.inputOp(arg);
-                    default ->  cli.UndefinedInput(arg);
+                    default ->  cli.UndefinedInput(command);
                 }
             }
         }
@@ -36,10 +40,14 @@ public class Main {
 
 class CLI {
 
-    public String currentDir;
+    private String currentDir;
 
     public CLI(String currentDir) {
         this.currentDir = currentDir;
+    }
+
+    public String getCurrentDir() {
+        return currentDir;
     }
 
     public void UndefinedInput(String com) {
@@ -51,6 +59,8 @@ class CLI {
         String[] proccessed_args = com.split(" ");
         return proccessed_args;
     }
+
+    // 
 
     public void pwd(String com) {
         System.out.println("pwd called");
