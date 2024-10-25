@@ -25,7 +25,7 @@ public class Main {
                 case "uname" -> cli.uname();
                 case "cp" -> cli.cp();
                 case "<" -> cli.inputOp();
-                default -> throw new AssertionError();
+                default ->  cli.UndefinedInput(command);
             }
         }
         input.close();
@@ -38,6 +38,11 @@ class CLI {
 
     public CLI(String currentDir) {
         this.currentDir = currentDir;
+    }
+
+    public void UndefinedInput(String com) {
+        System.out.print(com + " is not a recognized command,");
+        System.out.println(" please make sure you typed a ligal command or try again.");
     }
 
     public void pwd() {
