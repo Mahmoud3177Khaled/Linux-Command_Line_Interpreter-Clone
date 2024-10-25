@@ -74,34 +74,15 @@ class CLI {
         }
     }
 
-    public void cd(String com) {
-        // System.out.println("cd called");
-        // System.out.println("args in comm: " + com);
+    public void ls(String com) {
+        System.out.println("ls called");
+        System.out.println("args in comm: " + com);
 
-        // String[] MyArgs = proccess_args(com);
+        String[] MyArgs = proccess_args(com);
 
-        // for(int i = 1; i < MyArgs.length; i++) {
-        //     System.out.println(MyArgs[i]);
-        // }
-
-        if("..".equals(com.trim())) {
-            File newdir = new File(this.currentDir).getParentFile();
-            if (newdir != null) {
-                this.currentDir = newdir.getAbsolutePath();
-            }
-        } else {
-            File newdir = new File(this.currentDir, com.trim());
-            if (newdir.isDirectory() && newdir.exists()) {
-                this.currentDir = newdir.getAbsolutePath();
-    
-            } else {
-                System.out.println("Directory " + com.trim() + " does not exists in " + this.currentDir);
-                // System.out.println(newdir.exists());
-                // System.out.println(newdir.isDirectory());
-            }
-
+        for(int i = 1; i < MyArgs.length; i++) {
+            System.out.println(MyArgs[i]);
         }
-
     }
 
     public void mkdir(String com) {
@@ -150,6 +131,36 @@ class CLI {
 
     // --------------------------- # Mahmoud Khaled 20220317 # --------------------------- //
 
+    public void cd(String com) {
+        // System.out.println("cd called");
+        // System.out.println("args in comm: " + com);
+
+        // String[] MyArgs = proccess_args(com);
+
+        // for(int i = 1; i < MyArgs.length; i++) {
+        //     System.out.println(MyArgs[i]);
+        // }
+
+        if("..".equals(com.trim())) {
+            File newdir = new File(this.currentDir).getParentFile();
+            if (newdir != null) {
+                this.currentDir = newdir.getAbsolutePath();
+            }
+        } else {
+            File newdir = new File(this.currentDir, com.trim());
+            if (newdir.isDirectory() && newdir.exists()) {
+                this.currentDir = newdir.getAbsolutePath();
+    
+            } else {
+                System.out.println("Directory " + com.trim() + " does not exists in " + this.currentDir);
+                // System.out.println(newdir.exists());
+                // System.out.println(newdir.isDirectory());
+            }
+
+        }
+
+    }
+    
     public void rmdir(String com) {
 
         // System.out.println("rmdir called");
@@ -177,30 +188,23 @@ class CLI {
             }
        }
 
-
     }
 
     public void cat(String com) {
-        System.out.println("cat called");
-        System.out.println("args in comm: " + com);
+        // System.out.println("cat called");
+        // System.out.println("args in comm: " + com);
 
-        String[] MyArgs = proccess_args(com);
+        // String[] MyArgs = proccess_args(com);
 
-        for(int i = 1; i < MyArgs.length; i++) {
-            System.out.println(MyArgs[i]);
-        }
+        // for(int i = 1; i < MyArgs.length; i++) {
+        //     System.out.println(MyArgs[i]);
+        // }
+
+        
+
+
     }
 
-    public void ls(String com) {
-        System.out.println("ls called");
-        System.out.println("args in comm: " + com);
-
-        String[] MyArgs = proccess_args(com);
-
-        for(int i = 1; i < MyArgs.length; i++) {
-            System.out.println(MyArgs[i]);
-        }
-    }
 
     public void uname(String com) {
         System.out.println("uname called");
