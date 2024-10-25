@@ -1,3 +1,5 @@
+package os.cli;
+
 import java.util.Scanner;
 
 public class Main {
@@ -11,32 +13,15 @@ public class Main {
             System.out.print(cli.currentDir);
             command = input.next();
             switch (command) {
-                case "pwd":
-                    cli.pwd();
-                    break;
-                case "cd":
-                    cli.cd();
-                    break;
-                case "ls":
-                    cli.ls();
-                    break;
-                case "mkdir":
-                    cli.mkdir();
-                    break;
-                case "touch":
-                    cli.touch();
-                    break;
-                case "mv":
-                    cli.mv();
-                    break;
-                case "rm":
-                    cli.rm();
-                    break;
-                case "cat":
-                    cli.cat();
-                    break;
-                default:
-                    throw new AssertionError();
+                case "pwd" -> cli.pwd();
+                case "cd" -> cli.cd();
+                case "ls" -> cli.ls();
+                case "mkdir" -> cli.mkdir();
+                case "touch" -> cli.touch();
+                case "mv" -> cli.mv();
+                case "rm" -> cli.rm();
+                case "cat" -> cli.cat();
+                default -> throw new AssertionError();
             }
         }
         input.close();
