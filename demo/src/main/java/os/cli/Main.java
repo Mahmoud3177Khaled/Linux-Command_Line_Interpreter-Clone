@@ -237,13 +237,25 @@ class CLI {
     }
 
     public void cp(String com) {
-        System.out.println("cp called");
-        System.out.println("args in comm: " + com);
+        // System.out.println("cp called");
+        // System.out.println("args in comm: " + com);
 
-        String[] MyArgs = proccess_args(com);
+        // String[] MyArgs = proccess_args(com);
 
-        for(int i = 1; i < MyArgs.length; i++) {
-            System.out.println(MyArgs[i]);
+        // for(int i = 1; i < MyArgs.length; i++) {
+        //     System.out.println(MyArgs[i]);
+        // }
+
+        File fileToCopy = new File(this.currentDir, com);
+
+        if (!fileToCopy.exists()) {
+            System.out.println("Error: File does not exists.");
+        } else if (fileToCopy.isFile()) {
+            // implement file case
+        } else if (fileToCopy.isDirectory()) {
+            // implement folder case
+        } else {
+            // handle any failiur
         }
     }
 
