@@ -152,18 +152,32 @@ class CLI {
 
     public void rmdir(String com) {
 
-        System.out.println("rmdir called");
-        System.out.println("args in comm: " + com);
+        // System.out.println("rmdir called");
+        // System.out.println("args in comm: " + com);
 
-        String[] MyArgs = proccess_args(com);
+        // String[] MyArgs = proccess_args(com);
 
-        for(int i = 1; i < MyArgs.length; i++) {
-            System.out.println(MyArgs[i]);
-        }
+        // for(int i = 1; i < MyArgs.length; i++) {
+        //     System.out.println(MyArgs[i]);
+        // }
 
-        for(int i = 1; i < MyArgs.length; i++) {
-            
-        }
+       File folderToDelete = new File(this.currentDir, com.trim());
+
+       if(!folderToDelete.exists()) {
+            System.out.println("Error: Folder does not exists.");
+       } else if (!folderToDelete.isDirectory()) {
+            System.out.println("Error: Please provide a folder.");
+       } else if (folderToDelete.listFiles().length != 0) {
+            System.out.println("Error: Please provide an empty folder.");
+       } else {
+            if(folderToDelete.delete()) {
+                // System.out.println("Folder deleted.");
+            } else {
+                System.out.println("Error: Failed to delete folder");
+            }
+       }
+
+
     }
 
     public void cat(String com) {
