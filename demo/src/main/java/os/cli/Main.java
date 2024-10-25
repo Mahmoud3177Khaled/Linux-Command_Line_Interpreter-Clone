@@ -1,6 +1,7 @@
 package os.cli;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Main {
@@ -200,7 +201,23 @@ class CLI {
         //     System.out.println(MyArgs[i]);
         // }
 
-        
+        File FileToPrint = new File(this.currentDir, com.trim());
+
+        if(!FileToPrint.exists()) {
+            System.out.println("Error: File does not exists.");
+        } else if (!FileToPrint.isFile()) {
+            System.out.println("Error: Please provide a normal folder.");
+        } else {
+            try {
+                try (Scanner scanner = new Scanner(FileToPrint)) {
+                    while (scanner.hasNextLine()) {
+                        System.err.println(scanner.nextLine());
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                System.out.println("Error: Unable to read from file.");
+            }
+        }
 
 
     }
