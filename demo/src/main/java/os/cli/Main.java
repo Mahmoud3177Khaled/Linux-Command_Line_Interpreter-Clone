@@ -1,4 +1,3 @@
-package os.cli;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -54,7 +53,7 @@ class CLI {
 
     public void UndefinedInput(String com) {
         System.out.print(com + " is not a recognized command,");
-        System.out.println(" please make sure you typed a ligal command or try again.");
+        System.out.println(" please make sure you typed a legal command or try again.");
     }
 
     private String[] proccess_args(String com) {
@@ -64,7 +63,7 @@ class CLI {
 
     // 
 
-    public void pwd(String com) {
+    public void pwd(String com) {  //20220027 
         System.out.println("pwd called");
         System.out.println("args in comm: " + com);
 
@@ -75,7 +74,7 @@ class CLI {
         }
     }
 
-    public void ls(String com) {
+    public void ls(String com) { //20220028
         System.out.println("ls called");
         System.out.println("args in comm: " + com);
 
@@ -86,18 +85,21 @@ class CLI {
         }
     }
 
-    public void mkdir(String com) {
+    public void mkdir(String com) {// 20220246
         System.out.println("mkdir called");
         System.out.println("args in comm: " + com);
 
         String[] MyArgs = proccess_args(com);
 
         for(int i = 1; i < MyArgs.length; i++) {
-            System.out.println(MyArgs[i]);
+            System.out.println(i+MyArgs[i]);
         }
+        
+
+
     }
 
-    public void touch(String com) {
+    public void touch(String com) { // 20220027
         System.out.println("touch called");
         System.out.println("args in comm: " + com);
 
@@ -108,7 +110,7 @@ class CLI {
         }
     }
 
-    public void mv(String com) {
+    public void mv(String com) { //20220028
         System.out.println("mv called");
         System.out.println("args in comm: " + com);
 
@@ -119,7 +121,7 @@ class CLI {
         }
     }
 
-    public void rm(String com) {
+    public void rm(String com) { //20220246
         System.out.println("rm called");
         System.out.println("args in comm: " + com);
 
@@ -162,7 +164,7 @@ class CLI {
 
     }
     
-    public void rmdir(String com) {
+    public void rmdir(String com) { //20220317
 
         // System.out.println("rmdir called");
         // System.out.println("args in comm: " + com);
@@ -191,7 +193,7 @@ class CLI {
 
     }
 
-    public void cat(String com) {
+    public void cat(String com) { //20220317
         // System.out.println("cat called");
         // System.out.println("args in comm: " + com);
 
@@ -223,7 +225,7 @@ class CLI {
     }
 
 
-    public void uname(String com) {
+    public void uname(String com) { //20220317
         // System.out.println("uname called");
         // System.out.println("args in comm: " + com);
 
@@ -236,7 +238,7 @@ class CLI {
         System.out.println(System.getProperty("os.name"));
     }
 
-    public void cp(String com) {
+    public void cp(String com) { //20220317
         // System.out.println("cp called");
         // System.out.println("args in comm: " + com);
 
