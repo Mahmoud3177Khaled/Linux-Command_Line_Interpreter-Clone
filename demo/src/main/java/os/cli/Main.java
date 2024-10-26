@@ -18,7 +18,7 @@ public class Main {
                 System.out.print(cli.getCurrentDir() + ">");
 
                 command = input.next();
-                arg = input.nextLine();
+                arg = input.nextLine().trim();
 
                 switch (command) {
                     case "pwd" -> cli.pwd(arg);
@@ -142,18 +142,18 @@ class CLI {
         //     System.out.println(MyArgs[i]);
         // }
 
-        if("..".equals(com.trim())) {
+        if("..".equals(com)) {
             File newdir = new File(this.currentDir).getParentFile();
             if (newdir != null) {
                 this.currentDir = newdir.getAbsolutePath();
             }
         } else {
-            File newdir = new File(this.currentDir, com.trim());
+            File newdir = new File(this.currentDir, com);
             if (newdir.isDirectory() && newdir.exists()) {
                 this.currentDir = newdir.getAbsolutePath();
     
             } else {
-                System.out.println("Directory " + com.trim() + " does not exists in " + this.currentDir);
+                System.out.println("Directory " + com + " does not exists in " + this.currentDir);
                 // System.out.println(newdir.exists());
                 // System.out.println(newdir.isDirectory());
             }
@@ -173,7 +173,7 @@ class CLI {
         //     System.out.println(MyArgs[i]);
         // }
 
-       File folderToDelete = new File(this.currentDir, com.trim());
+       File folderToDelete = new File(this.currentDir, com);
 
        if(!folderToDelete.exists()) {
             System.out.println("Error: Folder does not exists.");
@@ -201,7 +201,7 @@ class CLI {
         //     System.out.println(MyArgs[i]);
         // }
 
-        File FileToPrint = new File(this.currentDir, com.trim());
+        File FileToPrint = new File(this.currentDir, com);
 
         if(!FileToPrint.exists()) {
             System.out.println("Error: File does not exists.");
