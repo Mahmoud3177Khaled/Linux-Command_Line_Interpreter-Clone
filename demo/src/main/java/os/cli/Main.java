@@ -256,11 +256,16 @@ class CLI {
         File OgfileToCopy = new File(this.currentDir, parameters[0]);
         File fileToCopy = new File(this.currentDir, parameters[1]);
 
-        int destType = 0;
+        int destType = 0; // 0 --> file 1 --> folder
+        int pathType = 0; // 0 --> relative 1 --> absolute
+
         for (int i = 0; i < parameters[1].length(); i++) {
             if (parameters[1].charAt(i) == '\\') {
                 destType = 1;
             } 
+            if (parameters[1].charAt(i) == ':') {
+                pathType = 1;
+            }
         }
         
         if (OgfileToCopy.isFile() && destType == 0) {
@@ -298,7 +303,14 @@ class CLI {
             }
             
         } else if (OgfileToCopy.isFile() && destType == 1) {
-            File FileToCopyFar = new File(parameters[1], parameters[0]);
+            File FileToCopyFar = new File(this.currentDir + parameters[1], parameters[0]);
+            System.out.println(this.currentDir + parameters[1]);
+            
+            if (pathType == 1) {
+                FileToCopyFar = new File(parameters[1], parameters[0]);
+            }
+
+
 
             if (!OgfileToCopy.exists()) {
                 System.out.println("Error: File does not exists.");
