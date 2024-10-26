@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class Main {
@@ -233,12 +234,33 @@ class CLI {
         // System.out.println("args in comm: " + com);
 
         // String[] MyArgs = proccess_args(com);
-
+        
         // for(int i = 1; i < MyArgs.length; i++) {
-        //     System.out.println(MyArgs[i]);
+            //     System.out.println(MyArgs[i]);
         // }
 
-        System.out.println(System.getProperty("os.name"));
+        String[] MyArgs = proccess_args(com);
+
+        for (String MyArg : MyArgs) {
+            if (MyArg.equals("-s")) {
+                System.out.println(System.getProperty("os.name"));
+            }
+            if (MyArg.equals("-r")) {
+                System.out.println(System.getProperty("os.version"));
+            }
+            if (MyArg.equals("-m")) {
+                System.out.println(System.getProperty("os.arch"));
+            }
+            if (MyArg.equals("-n")) {
+                try {
+                    System.out.println(java.net.InetAddress.getLocalHost().getHostName());
+                } catch (UnknownHostException ex) {
+                    System.out.println("Failed to retrive info");
+                }
+            }
+        }
+        
+        
     }
 
     public void cp(String com, Scanner inputChoice) { //20220317
