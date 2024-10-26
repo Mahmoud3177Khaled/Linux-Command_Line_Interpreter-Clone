@@ -20,7 +20,7 @@ public class Main {
                 System.out.print(cli.getCurrentDir() + ">");
 
                 command = input.next();
-                arg = input.nextLine();
+                arg = input.nextLine().trim();
 
                 switch (command) {
                     case "pwd" -> cli.pwd(arg);
