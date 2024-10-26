@@ -256,9 +256,19 @@ class CLI {
         File OgfileToCopy = new File(this.currentDir, parameters[0]);
         File fileToCopy = new File(this.currentDir, parameters[1]);
 
-        if (!OgfileToCopy.exists()) {
-            System.out.println("Error: File does not exists.");
-        } else if (OgfileToCopy.isFile()) {
+        int destType = 0;
+        for (int i = 0; i < parameters[1].length(); i++) {
+            if (parameters[1].charAt(i) == '\\') {
+                destType = 1;
+            } 
+        }
+        
+        if (OgfileToCopy.isFile() && destType == 0) {
+            
+            if (!OgfileToCopy.exists()) {
+                System.out.println("Error: File does not exists.");
+                return;
+            } 
 
             if (fileToCopy.exists()) {
                 System.out.print("File with this name already exists. Overide? [y/n] ");
@@ -268,6 +278,7 @@ class CLI {
                     return;
                 }
             }
+
             try {
                 fileToCopy.createNewFile();
 
@@ -286,11 +297,42 @@ class CLI {
                 System.out.println("Error: Failed to copy file.");
             }
             
-        } else if (OgfileToCopy.isDirectory()) {
-            
-        } else {
-            // handle any failiur
+        } else if (OgfileToCopy.isFile() && destType == 1) {
+            File FileToCopyFar = new File(parameters[1], parameters[0]);
+
+            if (!OgfileToCopy.exists()) {
+                System.out.println("Error: File does not exists.");
+                return;
+            } 
+
+            if (FileToCopyFar.exists()) {
+                System.out.print("File with this name already exists. Overide? [y/n] ");
+                String choice = inputChoice.next();
+                if (choice.equals("n") || choice.equals("N")) {
+                    System.out.println("cp cancelled");
+                    return;
+                }
+            }
+
+            try {
+                FileToCopyFar.createNewFile();
+
+                FileWriter outputFile;
+                try (Scanner inputFile = new Scanner(OgfileToCopy)) {
+                    outputFile = new FileWriter(FileToCopyFar);
+
+                    String line;
+                    while (inputFile.hasNextLine()) {
+                        line = inputFile.nextLine();
+                        outputFile.write(line + "\n");
+                    }
+                }
+                outputFile.close();
+            } catch (IOException ex) {
+                System.out.println(ex);
+            }
         }
+
     }
 
     public void inputOp(String com) {                           //20220317
