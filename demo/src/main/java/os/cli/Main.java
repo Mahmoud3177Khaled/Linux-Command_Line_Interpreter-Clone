@@ -33,7 +33,7 @@ public class Main {
                     case "cat" -> cli.cat(arg);
                     case "ls" -> cli.ls(arg);
                     case "uname" -> cli.uname(arg);
-                    case "cp" -> cli.cp(arg);
+                    case "cp" -> cli.cp(arg, input);
                     case "<" -> cli.inputOp(arg);
                     default ->  cli.UndefinedInput(command);
                 }
@@ -241,7 +241,7 @@ class CLI {
         System.out.println(System.getProperty("os.name"));
     }
 
-    public void cp(String com) { //20220317
+    public void cp(String com, Scanner inputChoice) { //20220317
         // System.out.println("cp called");
         // System.out.println("args in comm: " + com);
 
@@ -259,6 +259,17 @@ class CLI {
         if (!OgfileToCopy.exists()) {
             System.out.println("Error: File does not exists.");
         } else if (OgfileToCopy.isFile()) {
+
+            if (fileToCopy.exists()) {
+                System.out.print("File with this name already exists. Overide? [y/n] ");
+                // Scanner choice = new Scanner(System.in);
+                String choice = inputChoice.next();
+                if (choice.equals('n') || choice.equals('N')) {
+                    System.out.println("cp cancelled");
+                    return;
+                }
+            }
+
             try {
                 fileToCopy.createNewFile();
 
