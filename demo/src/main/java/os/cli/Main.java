@@ -279,7 +279,15 @@ class CLI {
         File fileToCopy = new File(this.currentDir, parameters[1]);
 
         int destType = 0; // 0 --> file 1 --> folder
+        @SuppressWarnings("unused")
+        int ogpathType = 0; // 0 --> relative 1 --> absolute
         int pathType = 0; // 0 --> relative 1 --> absolute
+
+        for (int i = 0; i < parameters[0].length(); i++) {
+            if (parameters[0].charAt(i) == ':') {
+                ogpathType = 1;
+            }
+        }
 
         for (int i = 0; i < parameters[1].length(); i++) {
             if (parameters[1].charAt(i) == '\\') {
@@ -327,8 +335,6 @@ class CLI {
         } else if (OgfileToCopy.isFile() && destType == 1) {
 
             File FileToCopyFar = new File(this.currentDir + parameters[1], parameters[0]);
-            System.out.println(this.currentDir + parameters[1]);
-            
             if (pathType == 1) {
                 FileToCopyFar = new File(parameters[1], parameters[0]);
             }
@@ -367,7 +373,20 @@ class CLI {
             }
 
         } else if (!OgfileToCopy.isFile()) {
-            // implement copying folders 
+            // implement copying folders
+            // wil be like case 2 but with recursive calls on each subfolder
+
+
+            //            Failed trial, start anew next time
+            // File ogFolderToCopyFar = new File(this.currentDir, parameters[0]);
+            // if (ogpathType == 1) {
+            //     ogFolderToCopyFar = new File(parameters[1], parameters[0]);
+            // }
+
+            // File FolderToCopyFar = new File(this.currentDir, parameters[1]);
+            // if (pathType == 1) {
+            //     FolderToCopyFar = new File(parameters[1], parameters[0]);
+            // }
         }
 
     }
