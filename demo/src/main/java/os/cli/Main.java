@@ -303,14 +303,13 @@ class CLI {
             }
             
         } else if (OgfileToCopy.isFile() && destType == 1) {
+
             File FileToCopyFar = new File(this.currentDir + parameters[1], parameters[0]);
             System.out.println(this.currentDir + parameters[1]);
             
             if (pathType == 1) {
                 FileToCopyFar = new File(parameters[1], parameters[0]);
             }
-
-
 
             if (!OgfileToCopy.exists()) {
                 System.out.println("Error: File does not exists.");
@@ -340,9 +339,13 @@ class CLI {
                     }
                 }
                 outputFile.close();
+
             } catch (IOException ex) {
                 System.out.println(ex);
             }
+
+        } else if (!OgfileToCopy.isFile()) {
+            // implement copying folders 
         }
 
     }
