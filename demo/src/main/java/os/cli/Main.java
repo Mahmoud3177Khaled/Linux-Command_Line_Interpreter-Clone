@@ -269,7 +269,7 @@ class CLI {
 
                     while (inputFile.hasNextLine()) {
                         line = inputFile.nextLine();
-                        System.out.println(line);
+                        // System.out.println(line);
                         outputFile.write(line + "\n");
                     }
                 }
