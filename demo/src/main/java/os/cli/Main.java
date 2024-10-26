@@ -262,9 +262,8 @@ class CLI {
 
             if (fileToCopy.exists()) {
                 System.out.print("File with this name already exists. Overide? [y/n] ");
-                // Scanner choice = new Scanner(System.in);
                 String choice = inputChoice.next();
-                if (choice.equals('n') || choice.equals('N')) {
+                if (choice.equals("n") || choice.equals("N")) {
                     System.out.println("cp cancelled");
                     return;
                 }
