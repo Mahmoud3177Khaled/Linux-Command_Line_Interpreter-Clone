@@ -274,12 +274,11 @@ class CLI {
 
                 FileWriter outputFile;
                 try (Scanner inputFile = new Scanner(OgfileToCopy)) {
-                    outputFile = new FileWriter(this.currentDir + "/" + parameters[1]);
-                    String line;
+                    outputFile = new FileWriter(fileToCopy);
 
+                    String line;
                     while (inputFile.hasNextLine()) {
                         line = inputFile.nextLine();
-                        // System.out.println(line);
                         outputFile.write(line + "\n");
                     }
                 }
