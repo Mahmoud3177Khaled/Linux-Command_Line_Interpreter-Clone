@@ -1,6 +1,8 @@
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
@@ -248,13 +250,35 @@ class CLI {
         //     System.out.println(MyArgs[i]);
         // }
 
-        File fileToCopy = new File(this.currentDir, com);
+        String[] parameters = proccess_args(com);
 
-        if (!fileToCopy.exists()) {
+        File OgfileToCopy = new File(this.currentDir, parameters[0]);
+        File fileToCopy = new File(this.currentDir, parameters[1]);
+
+        if (!OgfileToCopy.exists()) {
             System.out.println("Error: File does not exists.");
-        } else if (fileToCopy.isFile()) {
-            // implement file case
-        } else if (fileToCopy.isDirectory()) {
+        } else if (OgfileToCopy.isFile()) {
+            try {
+                fileToCopy.createNewFile();
+
+                FileWriter outputFile;
+                try (Scanner inputFile = new Scanner(OgfileToCopy)) {
+                    outputFile = new FileWriter(this.currentDir + "/" + parameters[1]);
+                    String line;
+
+                    while (inputFile.hasNextLine()) {
+                        line = inputFile.nextLine();
+                        System.out.println(line);
+                        outputFile.write(line + "\n");
+                    }
+                }
+                outputFile.close();
+
+
+            } catch (IOException ex) {
+                System.out.println("Error: Failed to create copied file.");
+            }
+        } else if (OgfileToCopy.isDirectory()) {
             // implement folder case
         } else {
             // handle any failiur
