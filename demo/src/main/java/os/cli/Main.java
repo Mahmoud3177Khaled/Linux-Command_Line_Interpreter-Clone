@@ -137,7 +137,7 @@ class CLI {
 
     // --------------------------- # Mahmoud Khaled 20220317 # --------------------------- //
 
-    public void cd(String com) {
+    public void cd(String com) {                           
         // System.out.println("cd called");
         // System.out.println("args in comm: " + com);
 
@@ -167,7 +167,7 @@ class CLI {
 
     }
     
-    public void rmdir(String com) { //20220317
+    public void rmdir(String com) {                          //20220317
 
         // System.out.println("rmdir called");
         // System.out.println("args in comm: " + com);
@@ -196,7 +196,7 @@ class CLI {
 
     }
 
-    public void cat(String com) { //20220317
+    public void cat(String com) {                           //20220317
         // System.out.println("cat called");
         // System.out.println("args in comm: " + com);
 
@@ -228,7 +228,7 @@ class CLI {
     }
 
 
-    public void uname(String com) { //20220317
+    public void uname(String com) {                           //20220317
         // System.out.println("uname called");
         // System.out.println("args in comm: " + com);
 
@@ -268,7 +268,6 @@ class CLI {
                     return;
                 }
             }
-
             try {
                 fileToCopy.createNewFile();
 
@@ -283,19 +282,18 @@ class CLI {
                     }
                 }
                 outputFile.close();
-
-
             } catch (IOException ex) {
-                System.out.println("Error: Failed to create copied file.");
+                System.out.println("Error: Failed to copy file.");
             }
+            
         } else if (OgfileToCopy.isDirectory()) {
-            // implement folder case
+            
         } else {
             // handle any failiur
         }
     }
 
-    public void inputOp(String com) {
+    public void inputOp(String com) {                           //20220317
         System.out.println("inputOp called");
         System.out.println("args in comm: " + com);
 
