@@ -107,26 +107,28 @@ class CLI {
         }
     }
 //-------------------------------------------------------------------------------------
-    private void createParentDirectory(String path){
+
+    private void createParentDirectory(String path) {
+        File f, pf;
         if (!path.contains("\\") && !path.contains("/")) {
-            File f= new File(currentDir+path);
+            f = new File(currentDir + path);
             f.mkdir();
-            System.out.println(path + " created");
-            return;
-        }
-        else{
-            
+        } else {
+            if (path.charAt(1) != ':') {
+                path = currentDir + path;
+            }
+            f = new File(path);
+            String p = f.getParent();
+            pf = new File(p);
+            if (!pf.exists()) {
+                createParentDirectory(p);
+            }
+            f.mkdir();
         }
 
     }
-    public void mkdir(String com) {// 20220246
-        // System.out.println("mkdir called");
-        // System.out.println("args in comm: " + com);
 
-        // String[] MyArgs = proccess_args(com);
-        // for(int i = 0; i < MyArgs.length; i++) {
-        //     System.out.println(MyArgs[i]);
-        // }
+    public void mkdir(String com) {// 20220246
 
         /* 1- split command to options and paths  */
         ArrayList<String> inputOptions = new ArrayList<>();
@@ -134,7 +136,7 @@ class CLI {
         String path = "";
         String option = "";
         int size = 0;
-        boolean parentOption = false;
+        boolean parentOption = false, verboseOption = false;
         for (int i = 0; i < com.length(); i++) {
 
             if (i < com.length() - 1 && com.charAt(i) == '-' && com.charAt(i + 1) == '-') {
@@ -145,14 +147,20 @@ class CLI {
                 if (option.equals("--parents")) {
                     parentOption = true;
                 }
+                if (option.equals("--verbose")) {
+                    verboseOption = true;
+                }
                 inputOptions.add(option);
                 option = "";
-            } else if (i < com.length() - 1 &&com.charAt(i) == '-' && Character.isAlphabetic(com.charAt(i + 1))) {
+            } else if (i < com.length() - 1 && com.charAt(i) == '-' && Character.isAlphabetic(com.charAt(i + 1))) {
                 inputOptions.add("-" + com.charAt(i + 1));
-                i++;
                 if (com.charAt(i + 1) == 'p') {
                     parentOption = true;
                 }
+                if (com.charAt(i + 1) == 'v') {
+                    verboseOption = true;
+                }
+                i++;
             } else if (com.charAt(i) == ' ') {
                 if (size != 0) {
                     paths.add(path);
@@ -174,19 +182,21 @@ class CLI {
         //     System.out.println(elem);   
         // }
 
+
         /* 2-chick the options is correct */
         //-set all options
         Map<String, Boolean> COMMAND_OPTIONS = new HashMap<>();
         COMMAND_OPTIONS.put("--help", true);
         COMMAND_OPTIONS.put("--version", true);
-        COMMAND_OPTIONS.put("--verbose", true);
+        COMMAND_OPTIONS.put("--verbose", true);  //done
+        COMMAND_OPTIONS.put("-v", true);  //done
         COMMAND_OPTIONS.put("--mode", true);
-        COMMAND_OPTIONS.put("--parents", true);
-        COMMAND_OPTIONS.put("--context", true);
-        COMMAND_OPTIONS.put("-v", true);
-        COMMAND_OPTIONS.put("-p", true);
         COMMAND_OPTIONS.put("-m", true);
+        COMMAND_OPTIONS.put("--parents", true); //done
+        COMMAND_OPTIONS.put("-p", true); //done
+        COMMAND_OPTIONS.put("--context", true);
         COMMAND_OPTIONS.put("-z", true);
+
         //check input options
         for (int i = 0; i < inputOptions.size(); i++) {
             if (!COMMAND_OPTIONS.containsKey(inputOptions.get(i))) {
@@ -195,12 +205,23 @@ class CLI {
                 return;
             }
         }
-        /* 3-chick the paths is correct */
+
+        /* 3-execute main options */
+        if (inputOptions.contains("--help")) {
+
+        }
+
+        /* 4-chick the paths is correct */
         File f, pf;
+        String check_path = "";
         if (!parentOption) {
             for (int i = 0; i < paths.size(); i++) {
-                if (paths.get(i).contains("\\") || paths.get(i).contains("/")) {
-                    f = new File(paths.get(i));
+                check_path = paths.get(i);
+                if (check_path.contains("\\") || check_path.contains("/")) {
+                    if (check_path.charAt(1) != ':') {
+                        check_path = currentDir + check_path;
+                    }
+                    f = new File(check_path);
                     String p = f.getParent();
                     pf = new File(p);
                     if (!pf.exists()) {
@@ -211,30 +232,32 @@ class CLI {
             }
         }
 
-        /*4- create directory */
+        /*5- create directory */
         if (parentOption) {
             for (int i = 0; i < paths.size(); i++) {
                 createParentDirectory(paths.get(i));
+                if (verboseOption) {
+                    System.out.println("mkdir: created directory \'"+paths.get(i) + "\' ");
+                }
             }
         } else {
             for (int i = 0; i < paths.size(); i++) {
-                if (paths.get(i).contains("\\") || paths.get(i).contains("/")) {
-                    f = new File(paths.get(i));
-                    String p = f.getParent();
-                    pf = new File(p);
-                    if (!pf.exists()) {
-                        System.out.println("mkdir: cannot create directory \'" + paths.get(i) + "\': No such file or directory");
-                        return;
+                check_path = paths.get(i);
+                if (check_path.contains("\\") || check_path.contains("/")) {
+                    if (check_path.charAt(1) != ':') {
+                        check_path = currentDir + check_path;
                     }
-                    else{
-                        f = new File(paths.get(i));
-                        f.mkdir();
-                        System.out.println(paths.get(i) + " created");
+                    f = new File(check_path);
+                    f.mkdir();
+                    if (verboseOption) {
+                        System.out.println("mkdir: created directory \'"+paths.get(i) + "\' ");
                     }
                 } else {
-                    f = new File(paths.get(i));
+                    f = new File(currentDir + paths.get(i));
                     f.mkdir();
-                    System.out.println(paths.get(i) + " created");
+                    if (verboseOption) {
+                        System.out.println("mkdir: created directory \'"+paths.get(i) + "\' ");
+                    }
                 }
             }
         }

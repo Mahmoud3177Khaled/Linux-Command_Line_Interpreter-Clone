@@ -1,4 +1,8 @@
 cases not handled :
 1- input like f/../f
 2- input  option only
-3- check absolute path
+3- help
+4- version
+5- node
+6- context 
+7- z
