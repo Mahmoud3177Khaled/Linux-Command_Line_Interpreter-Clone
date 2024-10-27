@@ -1,0 +1,4 @@
+cases not handled :
+1- input like f/../f
+2- input  option only
+3- check absolute path

@@ -1,11 +1,17 @@
-package os.cli;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Stack;
+import java.util.stream.Stream;
+
+import javax.management.OperationsException;
 
 public class Main {
 
@@ -24,19 +30,32 @@ public class Main {
                 arg = input.nextLine().trim();
 
                 switch (command) {
-                    case "pwd" -> cli.pwd(arg);
-                    case "cd" -> cli.cd(arg);
-                    case "mkdir" -> cli.mkdir(arg);
-                    case "touch" -> cli.touch(arg);
-                    case "mv" -> cli.mv(arg);
-                    case "rm" -> cli.rm(arg);
-                    case "rmdir" -> cli.rmdir(arg);
-                    case "cat" -> cli.cat(arg);
-                    case "ls" -> cli.ls(arg);
-                    case "uname" -> cli.uname(arg);
-                    case "cp" -> cli.cp(arg, input);
-                    case "<" -> cli.inputOp(arg);
-                    default ->  cli.UndefinedInput(command);
+                    case "pwd" ->
+                        cli.pwd(arg);
+                    case "cd" ->
+                        cli.cd(arg);
+                    case "mkdir" ->
+                        cli.mkdir(arg);
+                    case "touch" ->
+                        cli.touch(arg);
+                    case "mv" ->
+                        cli.mv(arg);
+                    case "rm" ->
+                        cli.rm(arg);
+                    case "rmdir" ->
+                        cli.rmdir(arg);
+                    case "cat" ->
+                        cli.cat(arg);
+                    case "ls" ->
+                        cli.ls(arg);
+                    case "uname" ->
+                        cli.uname(arg);
+                    case "cp" ->
+                        cli.cp(arg, input);
+                    case "<" ->
+                        cli.inputOp(arg);
+                    default ->
+                        cli.UndefinedInput(command);
                 }
             }
         }
@@ -66,14 +85,13 @@ class CLI {
     }
 
     // 
-
     public void pwd(String com) {  //20220027 
         System.out.println("pwd called");
         System.out.println("args in comm: " + com);
 
         String[] MyArgs = proccess_args(com);
 
-        for(int i = 1; i < MyArgs.length; i++) {
+        for (int i = 1; i < MyArgs.length; i++) {
             System.out.println(MyArgs[i]);
         }
     }
@@ -84,32 +102,152 @@ class CLI {
 
         String[] MyArgs = proccess_args(com);
 
-        for(int i = 1; i < MyArgs.length; i++) {
+        for (int i = 1; i < MyArgs.length; i++) {
             System.out.println(MyArgs[i]);
         }
     }
-
-    public void mkdir(String com) {// 20220246
-        System.out.println("mkdir called");
-        System.out.println("args in comm: " + com);
-
-        String[] MyArgs = proccess_args(com);
-
-        for(int i = 1; i < MyArgs.length; i++) {
-            System.out.println(i+MyArgs[i]);
+//-------------------------------------------------------------------------------------
+    private void createParentDirectory(String path){
+        if (!path.contains("\\") && !path.contains("/")) {
+            File f= new File(currentDir+path);
+            f.mkdir();
+            System.out.println(path + " created");
+            return;
         }
-        
-
+        else{
+            
+        }
 
     }
+    public void mkdir(String com) {// 20220246
+        // System.out.println("mkdir called");
+        // System.out.println("args in comm: " + com);
 
+        // String[] MyArgs = proccess_args(com);
+        // for(int i = 0; i < MyArgs.length; i++) {
+        //     System.out.println(MyArgs[i]);
+        // }
+
+        /* 1- split command to options and paths  */
+        ArrayList<String> inputOptions = new ArrayList<>();
+        ArrayList<String> paths = new ArrayList<>();
+        String path = "";
+        String option = "";
+        int size = 0;
+        boolean parentOption = false;
+        for (int i = 0; i < com.length(); i++) {
+
+            if (i < com.length() - 1 && com.charAt(i) == '-' && com.charAt(i + 1) == '-') {
+                while (i < com.length() && com.charAt(i) != ' ') {
+                    option += com.charAt(i);
+                    i++;
+                }
+                if (option.equals("--parents")) {
+                    parentOption = true;
+                }
+                inputOptions.add(option);
+                option = "";
+            } else if (i < com.length() - 1 &&com.charAt(i) == '-' && Character.isAlphabetic(com.charAt(i + 1))) {
+                inputOptions.add("-" + com.charAt(i + 1));
+                i++;
+                if (com.charAt(i + 1) == 'p') {
+                    parentOption = true;
+                }
+            } else if (com.charAt(i) == ' ') {
+                if (size != 0) {
+                    paths.add(path);
+                    path = "";
+                    size = 0;
+                }
+            } else {
+                path += com.charAt(i);
+                size++;
+            }
+        }
+        if (size != 0) {
+            paths.add(path);
+        }
+        // for (String elem : inputOptions) {
+        //     System.out.println(elem);   
+        // }
+        // for (String elem : paths) {
+        //     System.out.println(elem);   
+        // }
+
+        /* 2-chick the options is correct */
+        //-set all options
+        Map<String, Boolean> COMMAND_OPTIONS = new HashMap<>();
+        COMMAND_OPTIONS.put("--help", true);
+        COMMAND_OPTIONS.put("--version", true);
+        COMMAND_OPTIONS.put("--verbose", true);
+        COMMAND_OPTIONS.put("--mode", true);
+        COMMAND_OPTIONS.put("--parents", true);
+        COMMAND_OPTIONS.put("--context", true);
+        COMMAND_OPTIONS.put("-v", true);
+        COMMAND_OPTIONS.put("-p", true);
+        COMMAND_OPTIONS.put("-m", true);
+        COMMAND_OPTIONS.put("-z", true);
+        //check input options
+        for (int i = 0; i < inputOptions.size(); i++) {
+            if (!COMMAND_OPTIONS.containsKey(inputOptions.get(i))) {
+                System.out.println("mkdir: unrecognized option\'" + inputOptions.get(i) + "\'");
+                System.out.println("Try \'mkdir --help\' for more information.");
+                return;
+            }
+        }
+        /* 3-chick the paths is correct */
+        File f, pf;
+        if (!parentOption) {
+            for (int i = 0; i < paths.size(); i++) {
+                if (paths.get(i).contains("\\") || paths.get(i).contains("/")) {
+                    f = new File(paths.get(i));
+                    String p = f.getParent();
+                    pf = new File(p);
+                    if (!pf.exists()) {
+                        System.out.println("mkdir: cannot create directory \'" + paths.get(i) + "\': No such file or directory");
+                        return;
+                    }
+                }
+            }
+        }
+
+        /*4- create directory */
+        if (parentOption) {
+            for (int i = 0; i < paths.size(); i++) {
+                createParentDirectory(paths.get(i));
+            }
+        } else {
+            for (int i = 0; i < paths.size(); i++) {
+                if (paths.get(i).contains("\\") || paths.get(i).contains("/")) {
+                    f = new File(paths.get(i));
+                    String p = f.getParent();
+                    pf = new File(p);
+                    if (!pf.exists()) {
+                        System.out.println("mkdir: cannot create directory \'" + paths.get(i) + "\': No such file or directory");
+                        return;
+                    }
+                    else{
+                        f = new File(paths.get(i));
+                        f.mkdir();
+                        System.out.println(paths.get(i) + " created");
+                    }
+                } else {
+                    f = new File(paths.get(i));
+                    f.mkdir();
+                    System.out.println(paths.get(i) + " created");
+                }
+            }
+        }
+    }
+
+//-----------------------------------------------------------------------------
     public void touch(String com) { // 20220027
         System.out.println("touch called");
         System.out.println("args in comm: " + com);
 
         String[] MyArgs = proccess_args(com);
 
-        for(int i = 1; i < MyArgs.length; i++) {
+        for (int i = 1; i < MyArgs.length; i++) {
             System.out.println(MyArgs[i]);
         }
     }
@@ -120,7 +258,7 @@ class CLI {
 
         String[] MyArgs = proccess_args(com);
 
-        for(int i = 1; i < MyArgs.length; i++) {
+        for (int i = 1; i < MyArgs.length; i++) {
             System.out.println(MyArgs[i]);
         }
     }
@@ -131,24 +269,21 @@ class CLI {
 
         String[] MyArgs = proccess_args(com);
 
-        for(int i = 1; i < MyArgs.length; i++) {
+        for (int i = 1; i < MyArgs.length; i++) {
             System.out.println(MyArgs[i]);
         }
     }
 
     // --------------------------- # Mahmoud Khaled 20220317 # --------------------------- //
-
-    public void cd(String com) {                           
+    public void cd(String com) {
         // System.out.println("cd called");
         // System.out.println("args in comm: " + com);
 
         // String[] MyArgs = proccess_args(com);
-
         // for(int i = 1; i < MyArgs.length; i++) {
         //     System.out.println(MyArgs[i]);
         // }
-
-        if("..".equals(com)) {
+        if ("..".equals(com)) {
             File newdir = new File(this.currentDir).getParentFile();
             if (newdir != null) {
                 this.currentDir = newdir.getAbsolutePath();
@@ -157,7 +292,7 @@ class CLI {
             File newdir = new File(this.currentDir, com);
             if (newdir.isDirectory() && newdir.exists()) {
                 this.currentDir = newdir.getAbsolutePath();
-    
+
             } else {
                 System.out.println("Directory " + com + " does not exists in " + this.currentDir);
                 // System.out.println(newdir.exists());
@@ -167,33 +302,30 @@ class CLI {
         }
 
     }
-    
+
     public void rmdir(String com) {                          //20220317
 
         // System.out.println("rmdir called");
         // System.out.println("args in comm: " + com);
-
         // String[] MyArgs = proccess_args(com);
-
         // for(int i = 1; i < MyArgs.length; i++) {
         //     System.out.println(MyArgs[i]);
         // }
+        File folderToDelete = new File(this.currentDir, com);
 
-       File folderToDelete = new File(this.currentDir, com);
-
-       if(!folderToDelete.exists()) {
+        if (!folderToDelete.exists()) {
             System.out.println("Error: Folder does not exists.");
-       } else if (!folderToDelete.isDirectory()) {
+        } else if (!folderToDelete.isDirectory()) {
             System.out.println("Error: Please provide a folder.");
-       } else if (folderToDelete.listFiles().length != 0) {
+        } else if (folderToDelete.listFiles().length != 0) {
             System.out.println("Error: Please provide an empty folder.");
-       } else {
-            if(folderToDelete.delete()) {
+        } else {
+            if (folderToDelete.delete()) {
                 // System.out.println("Folder deleted.");
             } else {
                 System.out.println("Error: Failed to delete folder");
             }
-       }
+        }
 
     }
 
@@ -202,14 +334,12 @@ class CLI {
         // System.out.println("args in comm: " + com);
 
         // String[] MyArgs = proccess_args(com);
-
         // for(int i = 1; i < MyArgs.length; i++) {
         //     System.out.println(MyArgs[i]);
         // }
-
         File FileToPrint = new File(this.currentDir, com);
 
-        if(!FileToPrint.exists()) {
+        if (!FileToPrint.exists()) {
             System.out.println("Error: File does not exists.");
         } else if (!FileToPrint.isFile()) {
             System.out.println("Error: Please provide a normal folder.");
@@ -225,20 +355,16 @@ class CLI {
             }
         }
 
-
     }
-
 
     public void uname(String com) {                           //20220317
         // System.out.println("uname called");
         // System.out.println("args in comm: " + com);
 
         // String[] MyArgs = proccess_args(com);
-        
         // for(int i = 1; i < MyArgs.length; i++) {
-            //     System.out.println(MyArgs[i]);
+        //     System.out.println(MyArgs[i]);
         // }
-
         String[] MyArgs = proccess_args(com);
 
         for (String MyArg : MyArgs) {
@@ -259,8 +385,7 @@ class CLI {
                 }
             }
         }
-        
-        
+
     }
 
     public void cp(String com, Scanner inputChoice) { //20220317
@@ -268,11 +393,9 @@ class CLI {
         // System.out.println("args in comm: " + com);
 
         // String[] MyArgs = proccess_args(com);
-
         // for(int i = 1; i < MyArgs.length; i++) {
         //     System.out.println(MyArgs[i]);
         // }
-
         String[] parameters = proccess_args(com);
 
         File OgfileToCopy = new File(this.currentDir, parameters[0]);
@@ -292,18 +415,18 @@ class CLI {
         for (int i = 0; i < parameters[1].length(); i++) {
             if (parameters[1].charAt(i) == '\\') {
                 destType = 1;
-            } 
+            }
             if (parameters[1].charAt(i) == ':') {
                 pathType = 1;
             }
         }
-        
+
         if (OgfileToCopy.isFile() && destType == 0) {
-            
+
             if (!OgfileToCopy.exists()) {
                 System.out.println("Error: File does not exists.");
                 return;
-            } 
+            }
 
             if (fileToCopy.exists()) {
                 System.out.print("File with this name already exists. Overide? [y/n] ");
@@ -331,7 +454,7 @@ class CLI {
             } catch (IOException ex) {
                 System.out.println("Error: Failed to copy file.");
             }
-            
+
         } else if (OgfileToCopy.isFile() && destType == 1) {
 
             File FileToCopyFar = new File(this.currentDir + parameters[1], parameters[0]);
@@ -342,7 +465,7 @@ class CLI {
             if (!OgfileToCopy.exists()) {
                 System.out.println("Error: File does not exists.");
                 return;
-            } 
+            }
 
             if (FileToCopyFar.exists()) {
                 System.out.print("File with this name already exists. Overide? [y/n] ");
@@ -376,13 +499,11 @@ class CLI {
             // implement copying folders
             // wil be like case 2 but with recursive calls on each subfolder
 
-
             //            Failed trial, start anew next time
             // File ogFolderToCopyFar = new File(this.currentDir, parameters[0]);
             // if (ogpathType == 1) {
             //     ogFolderToCopyFar = new File(parameters[1], parameters[0]);
             // }
-
             // File FolderToCopyFar = new File(this.currentDir, parameters[1]);
             // if (pathType == 1) {
             //     FolderToCopyFar = new File(parameters[1], parameters[0]);
@@ -397,10 +518,9 @@ class CLI {
 
         String[] MyArgs = proccess_args(com);
 
-        for(int i = 1; i < MyArgs.length; i++) {
+        for (int i = 1; i < MyArgs.length; i++) {
             System.out.println(MyArgs[i]);
         }
     }
-
 
 }
