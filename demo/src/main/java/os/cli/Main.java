@@ -15,7 +15,7 @@ public class Main {
     public static void main(String[] args) {
         try (Scanner input = new Scanner(System.in)) {
 
-            CLI cli = new CLI("C:\\users\\mahmoud\\desktop");
+            CLI cli = new CLI("C:\\");
             boolean run = true;
             String arg;
             String command;
@@ -431,7 +431,6 @@ class CLI {
 
         int destType = 1; // 0 --> file 1 --> folder
         int srcType = 1; // 0 --> file 1 --> folder
-        @SuppressWarnings("unused")
         int ogpathType = 0; // 0 --> relative 1 --> absolute
         int pathType = 0; // 0 --> relative 1 --> absolute
 
@@ -453,7 +452,6 @@ class CLI {
             }
         }
 
-        // OgfileToCopy = new File(this.currentDir + parameters[1], parameters[0]);
         if (ogpathType == 1) {
             OgfileToCopy = new File(parameters[0]);
         }
@@ -462,7 +460,6 @@ class CLI {
         }
 
         if (srcType == 0 && destType == 0) {
-
             // System.out.println("0 0");
 
             if (!OgfileToCopy.exists()) {
@@ -518,13 +515,8 @@ class CLI {
             fileToCopy.mkdir();
         
             for (File file : OgfileToCopy.listFiles()) {
-                String fileRelativepath = "";
 
-                for (int i = this.currentDir.length() + 1; i < file.getPath().length(); i++) {
-                    fileRelativepath += file.getPath().charAt(i);
-                }
-
-                String newComm = fileRelativepath + " " + parameters[1] + "/" + file.getName();
+                String newComm = file.getPath() + " " + parameters[1] + "/" + file.getName();
                 System.out.println(newComm);
                 cp(newComm, inputChoice);
 
