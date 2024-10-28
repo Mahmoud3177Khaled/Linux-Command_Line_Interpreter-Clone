@@ -430,15 +430,15 @@ class CLI {
         File OgfileToCopy = new File(this.currentDir, parameters[0]);
         File fileToCopy = new File(this.currentDir, parameters[1]);
 
-        int destType = 0; // 0 --> file 1 --> folder
-        int srcType = 0; // 0 --> file 1 --> folder
+        int destType = 1; // 0 --> file 1 --> folder
+        int srcType = 1; // 0 --> file 1 --> folder
         @SuppressWarnings("unused")
         int ogpathType = 0; // 0 --> relative 1 --> absolute
         int pathType = 0; // 0 --> relative 1 --> absolute
 
         for (int i = 0; i < parameters[0].length(); i++) {
-            if (parameters[0].charAt(i) == '\\') {
-                srcType = 1;
+            if (parameters[0].charAt(i) == '.') {
+                srcType = 0;
             }
             if (parameters[0].charAt(i) == ':') {
                 ogpathType = 1;
@@ -446,8 +446,8 @@ class CLI {
         }
 
         for (int i = 0; i < parameters[1].length(); i++) {
-            if (parameters[1].charAt(i) == '\\') {
-                destType = 1;
+            if (parameters[1].charAt(i) == '.') {
+                destType = 0;
             }
             if (parameters[1].charAt(i) == ':') {
                 pathType = 1;
@@ -532,17 +532,12 @@ class CLI {
 
         } else if (srcType == 1 && destType == 1) {
             // implement copying folders
-            // wil be like case 2 but with recursive calls on each subfolder
+            // case 1: empty folder: copy from src to dest
+            // case 2: a file: comp the file from src to dest
+            // case 3: a non empty folder: call same func with com: ""
 
-            //            Failed trial, start anew next time
-            // File ogFolderToCopyFar = new File(this.currentDir, parameters[0]);
-            // if (ogpathType == 1) {
-            //     ogFolderToCopyFar = new File(parameters[1], parameters[0]);
-            // }
-            // File FolderToCopyFar = new File(this.currentDir, parameters[1]);
-            // if (pathType == 1) {
-            //     FolderToCopyFar = new File(parameters[1], parameters[0]);
-            // }
+
+            
         }
 
     }
