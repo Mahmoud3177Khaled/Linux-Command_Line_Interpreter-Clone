@@ -15,7 +15,7 @@ public class Main {
     public static void main(String[] args) {
         try (Scanner input = new Scanner(System.in)) {
 
-            CLI cli = new CLI("C:\\");
+            CLI cli = new CLI("C:\\users\\mahmoud\\desktop");
             boolean run = true;
             String arg;
             String command;
@@ -432,31 +432,31 @@ class CLI {
 
         int destType = 1; // 0 --> file 1 --> folder
         int srcType = 1; // 0 --> file 1 --> folder
-        @SuppressWarnings("unused")
-        int ogpathType = 0; // 0 --> relative 1 --> absolute
-        int pathType = 0; // 0 --> relative 1 --> absolute
+        // @SuppressWarnings("unused")
+        // int ogpathType = 0; // 0 --> relative 1 --> absolute
+        // int pathType = 0; // 0 --> relative 1 --> absolute
 
         for (int i = 0; i < parameters[0].length(); i++) {
             if (parameters[0].charAt(i) == '.') {
                 srcType = 0;
             }
-            if (parameters[0].charAt(i) == ':') {
-                ogpathType = 1;
-            }
+            // if (parameters[0].charAt(i) == ':') {
+            //     ogpathType = 1;
+            // }
         }
 
         for (int i = 0; i < parameters[1].length(); i++) {
             if (parameters[1].charAt(i) == '.') {
                 destType = 0;
             }
-            if (parameters[1].charAt(i) == ':') {
-                pathType = 1;
-            }
+            // if (parameters[1].charAt(i) == ':') {
+            //     pathType = 1;
+            // }
         }
 
         if (srcType == 0 && destType == 0) {
 
-            // System.out.println(!OgfileToCopy.exists());
+            // System.out.println("0 0");
 
             if (!OgfileToCopy.exists()) {
                 System.out.println("Error: File does not exists.");
@@ -492,17 +492,14 @@ class CLI {
 
         } else if (srcType == 1 && destType == 1) {
 
-            File FileToCopyFar = new File(this.currentDir + parameters[1], parameters[0]);
-            if (pathType == 1) {
-                FileToCopyFar = new File(parameters[1], parameters[0]);
-            }
+            // System.out.println("1 1");
 
             if (!OgfileToCopy.exists()) {
                 System.out.println("Error: File does not exists.");
                 return;
             }
 
-            if (FileToCopyFar.exists()) {
+            if (fileToCopy.exists()) {
                 System.out.print("File with this name already exists. Overide? [y/n] ");
                 String choice = inputChoice.next();
                 if (choice.equals("n") || choice.equals("N")) {
@@ -511,34 +508,31 @@ class CLI {
                 }
             }
 
-            try {
-                FileToCopyFar.createNewFile();
+            fileToCopy.mkdir();
+        
+            for (File file : OgfileToCopy.listFiles()) {
+                String fileRelativepath = "";
 
-                FileWriter outputFile;
-                try (Scanner inputFile = new Scanner(OgfileToCopy)) {
-                    outputFile = new FileWriter(FileToCopyFar);
-
-                    String line;
-                    while (inputFile.hasNextLine()) {
-                        line = inputFile.nextLine();
-                        outputFile.write(line + "\n");
+                int i;
+                for (i = 0; i < this.currentDir.length(); i++) {
+                    if(file.getPath().charAt(i) == this.currentDir.charAt(i)) {
+                        continue;
                     }
                 }
-                outputFile.close();
 
-            } catch (IOException ex) {
-                System.out.println(ex);
+                for (i = i; i < file.getPath().length(); i++) {
+                    fileRelativepath += file.getPath().charAt(i);
+                    
+                }
+
+
+                String newComm = fileRelativepath + " " + parameters[1] + "/" + file.getName();
+                System.out.println(newComm);
+                cp(newComm, inputChoice);
+
             }
 
-        } else if (srcType == 1 && destType == 1) {
-            // implement copying folders
-            // case 1: empty folder: copy from src to dest
-            // case 2: a file: comp the file from src to dest
-            // case 3: a non empty folder: call same func with com: ""
-
-
-            
-        }
+        } 
 
     }
 
