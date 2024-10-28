@@ -212,7 +212,7 @@ class CLI {
 
         /* 4-chick the paths is correct */
         File f, pf;
-        String check_path = "";
+        String check_path;
         if (!parentOption) {
             for (int i = 0; i < paths.size(); i++) {
                 check_path = paths.get(i);
