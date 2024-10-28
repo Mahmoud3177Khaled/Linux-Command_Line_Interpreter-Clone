@@ -1,3 +1,4 @@
+package os.cli;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -5,13 +6,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.Map;
 import java.util.HashMap;
-import java.util.Stack;
-import java.util.stream.Stream;
-
-import javax.management.OperationsException;
+import java.util.Map;
+import java.util.Scanner;
 
 public class Main {
 
@@ -86,14 +83,16 @@ class CLI {
 
     // 
     public void pwd(String com) {  //20220027 
-        System.out.println("pwd called");
-        System.out.println("args in comm: " + com);
+        // System.out.println("pwd called");
+        // System.out.println("args in comm: " + com);
 
-        String[] MyArgs = proccess_args(com);
+        // String[] MyArgs = proccess_args(com);
 
-        for (int i = 1; i < MyArgs.length; i++) {
-            System.out.println(MyArgs[i]);
-        }
+        // for (int i = 1; i < MyArgs.length; i++) {
+        //     System.out.println(MyArgs[i]);
+        // }
+
+        System.out.println(this.currentDir);
     }
 
     public void ls(String com) { //20220028
@@ -332,23 +331,30 @@ class CLI {
         // System.out.println("args in comm: " + com);
         // String[] MyArgs = proccess_args(com);
         // for(int i = 1; i < MyArgs.length; i++) {
-        //     System.out.println(MyArgs[i]);
-        // }
-        File folderToDelete = new File(this.currentDir, com);
+            //     System.out.println(MyArgs[i]);
+            // }
 
-        if (!folderToDelete.exists()) {
-            System.out.println("Error: Folder does not exists.");
-        } else if (!folderToDelete.isDirectory()) {
-            System.out.println("Error: Please provide a folder.");
-        } else if (folderToDelete.listFiles().length != 0) {
-            System.out.println("Error: Please provide an empty folder.");
-        } else {
-            if (folderToDelete.delete()) {
-                // System.out.println("Folder deleted.");
+        String[] MyArgs = proccess_args(com);
+
+        for (int i = 0; i < MyArgs.length; i++) {
+            File folderToDelete = new File(this.currentDir, MyArgs[i]);
+    
+            if (!folderToDelete.exists()) {
+                System.out.println("Error: Folder does not exists.");
+            } else if (!folderToDelete.isDirectory()) {
+                System.out.println("Error: Please provide a folder.");
+            } else if (folderToDelete.listFiles().length != 0) {
+                System.out.println("Error: Please provide an empty folder.");
             } else {
-                System.out.println("Error: Failed to delete folder");
+                if (folderToDelete.delete()) {
+                    // System.out.println("Folder deleted.");
+                } else {
+                    System.out.println("Error: Failed to delete folder");
+                }
             }
+            
         }
+
 
     }
 
@@ -425,11 +431,15 @@ class CLI {
         File fileToCopy = new File(this.currentDir, parameters[1]);
 
         int destType = 0; // 0 --> file 1 --> folder
+        int srcType = 0; // 0 --> file 1 --> folder
         @SuppressWarnings("unused")
         int ogpathType = 0; // 0 --> relative 1 --> absolute
         int pathType = 0; // 0 --> relative 1 --> absolute
 
         for (int i = 0; i < parameters[0].length(); i++) {
+            if (parameters[0].charAt(i) == '\\') {
+                srcType = 1;
+            }
             if (parameters[0].charAt(i) == ':') {
                 ogpathType = 1;
             }
@@ -444,7 +454,9 @@ class CLI {
             }
         }
 
-        if (OgfileToCopy.isFile() && destType == 0) {
+        if (srcType == 0 && destType == 0) {
+
+            // System.out.println(!OgfileToCopy.exists());
 
             if (!OgfileToCopy.exists()) {
                 System.out.println("Error: File does not exists.");
@@ -478,7 +490,7 @@ class CLI {
                 System.out.println("Error: Failed to copy file.");
             }
 
-        } else if (OgfileToCopy.isFile() && destType == 1) {
+        } else if (srcType == 1 && destType == 1) {
 
             File FileToCopyFar = new File(this.currentDir + parameters[1], parameters[0]);
             if (pathType == 1) {
@@ -518,7 +530,7 @@ class CLI {
                 System.out.println(ex);
             }
 
-        } else if (!OgfileToCopy.isFile()) {
+        } else if (srcType == 1 && destType == 1) {
             // implement copying folders
             // wil be like case 2 but with recursive calls on each subfolder
 

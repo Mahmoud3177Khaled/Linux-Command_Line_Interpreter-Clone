@@ -3,6 +3,7 @@ cases not handled :
 2- input  option only
 3- help
 4- version
-5- node
+5- mode
 6- context 
-7- z
+7- z 
+8- add / to path
