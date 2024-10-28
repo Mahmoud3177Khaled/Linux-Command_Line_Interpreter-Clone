@@ -336,9 +336,9 @@ class CLI {
 
         String[] MyArgs = proccess_args(com);
 
-        for (int i = 0; i < MyArgs.length; i++) {
-            File folderToDelete = new File(this.currentDir, MyArgs[i]);
-    
+        for (String MyArg : MyArgs) {
+            File folderToDelete = new File(this.currentDir, MyArg);
+
             if (!folderToDelete.exists()) {
                 System.out.println("Error: Folder does not exists.");
             } else if (!folderToDelete.isDirectory()) {
@@ -352,7 +352,6 @@ class CLI {
                     System.out.println("Error: Failed to delete folder");
                 }
             }
-            
         }
 
 
@@ -432,26 +431,34 @@ class CLI {
 
         int destType = 1; // 0 --> file 1 --> folder
         int srcType = 1; // 0 --> file 1 --> folder
-        // @SuppressWarnings("unused")
-        // int ogpathType = 0; // 0 --> relative 1 --> absolute
-        // int pathType = 0; // 0 --> relative 1 --> absolute
+        @SuppressWarnings("unused")
+        int ogpathType = 0; // 0 --> relative 1 --> absolute
+        int pathType = 0; // 0 --> relative 1 --> absolute
 
         for (int i = 0; i < parameters[0].length(); i++) {
             if (parameters[0].charAt(i) == '.') {
                 srcType = 0;
             }
-            // if (parameters[0].charAt(i) == ':') {
-            //     ogpathType = 1;
-            // }
+            if (parameters[0].charAt(i) == ':') {
+                ogpathType = 1;
+            }
         }
 
         for (int i = 0; i < parameters[1].length(); i++) {
             if (parameters[1].charAt(i) == '.') {
                 destType = 0;
             }
-            // if (parameters[1].charAt(i) == ':') {
-            //     pathType = 1;
-            // }
+            if (parameters[1].charAt(i) == ':') {
+                pathType = 1;
+            }
+        }
+
+        // OgfileToCopy = new File(this.currentDir + parameters[1], parameters[0]);
+        if (ogpathType == 1) {
+            OgfileToCopy = new File(parameters[0]);
+        }
+        if (pathType == 1) {
+            fileToCopy = new File(parameters[1]);
         }
 
         if (srcType == 0 && destType == 0) {
@@ -513,18 +520,9 @@ class CLI {
             for (File file : OgfileToCopy.listFiles()) {
                 String fileRelativepath = "";
 
-                int i;
-                for (i = 0; i < this.currentDir.length(); i++) {
-                    if(file.getPath().charAt(i) == this.currentDir.charAt(i)) {
-                        continue;
-                    }
-                }
-
-                for (i = i; i < file.getPath().length(); i++) {
+                for (int i = this.currentDir.length() + 1; i < file.getPath().length(); i++) {
                     fileRelativepath += file.getPath().charAt(i);
-                    
                 }
-
 
                 String newComm = fileRelativepath + " " + parameters[1] + "/" + file.getName();
                 System.out.println(newComm);
