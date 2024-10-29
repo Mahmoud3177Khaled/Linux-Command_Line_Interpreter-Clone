@@ -403,30 +403,37 @@ public void touch(String com) { // 20220027
 
         // String[] MyArgs = proccess_args(com);
         // for(int i = 1; i < MyArgs.length; i++) {
-        //     System.out.println(MyArgs[i]);
-        // }
-        File FileToPrint = new File(this.currentDir, com);
+            //     System.out.println(MyArgs[i]);
+            // }
 
-        if (com.charAt(1) == ':') {
-            FileToPrint = new File(com);
-        }
 
-        // System.out.println(FileToPrint.getAbsolutePath());
-        // System.out.println(FileToPrint.exists());
+        String[] MyArgs = proccess_args(com);
 
-        if (!FileToPrint.exists()) {
-            System.out.println("Error: File does not exists.");
-        } else if (!FileToPrint.isFile()) {
-            System.out.println("Error: Please provide a normal folder.");
-        } else {
-            try {
-                try (Scanner scanner = new Scanner(FileToPrint)) {
-                    while (scanner.hasNextLine()) {
-                        System.err.println(scanner.nextLine());
+        for (String file : MyArgs) {
+            
+            File FileToPrint = new File(this.currentDir, file);
+            
+            if (file.charAt(1) == ':') {
+                FileToPrint = new File(file);
+            }
+            
+            // System.out.println(FileToPrint.getAbsolutePath());
+            // System.out.println(FileToPrint.exists());
+
+            if (!FileToPrint.exists()) {
+                System.out.println("Error: File does not exists.");
+            } else if (!FileToPrint.isFile()) {
+                System.out.println("Error: Please provide a normal folder.");
+            } else {
+                try {
+                    try (Scanner scanner = new Scanner(FileToPrint)) {
+                        while (scanner.hasNextLine()) {
+                            System.err.println(scanner.nextLine());
+                        }
                     }
+                } catch (FileNotFoundException e) {
+                    System.out.println("Error: Unable to read from file.");
                 }
-            } catch (FileNotFoundException e) {
-                System.out.println("Error: Unable to read from file.");
             }
         }
 
@@ -435,13 +442,13 @@ public void touch(String com) { // 20220027
     public void uname(String com) {                           //20220317
         // System.out.println("uname called");
         // System.out.println("args in comm: " + com);
-
+        
         // String[] MyArgs = proccess_args(com);
         // for(int i = 1; i < MyArgs.length; i++) {
         //     System.out.println(MyArgs[i]);
         // }
         String[] MyArgs = proccess_args(com);
-
+        
         for (String MyArg : MyArgs) {
             if (MyArg.equals("-s")) {
                 System.out.println(System.getProperty("os.name"));
