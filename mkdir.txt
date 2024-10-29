@@ -1,4 +1,0 @@
-cases not handled :
-1- input like f/../f
-
-

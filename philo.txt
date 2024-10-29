@@ -1,0 +1,4 @@
+mkdir:
+    1- input like f/../f
+
+

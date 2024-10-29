@@ -187,12 +187,8 @@ class CLI {
         COMMAND_OPTIONS.put("--version", true);
         COMMAND_OPTIONS.put("--verbose", true);  //done
         COMMAND_OPTIONS.put("-v", true);  //done
-        COMMAND_OPTIONS.put("--mode", true);
-        COMMAND_OPTIONS.put("-m", true);
         COMMAND_OPTIONS.put("--parents", true); //done
         COMMAND_OPTIONS.put("-p", true); //done
-        COMMAND_OPTIONS.put("--context", true);
-        COMMAND_OPTIONS.put("-z", true);
 
         //check input options
         for (int i = 0; i < inputOptions.size(); i++) {
