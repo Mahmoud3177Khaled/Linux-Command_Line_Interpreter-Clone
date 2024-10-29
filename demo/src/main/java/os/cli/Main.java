@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Main {
@@ -328,6 +329,7 @@ public void touch(String com) { // 20220027
     
 
     // --------------------------- # Mahmoud Khaled 20220317 # --------------------------- //
+
     public void cd(String com) {
         // System.out.println("cd called");
         // System.out.println("args in comm: " + com);
@@ -373,6 +375,18 @@ public void touch(String com) { // 20220027
         // }
         String[] Folders = proccess_args(com);
 
+        HashMap<String, Integer> options = new HashMap<>();
+
+        options.put("--ignore-fail-on-non-empty", 0);
+        options.put("-v", 0);
+        options.put("--help", 0);
+        options.put("--version", 0);
+
+        for (String arg : Folders) {
+            options.put(arg, 1);
+        }
+
+
         for (String Folder : Folders) {
             File folderToDelete = new File(this.currentDir, Folder);
 
@@ -385,13 +399,59 @@ public void touch(String com) { // 20220027
             } else if (!folderToDelete.isDirectory()) {
                 System.out.println("Error: Please provide a folder.");
             } else if (folderToDelete.listFiles().length != 0) {
-                System.out.println("Error: Please provide an empty folder.");
+                if(options.get("--ignore-fail-on-non-empty") == 0) {
+                    System.out.println("Error: Please provide an empty folder.");
+                }
             } else {
+                File FolderParent = new File(folderToDelete.getParent());
                 if (folderToDelete.delete()) {
-                    // System.out.println("Folder deleted.");
+                    if(options.get("-v") == 1) {
+                        System.out.println("Deleted Folder '" + folderToDelete.getName() + "' successfully");
+                    }
+                    if (options.get("-p") == 1) {
+                       FolderParent.delete(); 
+                       if(options.get("-v") == 1) {
+                        System.out.println("Deleted Folder '" + FolderParent.getName() + "' successfully");
+                    }
+                    }
                 } else {
                     System.out.println("Error: Failed to delete folder");
                 }
+            }
+
+            if(options.get("--help") == 1) {
+                System.out.println("""
+                    Usage: rmdir [OPTION]... DIRECTORY...\r
+                    Remove the DIRECTORY(ies), if they are empty.\r
+                    \r
+                            --ignore-fail-on-non-empty\r
+                                    ignore each failure that is solely because a directory\r
+                                    is non-empty\r
+                        -p, --parents  remove DIRECTORY and its ancestors; e.g., 'rmdir -p a/b/c' is\r
+                                    similar to 'rmdir a/b/c a/b a'\r
+                        -v, --verbose  output a diagnostic for every directory processed\r
+                            --help     display this help and exit\r
+                            --version  output version information and exit\r
+                    \r
+                    GNU coreutils online help: <https://www.gnu.org/software/coreutils/>\r
+                    Report rmdir translation bugs to <https://translationproject.org/team/>\r
+                    Full documentation at: <https://www.gnu.org/software/coreutils/rmdir>\r
+                    or available locally via: info '(coreutils) rmdir invocation'\r
+                    """ //
+                );
+            }
+
+            if(options.get("--version") == 1) {
+                System.out.println("""
+                    rmdir (GNU coreutils) X.Y\r
+                    Copyright (C) YEAR Free Software Foundation, Inc.\r
+                    License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.\r
+                    This is free software: you are free to change and redistribute it.\r
+                    There is NO WARRANTY, to the extent permitted by law.\r
+                    \r
+                    Written by Mahmoud Khaled.\r
+                    """ //
+                );
             }
         }
 
