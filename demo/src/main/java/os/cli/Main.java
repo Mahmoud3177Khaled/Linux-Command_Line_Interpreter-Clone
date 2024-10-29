@@ -1,4 +1,4 @@
-package os.cli;
+// package os.cli;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -125,7 +125,6 @@ class CLI {
         File f = new File(path),child;
         Scanner in = new Scanner(System.in);
         String remove;
-        System.out.println(path +f.listFiles().length);
         if(f.listFiles() == null ||f.listFiles().length == 0){
             if(iOption){
                 System.out.println("rm: remove directory \'" + path + "\'?");
@@ -331,6 +330,29 @@ public void rm(String com) {
                 }
                 else if (option.equals("--dir")) {
                     dirOption = true;
+                }else if (option.equals("--help")) {
+                    System.out.println("""
+                                    Usage: rm [OPTION]... [FILE]...
+                                    Remove (unlink) the FILE(s).
+                                    
+                                    -i                      prompt before every removal
+                                    r, -R, --recursive     remove directories and their contents recursively
+                                    -d, --dir               remove empty directories
+                                    --help     display this help and exit
+                                    --version  output version information and exit""" 
+                    );
+                    return;
+                }else if (option.equals("--version")) {
+                    System.out.println("""
+                                    rm (GNU coreutils) 8.32
+                                    Copyright (C) 2020 Free Software Foundation, Inc.
+                                    License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+                                    This is free software: you are free to change and redistribute it.
+                                    There is NO WARRANTY, to the extent permitted by law.
+
+                                    Written by Richard Stallman and David MacKenzie.""" 
+                    );
+                    return;
                 }else {
                     System.out.println("rm: unrecognized option\'" + option + "\'");
                     System.out.println("Try \'rm --help\' for more information.");
