@@ -1,4 +1,4 @@
-package os.cli;
+// package java.os.cli;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -87,11 +87,9 @@ class CLI {
         // System.out.println("args in comm: " + com);
 
         // String[] MyArgs = proccess_args(com);
-
         // for (int i = 1; i < MyArgs.length; i++) {
         //     System.out.println(MyArgs[i]);
         // }
-
         System.out.println(this.currentDir);
     }
 
@@ -114,7 +112,7 @@ class CLI {
             f.mkdir();
         } else {
             if (path.charAt(1) != ':') {
-                path = currentDir + path;
+                path = currentDir + "\\" + path;
             }
             f = new File(path);
             String p = f.getParent();
@@ -203,6 +201,37 @@ class CLI {
                 System.out.println("Try \'mkdir --help\' for more information.");
                 return;
             }
+            else if (inputOptions.get(i).equals("--help")) {
+                System.out.println("""
+                                Usage: mkdir [OPTION]... DIRECTORY...\r
+                                \r
+                                Create the DIRECTORY(ies), if they do not already exist.\r
+                                \r
+                                Mandatory arguments to long options are mandatory for short options too.\r
+                                -p, --parents        make parent directories as needed\r
+                                -v, --verbose        print a message for each created directory\r
+                                    --help           display this help and exit\r
+                                    --version        output version information and exit\r
+                                \r
+                                Report mkdir bugs to bug-coreutils@gnu.org\r
+                                GNU coreutils home page: <http://www.gnu.org/software/coreutils/>\r
+                                General help using GNU software: <http://www.gnu.org/gethelp/>\r
+                                """
+                );
+                return;
+            }
+            else if(inputOptions.get(i).equals("--version")){
+                System.out.println("""
+                                mkdir (GNU coreutils) 8.32\r
+                                Copyright (C) 2020 Free Software Foundation, Inc.\r
+                                License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.\r
+                                This is free software: you are free to change and redistribute it.\r
+                                There is NO WARRANTY, to the extent permitted by law.\r
+                                \r
+                                Written by David MacKenzie.\r
+                                """ 
+                );
+            }
         }
 
         /* 3-execute main options */
@@ -218,7 +247,7 @@ class CLI {
                 check_path = paths.get(i);
                 if (check_path.contains("\\") || check_path.contains("/")) {
                     if (check_path.charAt(1) != ':') {
-                        check_path = currentDir + check_path;
+                        check_path = currentDir + "\\" + check_path;
                     }
                     f = new File(check_path);
                     String p = f.getParent();
@@ -236,7 +265,7 @@ class CLI {
             for (int i = 0; i < paths.size(); i++) {
                 createParentDirectory(paths.get(i));
                 if (verboseOption) {
-                    System.out.println("mkdir: created directory \'"+paths.get(i) + "\' ");
+                    System.out.println("mkdir: created directory \'" + paths.get(i) + "\' ");
                 }
             }
         } else {
@@ -244,18 +273,18 @@ class CLI {
                 check_path = paths.get(i);
                 if (check_path.contains("\\") || check_path.contains("/")) {
                     if (check_path.charAt(1) != ':') {
-                        check_path = currentDir + check_path;
+                        check_path = currentDir + "\\" + check_path;
                     }
                     f = new File(check_path);
                     f.mkdir();
                     if (verboseOption) {
-                        System.out.println("mkdir: created directory \'"+paths.get(i) + "\' ");
+                        System.out.println("mkdir: created directory \'" + paths.get(i) + "\' ");
                     }
                 } else {
-                    f = new File(currentDir + paths.get(i));
+                    f = new File(currentDir + "\\" + paths.get(i));
                     f.mkdir();
                     if (verboseOption) {
-                        System.out.println("mkdir: created directory \'"+paths.get(i) + "\' ");
+                        System.out.println("mkdir: created directory \'" + paths.get(i) + "\' ");
                     }
                 }
             }
@@ -331,9 +360,8 @@ class CLI {
         // System.out.println("args in comm: " + com);
         // String[] MyArgs = proccess_args(com);
         // for(int i = 1; i < MyArgs.length; i++) {
-            //     System.out.println(MyArgs[i]);
-            // }
-
+        //     System.out.println(MyArgs[i]);
+        // }
         String[] MyArgs = proccess_args(com);
 
         for (String MyArg : MyArgs) {
@@ -353,7 +381,6 @@ class CLI {
                 }
             }
         }
-
 
     }
 
@@ -497,7 +524,6 @@ class CLI {
         } else if (srcType == 1 && destType == 1) {
 
             // System.out.println("1 1");
-
             if (!OgfileToCopy.exists()) {
                 System.out.println("Error: File does not exists.");
                 return;
@@ -513,7 +539,7 @@ class CLI {
             }
 
             fileToCopy.mkdir();
-        
+
             for (File file : OgfileToCopy.listFiles()) {
 
                 String newComm = file.getPath() + " " + parameters[1] + "/" + file.getName();
@@ -522,7 +548,7 @@ class CLI {
 
             }
 
-        } 
+        }
 
     }
 
