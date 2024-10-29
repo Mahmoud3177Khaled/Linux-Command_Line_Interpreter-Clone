@@ -337,22 +337,19 @@ public void touch(String com) { // 20220027
         //     System.out.println(MyArgs[i]);
         // }
 
-        boolean absPath = false;
-
         if ("..".equals(com)) {
             File newdir = new File(this.currentDir).getParentFile();
             if (newdir != null) {
                 this.currentDir = newdir.getAbsolutePath();
             }
         } else {
+            
             File newdir = new File(this.currentDir, com);
 
             if(com.charAt(1) == ':') {
-                absPath = true;
+                newdir = new File(com);
             }
 
-            newdir = new File(com);
-            
             if (newdir.isDirectory() && newdir.exists()) {
                 this.currentDir = newdir.getAbsolutePath();
 
