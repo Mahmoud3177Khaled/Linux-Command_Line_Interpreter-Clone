@@ -41,7 +41,7 @@ public class Main {
                     case "rmdir" ->
                         cli.rmdir(arg);
                     case "cat" ->
-                        cli.cat(arg);
+                        cli.cat(arg, input);
                     case "ls" ->
                         cli.ls(arg);
                     case "uname" ->
@@ -397,7 +397,7 @@ public void touch(String com) { // 20220027
 
         if(options.get("--version") == 1) {
             System.out.println("""
-                rmdir (GNU coreutils) X.Y\r
+                rmdir (GNU coreutils) 2.0\r
                 Copyright (C) YEAR Free Software Foundation, Inc.\r
                 License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.\r
                 This is free software: you are free to change and redistribute it.\r
@@ -452,7 +452,7 @@ public void touch(String com) { // 20220027
 
     }
 
-    public void cat(String com) {                           //20220317
+    public void cat(String com, Scanner input) {                           //20220317
         // System.out.println("cat called");
         // System.out.println("args in comm: " + com);
 
@@ -466,16 +466,20 @@ public void touch(String com) { // 20220027
 
         HashMap<String, Integer> options = new HashMap<>();
 
-        options.put("--ignore-fail-on-non-empty", 0);
-        options.put("-v", 0);
-        options.put("--help", 0);
-        options.put("--version", 0);
+        options.put(">", 0);
+        // options.put("-v", 0);
+        // options.put("--help", 0);
+        // options.put("--version", 0);
 
         for (String arg : MyArgs) {
             options.put(arg, 1);
         }
 
         for (String file : MyArgs) {
+
+            if(file.equals(">")) {
+                continue;
+            }
             
             File FileToPrint = new File(this.currentDir, file);
             
@@ -485,6 +489,18 @@ public void touch(String com) { // 20220027
             
             // System.out.println(FileToPrint.getAbsolutePath());
             // System.out.println(FileToPrint.exists());
+
+            if (options.get(">") == 1) {
+                String inputText = input.nextLine();
+                try {
+                    FileWriter writer = new FileWriter(FileToPrint);
+                    writer.write(inputText);
+                    writer.close();
+                } catch (IOException ex) {
+                    System.out.println("Error: Failed to create file");
+                }
+                continue;
+            }
 
             if (!FileToPrint.exists()) {
                 System.out.println("Error: File does not exists.");
