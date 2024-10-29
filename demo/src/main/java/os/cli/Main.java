@@ -228,7 +228,51 @@ class CLI {
         return String.valueOf(size);
     }
     
+    public void less(String com) {
+        String[] args = proccess_args(com);
+        if (args.length < 1) {
+            System.out.println("Usage: less <filename>");
+            return;
+        }
 
+        String filename = args[0];
+        File file = new File(filename);
+
+        if (!file.exists() || !file.isFile()) {
+            System.out.println("Error: File does not exist or is not a regular file.");
+            return;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file));
+             Scanner scanner = new Scanner(System.in)) {
+
+            String line;
+            int lineCount = 0;
+            int pageSize = 20; 
+            StringBuilder pageContent = new StringBuilder();
+
+            while ((line = reader.readLine()) != null) {
+                pageContent.append(line).append(System.lineSeparator());
+                lineCount++;
+
+             
+                if (lineCount == pageSize) {
+                    System.out.print(pageContent.toString());
+                    System.out.println("Press Enter to continue...");
+                    scanner.nextLine(); // Wait for user to press Enter
+                    pageContent.setLength(0); // Clear the page content
+                    lineCount = 0; // Reset line count for the next page
+                }
+            }
+
+            if (pageContent.length() > 0) {
+                System.out.print(pageContent.toString());
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+    }
     
     // --------------------------- # philo karam 20220246 # --------------------------- //
     private void createParentDirectory(String path) {
