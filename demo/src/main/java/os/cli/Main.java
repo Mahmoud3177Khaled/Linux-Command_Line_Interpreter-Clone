@@ -516,7 +516,25 @@ public void touch(String com) { // 20220027
     // --------------------------- # Mahmoud Khaled 20220317 # --------------------------- //
 
     public void cd(String com) {
-        if ("~".equals(com)) {
+        if("--help".equals(com)) {
+            System.out.println("""
+                cd: cd [DIRECTORY]\r
+                Change the shell working directory.\r
+                \r
+                    Change the current directory to DIRECTORY.  The variable $HOME is\r
+                    the default DIRECTORY.  The environment variable CDPATH defines\r
+                    the search path for the directory.  A null directory argument\r
+                    is the same as `cd $HOME'.\r
+                \r
+                Options:\r
+                    -P    use the physical directory structure instead of the logical\r
+                        one, resolving symbolic links\r
+                    -L    use the logical directory structure (default)\r
+                \r
+                For more information, see the Bash manual.\r
+                """ //
+            );
+        } else if ("~".equals(com)) {
             this.currentDir = this.homeDir;
 
         } else if ("..".equals(com)) {
