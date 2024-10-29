@@ -1,11 +1,14 @@
 package os.cli;
 
-import java.io.File;
+iimport java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -95,15 +98,96 @@ class CLI {
     }
 
     public void ls(String com) { //20220028
-        System.out.println("ls called");
-        System.out.println("args in comm: " + com);
-
         String[] MyArgs = proccess_args(com);
-
-        for (int i = 1; i < MyArgs.length; i++) {
-            System.out.println(MyArgs[i]);
+    
+        boolean showAll = false;    
+        boolean longFormat = false;  
+        boolean humanReadable = false; 
+        boolean recursive = false;    
+        boolean sortByTime = false;   
+        boolean reverseOrder = false; 
+        boolean sortBySize = false;   
+    
+        for (String param : MyArgs) {
+            switch (param) {
+                case "-a": showAll = true; break;
+                case "-l": longFormat = true; break;
+                case "-h": humanReadable = true; break;
+                case "-R": recursive = true; break;
+                case "-t": sortByTime = true; break;
+                case "-r": reverseOrder = true; break;
+                case "-S": sortBySize = true; break;
+            }
+        }
+    
+        File dir = new File(this.currentDir);
+        File[] files = dir.listFiles();
+    
+        if (files == null) {
+            System.out.println("Error: Could not access directory.");
+            return;
+        }
+    
+        if (!showAll) {
+            files = Arrays.stream(files)
+                    .filter(file -> !file.getName().startsWith("."))
+                    .toArray(File[]::new);
+        }
+    
+        if (sortByTime) {
+            Arrays.sort(files, Comparator.comparingLong(File::lastModified));
+        } else if (sortBySize) {
+            Arrays.sort(files, Comparator.comparingLong(File::length));
+        }
+    
+        if (reverseOrder) {
+            Collections.reverse(Arrays.asList(files));
+        }
+    
+        for (File file : files) {
+            String output = file.getName();
+            if (longFormat) {
+                output = getLongFormatString(file, humanReadable);
+            }
+            System.out.println(output);
+        }
+    
+        if (recursive) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    System.out.println("\n" + file.getName() + ":");
+                    CLI subCLI = new CLI(file.getAbsolutePath());
+                    subCLI.ls("");
+                }
+            }
         }
     }
+    
+    private String getLongFormatString(File file, boolean humanReadable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(file.canRead() ? "r" : "-");
+        sb.append(file.canWrite() ? "w" : "-");
+        sb.append(file.canExecute() ? "x" : "-");
+        sb.append(" ");
+        sb.append(file.isDirectory() ? "d" : "-");
+        sb.append(" ");
+        sb.append(getSizeString(file.length(), humanReadable));
+        sb.append(" ");
+        sb.append(file.getName());
+        return sb.toString();
+    }
+    
+    private String getSizeString(long size, boolean humanReadable) {
+        if (humanReadable) {
+            if (size < 1024) return size + " B";
+            else if (size < 1048576) return (size / 1024) + " KB";
+            else if (size < 1073741824) return (size / 1048576) + " MB";
+            else return (size / 1073741824) + " GB";
+        }
+        return String.valueOf(size);
+    }
+    
+
     
     // --------------------------- # philo karam 20220246 # --------------------------- //
     private void createParentDirectory(String path) {
