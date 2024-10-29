@@ -38,6 +38,8 @@ public class Main {
                         cli.mv(arg);
                     case "rm" ->
                         cli.rm(arg);
+                    case "echo" ->
+                        cli.echo(arg);
                     case "rmdir" ->
                         cli.rmdir(arg);
                     case "cat" ->
@@ -191,7 +193,7 @@ class CLI {
                 }
         }
     }
-    //-------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
 
     public void mkdir(String com) {
 
@@ -307,7 +309,119 @@ class CLI {
     }
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
+public void echo(String com){
+
+        /* 1- split command to options and paths  */
+        String text = "";
+        String option = "";
+        boolean newline = true, enableEscapeCarcters = false;
+        for (int i = 0; i < com.length(); i++) {
+
+            if (i < com.length() - 1 && com.charAt(i) == '-' && com.charAt(i + 1) == '-') {
+                while (i < com.length() && com.charAt(i) != ' ') {
+                    option += com.charAt(i);
+                    i++;
+                }
+                if (option.equals("--help")) {
+                    System.out.println("""
+                        echo: echo [OPTION]... [STRING]...
+                        Output the STRING(s) to standard output.
+
+                        -n         do not output the trailing newline
+                        -e         enable interpretation of backslash escapes
+                        -E         disable interpretation of backslash escapes (default)
+                        --help     display this help message and exit
+                        --version  output version information and exit
+                            """
+                    );
+                    return;
+                } else if (option.equals("--version")) {
+                    System.out.println("""
+                                    echo (GNU coreutils) 8.32
+                                    Copyright (C) 2020 Free Software Foundation, Inc.
+                                    License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+                                    This is free software: you are free to change and redistribute it.
+                                    There is NO WARRANTY, to the extent permitted by law.
+                                        """
+                    );
+                    return;
+                } else {
+                    System.out.println("echo: invalid option \'" + option + "\'");
+                    System.out.println("Try \'echo --help\' for more information.");
+                    return;
+                }
+            } else if (i < com.length() - 1 && com.charAt(i) == '-' && Character.isAlphabetic(com.charAt(i + 1))) {
+                if (com.charAt(i + 1) == 'n') {
+                    newline = false;
+                }
+                else if (com.charAt(i + 1) == 'E') {
+                    enableEscapeCarcters = false;
+                }
+                else if (com.charAt(i + 1) == 'e') {
+                    enableEscapeCarcters = true;
+                }
+                else {
+                    System.out.println("echo: invalid option \'" + option + "\'");
+                    System.out.println("Try \'echo --help\' for more information.");
+                    return;
+                }
+                i++;
+            } else if (i < com.length() - 1 && (com.charAt(i) != '-' )&& (com.charAt(i) != ' ' )) {
+                for (int j = i; j < com.length(); j++) {
+                    text += com.charAt(j);
+                }
+                break;
+            }
+            } 
+            /* 2-print the input*/
+            if(!enableEscapeCarcters){
+                if (newline) {
+                    System.out.println(text);
+                }
+                else{
+                    System.out.print(text);
+                }
+            }else{
+                ArrayList<String> lines = new ArrayList<>();
+                String newText ="";
+                for (int i = 0; i < text.length(); i++) {
+                    if(text.charAt(i) == '\\' && i+1 <text.length()){
+                        if(text.charAt(i+1) == 'n'){
+                                lines.add(newText);
+                                newText = "";
+                                i++;
+                        }else if (text.charAt(i+1) == '\\') {
+                            newText += '\\';
+                            i++;
+
+                        }else if (text.charAt(i+1) == '\t') {
+                            newText += "    ";
+                            i++;
+
+                        }else if (text.charAt(i+1) == '\\') {
+                            newText += '\\';
+                            i++;
+
+                        }else if (text.charAt(i+1) == '\\') {
+                            newText += '\\';
+                            i++;
+
+                        }
+                    }
+                    else{
+                        newText += text.charAt(i);
+                    }
+                }
+            }
+
+
+        }
+    
+ 
+
+
+//----------------------------------------------------------------------------------------------------
 public void rm(String com) { 
 
         /* 1- split command to options and paths  */
