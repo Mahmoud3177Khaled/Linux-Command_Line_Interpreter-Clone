@@ -467,8 +467,8 @@ public void touch(String com) { // 20220027
         HashMap<String, Integer> options = new HashMap<>();
 
         options.put(">", 0);
-        // options.put("-v", 0);
-        // options.put("--help", 0);
+        options.put(">>", 0);
+        options.put("-n", 0);
         // options.put("--version", 0);
 
         for (String arg : MyArgs) {
@@ -477,9 +477,10 @@ public void touch(String com) { // 20220027
 
         for (String file : MyArgs) {
 
-            if(file.equals(">")) {
+            if(file.equals(">") || file.equals(">>") || file.equals("-n")) {
                 continue;
             }
+            int lineNum = 0;
             
             File FileToPrint = new File(this.currentDir, file);
             
@@ -502,6 +503,27 @@ public void touch(String com) { // 20220027
                 continue;
             }
 
+            if (options.get(">>") == 1) {
+                String fileText = "";
+                
+                try {
+                    Scanner fileReader = new Scanner(FileToPrint);
+                    while(fileReader.hasNextLine()) {
+                        fileText += fileReader.nextLine();
+                    }
+                    fileText += input.nextLine();
+                    fileReader.close();
+
+                    FileWriter writer = new FileWriter(FileToPrint);
+                    writer.write(fileText);
+                    writer.close();
+
+                } catch (IOException ex) {
+                    System.out.println("Error: Failed to create file");
+                }
+                continue;
+            }
+
             if (!FileToPrint.exists()) {
                 System.out.println("Error: File does not exists.");
             } else if (!FileToPrint.isFile()) {
@@ -510,7 +532,8 @@ public void touch(String com) { // 20220027
                 try {
                     try (Scanner scanner = new Scanner(FileToPrint)) {
                         while (scanner.hasNextLine()) {
-                            System.err.println(scanner.nextLine());
+                            ++lineNum;
+                            System.err.println(lineNum + "- " + scanner.nextLine());
                         }
                     }
                 } catch (FileNotFoundException e) {
