@@ -124,11 +124,11 @@ class CLI {
         }
 
     }
+    // --------------------------- # philo karam 20220246 # --------------------------- //
 
-    public void mkdir(String com) {// 20220246
+    public void mkdir(String com) {
 
         /* 1- split command to options and paths  */
-        ArrayList<String> inputOptions = new ArrayList<>();
         ArrayList<String> paths = new ArrayList<>();
         String path = "";
         String option = "";
@@ -143,19 +143,179 @@ class CLI {
                 }
                 if (option.equals("--parents")) {
                     parentOption = true;
-                }
-                if (option.equals("--verbose")) {
+                } else if (option.equals("--verbose")) {
                     verboseOption = true;
+                } else if (option.equals("--help")) {
+                    System.out.println("""
+                        Usage: mkdir [OPTION]... DIRECTORY...\r
+                        \r
+                        Create the DIRECTORY(ies), if they do not already exist.\r
+                        \r
+                        Mandatory arguments to long options are mandatory for short options too.\r
+                        -p, --parents        make parent directories as needed\r
+                        -v, --verbose        print a message for each created directory\r
+                            --help           display this help and exit\r
+                            --version        output version information and exit\r
+                            \r
+                            Report mkdir bugs to bug-coreutils@gnu.org\r
+                            GNU coreutils home page: <http://www.gnu.org/software/coreutils/>\r
+                            General help using GNU software: <http://www.gnu.org/gethelp/>\r
+                            """
+                    );
+                    return;
+                } else if (option.equals("--version")) {
+                    System.out.println("""
+                                        mkdir (GNU coreutils) 8.32\r
+                                        Copyright (C) 2020 Free Software Foundation, Inc.\r
+                                        License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.\r
+                                        This is free software: you are free to change and redistribute it.\r
+                                        There is NO WARRANTY, to the extent permitted by law.\r
+                                        \r
+                                        Written by David MacKenzie.\r
+                                        """
+                    );
+                    return;
+                } else {
+                    System.out.println("mkdir: unrecognized option\'" + option + "\'");
+                    System.out.println("Try \'mkdir --help\' for more information.");
+                    return;
                 }
-                inputOptions.add(option);
                 option = "";
             } else if (i < com.length() - 1 && com.charAt(i) == '-' && Character.isAlphabetic(com.charAt(i + 1))) {
-                inputOptions.add("-" + com.charAt(i + 1));
                 if (com.charAt(i + 1) == 'p') {
                     parentOption = true;
                 }
-                if (com.charAt(i + 1) == 'v') {
+                else if (com.charAt(i + 1) == 'v') {
                     verboseOption = true;
+                }
+                else {
+                    System.out.println("mkdir: unrecognized option\'" + option + "\'");
+                    System.out.println("Try \'mkdir --help\' for more information.");
+                    return;
+                }
+                i++;
+            } else if (com.charAt(i) == ' ') {
+                if (size != 0) {
+                    paths.add(path);
+                    path = "";
+                    size = 0;
+                }
+            } else {
+                path += com.charAt(i);
+                size++;
+            }
+        }
+        if (size != 0) {
+            paths.add(path);
+    }
+
+    /* 2-chick the paths is correct */
+    File f, pf;
+    String check_path;
+    if (!parentOption) {
+            for (int i = 0; i < paths.size(); i++) {
+            check_path = paths.get(i);
+            if (check_path.contains("\\") || check_path.contains("/")) {
+                if (check_path.charAt(1) != ':') {
+                    check_path = currentDir + "\\" + check_path;
+                }
+                f = new File(check_path);
+                String p = f.getParent();
+                pf = new File(p);
+                if (!pf.exists()) {
+                    System.out.println("mkdir: cannot create directory \'" + paths.get(i) + "\': No such file or directory");
+                    return;
+                }
+            }
+        }
+    }
+
+    /*3- create directory */
+    if (parentOption) {
+            for (int i = 0; i < paths.size(); i++) {
+            createParentDirectory(paths.get(i));
+            if (verboseOption) {
+                System.out.println("mkdir: created directory \'" + paths.get(i) + "\' ");
+            }
+        }
+    }
+        else {
+            for (int i = 0; i < paths.size(); i++) {
+            check_path = paths.get(i);
+            if (check_path.contains("\\") || check_path.contains("/")) {
+                if (check_path.charAt(1) != ':') {
+                    check_path = currentDir + "\\" + check_path;
+                }
+                f = new File(check_path);
+                f.mkdir();
+                if (verboseOption) {
+                    System.out.println("mkdir: created directory \'" + paths.get(i) + "\' ");
+                }
+            } else {
+                f = new File(currentDir + "\\" + paths.get(i));
+                f.mkdir();
+                if (verboseOption) {
+                    System.out.println("mkdir: created directory \'" + paths.get(i) + "\' ");
+                }
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+public void rm(String com) { //20220246
+    // System.out.println("rm called");
+    // System.out.println("args in comm: " + com);
+
+    // String[] MyArgs = proccess_args(com);
+
+    // for (int i = 1; i < MyArgs.length; i++) {
+    //     System.out.println(MyArgs[i]);
+    // }
+
+
+        /* 1- split command to options and paths  */
+        ArrayList<String> paths = new ArrayList<>();
+        String path = "";
+        String option = "";
+        int size = 0;
+        boolean recursive = false, verboseOption = false,dirOption = false,iOption=false;
+        for (int i = 0; i < com.length(); i++) {
+
+            if (i < com.length() - 1 && com.charAt(i) == '-' && com.charAt(i + 1) == '-') {
+                while (i < com.length() && com.charAt(i) != ' ') {
+                    option += com.charAt(i);
+                    i++;
+                }
+                if (option.equals("--recursive")) {
+                    recursive = true;
+                }
+                else if (option.equals("--verbose")) {
+                    verboseOption = true;
+                }
+                else if (option.equals("--dir")) {
+                    dirOption = true;
+                }else {
+                    System.out.println("rm: unrecognized option\'" + option + "\'");
+                    System.out.println("Try \'rm --help\' for more information.");
+                    return;
+                }
+                option = "";
+            } else if (i < com.length() - 1 && com.charAt(i) == '-' && Character.isAlphabetic(com.charAt(i + 1))) {
+                if (com.charAt(i + 1) == 'r') {
+                    recursive = true;
+                }
+                else if (com.charAt(i + 1) == 'v') {
+                    verboseOption = true;
+                }
+                else if (com.charAt(i + 1) == 'd') {
+                    dirOption = true;
+                }else if (com.charAt(i + 1) == 'i') {
+                    iOption = true;
+                }else {
+                    System.out.println("rm: unrecognized option\'" + option + "\'");
+                    System.out.println("Try \'rm --help\' for more information.");
+                    return;
                 }
                 i++;
             } else if (com.charAt(i) == ' ') {
@@ -172,123 +332,14 @@ class CLI {
         if (size != 0) {
             paths.add(path);
         }
-        // for (String elem : inputOptions) {
-        //     System.out.println(elem);   
-        // }
-        // for (String elem : paths) {
-        //     System.out.println(elem);   
-        // }
+
+        
 
 
-        /* 2-chick the options is correct */
-        //-set all options
-        Map<String, Boolean> COMMAND_OPTIONS = new HashMap<>();
-        COMMAND_OPTIONS.put("--help", true);
-        COMMAND_OPTIONS.put("--version", true);
-        COMMAND_OPTIONS.put("--verbose", true);  //done
-        COMMAND_OPTIONS.put("-v", true);  //done
-        COMMAND_OPTIONS.put("--parents", true); //done
-        COMMAND_OPTIONS.put("-p", true); //done
+}
 
-        //check input options
-        for (int i = 0; i < inputOptions.size(); i++) {
-            if (!COMMAND_OPTIONS.containsKey(inputOptions.get(i))) {
-                System.out.println("mkdir: unrecognized option\'" + inputOptions.get(i) + "\'");
-                System.out.println("Try \'mkdir --help\' for more information.");
-                return;
-            }
-            else if (inputOptions.get(i).equals("--help")) {
-                System.out.println("""
-                                Usage: mkdir [OPTION]... DIRECTORY...\r
-                                \r
-                                Create the DIRECTORY(ies), if they do not already exist.\r
-                                \r
-                                Mandatory arguments to long options are mandatory for short options too.\r
-                                -p, --parents        make parent directories as needed\r
-                                -v, --verbose        print a message for each created directory\r
-                                    --help           display this help and exit\r
-                                    --version        output version information and exit\r
-                                \r
-                                Report mkdir bugs to bug-coreutils@gnu.org\r
-                                GNU coreutils home page: <http://www.gnu.org/software/coreutils/>\r
-                                General help using GNU software: <http://www.gnu.org/gethelp/>\r
-                                """
-                );
-                return;
-            }
-            else if(inputOptions.get(i).equals("--version")){
-                System.out.println("""
-                                mkdir (GNU coreutils) 8.32\r
-                                Copyright (C) 2020 Free Software Foundation, Inc.\r
-                                License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.\r
-                                This is free software: you are free to change and redistribute it.\r
-                                There is NO WARRANTY, to the extent permitted by law.\r
-                                \r
-                                Written by David MacKenzie.\r
-                                """ 
-                );
-            }
-        }
 
-        /* 3-execute main options */
-        if (inputOptions.contains("--help")) {
-
-        }
-
-        /* 4-chick the paths is correct */
-        File f, pf;
-        String check_path;
-        if (!parentOption) {
-            for (int i = 0; i < paths.size(); i++) {
-                check_path = paths.get(i);
-                if (check_path.contains("\\") || check_path.contains("/")) {
-                    if (check_path.charAt(1) != ':') {
-                        check_path = currentDir + "\\" + check_path;
-                    }
-                    f = new File(check_path);
-                    String p = f.getParent();
-                    pf = new File(p);
-                    if (!pf.exists()) {
-                        System.out.println("mkdir: cannot create directory \'" + paths.get(i) + "\': No such file or directory");
-                        return;
-                    }
-                }
-            }
-        }
-
-        /*5- create directory */
-        if (parentOption) {
-            for (int i = 0; i < paths.size(); i++) {
-                createParentDirectory(paths.get(i));
-                if (verboseOption) {
-                    System.out.println("mkdir: created directory \'" + paths.get(i) + "\' ");
-                }
-            }
-        } else {
-            for (int i = 0; i < paths.size(); i++) {
-                check_path = paths.get(i);
-                if (check_path.contains("\\") || check_path.contains("/")) {
-                    if (check_path.charAt(1) != ':') {
-                        check_path = currentDir + "\\" + check_path;
-                    }
-                    f = new File(check_path);
-                    f.mkdir();
-                    if (verboseOption) {
-                        System.out.println("mkdir: created directory \'" + paths.get(i) + "\' ");
-                    }
-                } else {
-                    f = new File(currentDir + "\\" + paths.get(i));
-                    f.mkdir();
-                    if (verboseOption) {
-                        System.out.println("mkdir: created directory \'" + paths.get(i) + "\' ");
-                    }
-                }
-            }
-        }
-    }
-
-//-----------------------------------------------------------------------------
-    public void touch(String com) { // 20220027
+public void touch(String com) { // 20220027
         System.out.println("touch called");
         System.out.println("args in comm: " + com);
 
@@ -310,16 +361,7 @@ class CLI {
         }
     }
 
-    public void rm(String com) { //20220246
-        System.out.println("rm called");
-        System.out.println("args in comm: " + com);
-
-        String[] MyArgs = proccess_args(com);
-
-        for (int i = 1; i < MyArgs.length; i++) {
-            System.out.println(MyArgs[i]);
-        }
-    }
+    
 
     // --------------------------- # Mahmoud Khaled 20220317 # --------------------------- //
     public void cd(String com) {
