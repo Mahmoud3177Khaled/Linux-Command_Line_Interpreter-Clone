@@ -103,28 +103,25 @@ class CLI {
             System.out.println(MyArgs[i]);
         }
     }
-//-------------------------------------------------------------------------------------
-
+    
+    // --------------------------- # philo karam 20220246 # --------------------------- //
     private void createParentDirectory(String path) {
         File f, pf;
-        if (!path.contains("\\") && !path.contains("/")) {
-            f = new File(currentDir + path);
-            f.mkdir();
-        } else {
-            if (path.charAt(1) != ':') {
-                path = currentDir + "\\" + path;
-            }
-            f = new File(path);
-            String p = f.getParent();
-            pf = new File(p);
-            if (!pf.exists()) {
-                createParentDirectory(p);
-            }
-            f.mkdir();
+        f = new File(path);
+        String p = f.getParent();
+        pf = new File(p);
+        if (!pf.exists()) {
+            createParentDirectory(p);
         }
-
+        f.mkdir();
     }
-    // --------------------------- # philo karam 20220246 # --------------------------- //
+    public String makeAbsolutePath(String path){
+        if ((!path.contains("\\") && !path.contains("/"))|| (path.charAt(1) != ':') ){
+            path = currentDir + "\\"+ path;
+        } 
+        return path;
+    } 
+    //-------------------------------------------------------------------------------------
 
     public void mkdir(String com) {
 
@@ -209,70 +206,39 @@ class CLI {
             paths.add(path);
     }
 
-    /* 2-chick the paths is correct */
+    /* 2-chick the paths is correct and create directories*/
     File f, pf;
     String check_path;
     if (!parentOption) {
             for (int i = 0; i < paths.size(); i++) {
-            check_path = paths.get(i);
-            if (check_path.contains("\\") || check_path.contains("/")) {
-                if (check_path.charAt(1) != ':') {
-                    check_path = currentDir + "\\" + check_path;
-                }
+                check_path = makeAbsolutePath(paths.get(i));
                 f = new File(check_path);
                 String p = f.getParent();
                 pf = new File(p);
                 if (!pf.exists()) {
                     System.out.println("mkdir: cannot create directory \'" + paths.get(i) + "\': No such file or directory");
-                    return;
+
+                }else{
+                    f.mkdir();
+                    if (verboseOption) {
+                        System.out.println("mkdir: created directory \'" + paths.get(i) + "\' ");
+                    }
                 }
             }
-        }
     }
-
-    /*3- create directory */
-    if (parentOption) {
+    else{
             for (int i = 0; i < paths.size(); i++) {
-            createParentDirectory(paths.get(i));
+            check_path = makeAbsolutePath(paths.get(i));
+            createParentDirectory(check_path);
             if (verboseOption) {
                 System.out.println("mkdir: created directory \'" + paths.get(i) + "\' ");
-            }
-        }
-    }
-        else {
-            for (int i = 0; i < paths.size(); i++) {
-            check_path = paths.get(i);
-            if (check_path.contains("\\") || check_path.contains("/")) {
-                if (check_path.charAt(1) != ':') {
-                    check_path = currentDir + "\\" + check_path;
-                }
-                f = new File(check_path);
-                f.mkdir();
-                if (verboseOption) {
-                    System.out.println("mkdir: created directory \'" + paths.get(i) + "\' ");
-                }
-            } else {
-                f = new File(currentDir + "\\" + paths.get(i));
-                f.mkdir();
-                if (verboseOption) {
-                    System.out.println("mkdir: created directory \'" + paths.get(i) + "\' ");
-                }
             }
         }
     }
 }
 
 //-----------------------------------------------------------------------------
-public void rm(String com) { //20220246
-    // System.out.println("rm called");
-    // System.out.println("args in comm: " + com);
-
-    // String[] MyArgs = proccess_args(com);
-
-    // for (int i = 1; i < MyArgs.length; i++) {
-    //     System.out.println(MyArgs[i]);
-    // }
-
+public void rm(String com) { 
 
         /* 1- split command to options and paths  */
         ArrayList<String> paths = new ArrayList<>();
@@ -333,7 +299,7 @@ public void rm(String com) { //20220246
             paths.add(path);
         }
 
-        
+
 
 
 }
