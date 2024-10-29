@@ -1,4 +1,4 @@
-// package os.cli;
+package os.cli;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -652,7 +652,8 @@ public void touch(String com) { // 20220027
         options.put(">", 0);
         options.put(">>", 0);
         options.put("-n", 0);
-        // options.put("--version", 0);
+        options.put("--help", 0);
+        options.put("--version", 0);
 
         for (String arg : MyArgs) {
             options.put(arg, 1);
@@ -673,6 +674,48 @@ public void touch(String com) { // 20220027
             
             // System.out.println(FileToPrint.getAbsolutePath());
             // System.out.println(FileToPrint.exists());
+
+            if (options.get("--help") == 1) {
+                System.out.println("""
+                    Usage: cat [OPTION]... [FILE]...\r
+                    Concatenate FILE(s) to standard output.\r
+                    \r
+                        -A, --show-all           equivalent to -vET\r
+                        -b, --number-nonblank    number nonempty output lines, overrides -n\r
+                        -e                       equivalent to -vE\r
+                        -E, --show-ends          display $ at end of each line\r
+                        -n, --number             number all output lines\r
+                        -s, --squeeze-blank      suppress repeated empty output lines\r
+                        -T, --show-tabs          display TAB characters as ^I\r
+                        -v, --show-nonprinting   use ^ and M- notation, except for LFD and TAB\r
+                            --help               display this help and exit\r
+                            --version            output version information and exit\r
+                    \r
+                    Examples:\r
+                        cat f - g  Output f's contents, then standard input, then g's contents.\r
+                        cat        Copy standard input to standard output.\r
+                    \r
+                    GNU coreutils online help: <https://www.gnu.org/software/coreutils/>\r
+                    Full documentation at: <https://www.gnu.org/software/coreutils/cat>\r
+                    or available locally via: info '(coreutils) cat invocation'\r
+                    """ //
+                );
+                return;
+            }
+
+            if (options.get("--version") == 1) {
+                System.out.println("""
+                    cat (GNU coreutils) 2.0\r
+                    Copyright (C) YEAR Free Software Foundation, Inc.\r
+                    License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.\r
+                    This is free software: you are free to change and redistribute it.\r
+                    There is NO WARRANTY, to the extent permitted by law.\r
+                    \r
+                    Written by Mahmoud Khaled.\r
+                    """ //
+                );
+                return;
+            }
 
             if (options.get(">") == 1) {
                 String inputText = input.nextLine();
