@@ -1,4 +1,4 @@
-// package java.os.cli;
+package os.cli;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -6,8 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
@@ -338,6 +336,9 @@ public void touch(String com) { // 20220027
         // for(int i = 1; i < MyArgs.length; i++) {
         //     System.out.println(MyArgs[i]);
         // }
+
+        boolean absPath = false;
+
         if ("..".equals(com)) {
             File newdir = new File(this.currentDir).getParentFile();
             if (newdir != null) {
@@ -345,6 +346,13 @@ public void touch(String com) { // 20220027
             }
         } else {
             File newdir = new File(this.currentDir, com);
+
+            if(com.charAt(1) == ':') {
+                absPath = true;
+            }
+
+            newdir = new File(com);
+            
             if (newdir.isDirectory() && newdir.exists()) {
                 this.currentDir = newdir.getAbsolutePath();
 
