@@ -636,14 +636,6 @@ public void touch(String com) { // 20220027
     }
 
     public void cat(String com, Scanner input) {                           //20220317
-        // System.out.println("cat called");
-        // System.out.println("args in comm: " + com);
-
-        // String[] MyArgs = proccess_args(com);
-        // for(int i = 1; i < MyArgs.length; i++) {
-            //     System.out.println(MyArgs[i]);
-            // }
-
 
         String[] MyArgs = proccess_args(com);
 
@@ -671,9 +663,6 @@ public void touch(String com) { // 20220027
             if (file.charAt(1) == ':') {
                 FileToPrint = new File(file);
             }
-            
-            // System.out.println(FileToPrint.getAbsolutePath());
-            // System.out.println(FileToPrint.exists());
 
             if (options.get("--help") == 1) {
                 System.out.println("""
@@ -771,13 +760,6 @@ public void touch(String com) { // 20220027
     }
 
     public void uname(String com) {                           //20220317
-        // System.out.println("uname called");
-        // System.out.println("args in comm: " + com);
-        
-        // String[] MyArgs = proccess_args(com);
-        // for(int i = 1; i < MyArgs.length; i++) {
-        //     System.out.println(MyArgs[i]);
-        // }
         String[] MyArgs = proccess_args(com);
         
         for (String MyArg : MyArgs) {
@@ -801,7 +783,7 @@ public void touch(String com) { // 20220027
 
     }
 
-    public void cp(String com, Scanner inputChoice) { //20220317
+    public void cp(String com, Scanner inputChoice) {                        //20220317
         // System.out.println("cp called");
         // System.out.println("args in comm: " + com);
 
