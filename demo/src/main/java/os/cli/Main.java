@@ -1,4 +1,4 @@
-// package java.os.cli;
+package os.cli;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
@@ -491,28 +490,27 @@ public void touch(String com) { // 20220027
     
 
     // --------------------------- # Mahmoud Khaled 20220317 # --------------------------- //
-    public void cd(String com) {
-        // System.out.println("cd called");
-        // System.out.println("args in comm: " + com);
 
-        // String[] MyArgs = proccess_args(com);
-        // for(int i = 1; i < MyArgs.length; i++) {
-        //     System.out.println(MyArgs[i]);
-        // }
+    public void cd(String com) {
+
         if ("..".equals(com)) {
             File newdir = new File(this.currentDir).getParentFile();
             if (newdir != null) {
                 this.currentDir = newdir.getAbsolutePath();
             }
         } else {
+            
             File newdir = new File(this.currentDir, com);
+
+            if(com.charAt(1) == ':') {
+                newdir = new File(com);
+            }
+
             if (newdir.isDirectory() && newdir.exists()) {
                 this.currentDir = newdir.getAbsolutePath();
 
             } else {
                 System.out.println("Directory " + com + " does not exists in " + this.currentDir);
-                // System.out.println(newdir.exists());
-                // System.out.println(newdir.isDirectory());
             }
 
         }
@@ -521,30 +519,96 @@ public void touch(String com) { // 20220027
 
     public void rmdir(String com) {                          //20220317
 
-        // System.out.println("rmdir called");
-        // System.out.println("args in comm: " + com);
-        // String[] MyArgs = proccess_args(com);
-        // for(int i = 1; i < MyArgs.length; i++) {
-        //     System.out.println(MyArgs[i]);
-        // }
-        String[] MyArgs = proccess_args(com);
+        String[] Folders = proccess_args(com);
 
-        for (String MyArg : MyArgs) {
-            File folderToDelete = new File(this.currentDir, MyArg);
+        HashMap<String, Integer> options = new HashMap<>();
+
+        options.put("--ignore-fail-on-non-empty", 0);
+        options.put("-p", 0);
+        options.put("-v", 0);
+        options.put("--help", 0);
+        options.put("--version", 0);
+
+        for (String arg : Folders) {
+            options.put(arg, 1);
+        }
+
+        if(options.get("--help") == 1) {
+            System.out.println("""
+                Usage: rmdir [OPTION]... DIRECTORY...\r
+                Remove the DIRECTORY(ies), if they are empty.\r
+                \r
+                        --ignore-fail-on-non-empty\r
+                                ignore each failure that is solely because a directory\r
+                                is non-empty\r
+                    -p, --parents  remove DIRECTORY and its ancestors; e.g., 'rmdir -p a/b/c' is\r
+                                similar to 'rmdir a/b/c a/b a'\r
+                    -v, --verbose  output a diagnostic for every directory processed\r
+                        --help     display this help and exit\r
+                        --version  output version information and exit\r
+                \r
+                GNU coreutils online help: <https://www.gnu.org/software/coreutils/>\r
+                Report rmdir translation bugs to <https://translationproject.org/team/>\r
+                Full documentation at: <https://www.gnu.org/software/coreutils/rmdir>\r
+                or available locally via: info '(coreutils) rmdir invocation'\r
+                """ //
+            );
+            return;
+        }
+
+        if(options.get("--version") == 1) {
+            System.out.println("""
+                rmdir (GNU coreutils) X.Y\r
+                Copyright (C) YEAR Free Software Foundation, Inc.\r
+                License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.\r
+                This is free software: you are free to change and redistribute it.\r
+                There is NO WARRANTY, to the extent permitted by law.\r
+                \r
+                Written by Mahmoud Khaled.\r
+                """ //
+            );
+            return;
+        }
+
+
+        for (String Folder : Folders) {
+            if(Folder.charAt(0) == '-') {
+                continue;
+            }
+
+            File folderToDelete = new File(this.currentDir, Folder);
+
+            if(Folder.charAt(1) == ':') {
+                folderToDelete = new File(Folder);
+            }
 
             if (!folderToDelete.exists()) {
+                System.out.println(folderToDelete.getPath());
                 System.out.println("Error: Folder does not exists.");
             } else if (!folderToDelete.isDirectory()) {
                 System.out.println("Error: Please provide a folder.");
             } else if (folderToDelete.listFiles().length != 0) {
-                System.out.println("Error: Please provide an empty folder.");
+                if(options.get("--ignore-fail-on-non-empty") == 0) {
+                    System.out.println("Error: Please provide an empty folder.");
+                }
             } else {
                 if (folderToDelete.delete()) {
-                    // System.out.println("Folder deleted.");
+                    File FolderParent = new File(folderToDelete.getParent());
+                    if(options.get("-v") == 1) {
+                        System.out.println("Deleted Folder '" + folderToDelete.getName() + "' successfully");
+                    }
+                    if (options.get("-p") == 1 && FolderParent.listFiles().length == 0) {
+                        FolderParent.delete(); 
+                        if(options.get("-v") == 1) {
+                            System.out.println("Deleted Folder '" + FolderParent.getName() + "' successfully");
+                        }   
+                    }
                 } else {
                     System.out.println("Error: Failed to delete folder");
                 }
             }
+
+            
         }
 
     }
@@ -555,23 +619,48 @@ public void touch(String com) { // 20220027
 
         // String[] MyArgs = proccess_args(com);
         // for(int i = 1; i < MyArgs.length; i++) {
-        //     System.out.println(MyArgs[i]);
-        // }
-        File FileToPrint = new File(this.currentDir, com);
+            //     System.out.println(MyArgs[i]);
+            // }
 
-        if (!FileToPrint.exists()) {
-            System.out.println("Error: File does not exists.");
-        } else if (!FileToPrint.isFile()) {
-            System.out.println("Error: Please provide a normal folder.");
-        } else {
-            try {
-                try (Scanner scanner = new Scanner(FileToPrint)) {
-                    while (scanner.hasNextLine()) {
-                        System.err.println(scanner.nextLine());
+
+        String[] MyArgs = proccess_args(com);
+
+        HashMap<String, Integer> options = new HashMap<>();
+
+        options.put("--ignore-fail-on-non-empty", 0);
+        options.put("-v", 0);
+        options.put("--help", 0);
+        options.put("--version", 0);
+
+        for (String arg : MyArgs) {
+            options.put(arg, 1);
+        }
+
+        for (String file : MyArgs) {
+            
+            File FileToPrint = new File(this.currentDir, file);
+            
+            if (file.charAt(1) == ':') {
+                FileToPrint = new File(file);
+            }
+            
+            // System.out.println(FileToPrint.getAbsolutePath());
+            // System.out.println(FileToPrint.exists());
+
+            if (!FileToPrint.exists()) {
+                System.out.println("Error: File does not exists.");
+            } else if (!FileToPrint.isFile()) {
+                System.out.println("Error: Please provide a normal folder.");
+            } else {
+                try {
+                    try (Scanner scanner = new Scanner(FileToPrint)) {
+                        while (scanner.hasNextLine()) {
+                            System.err.println(scanner.nextLine());
+                        }
                     }
+                } catch (FileNotFoundException e) {
+                    System.out.println("Error: Unable to read from file.");
                 }
-            } catch (FileNotFoundException e) {
-                System.out.println("Error: Unable to read from file.");
             }
         }
 
@@ -580,13 +669,13 @@ public void touch(String com) { // 20220027
     public void uname(String com) {                           //20220317
         // System.out.println("uname called");
         // System.out.println("args in comm: " + com);
-
+        
         // String[] MyArgs = proccess_args(com);
         // for(int i = 1; i < MyArgs.length; i++) {
         //     System.out.println(MyArgs[i]);
         // }
         String[] MyArgs = proccess_args(com);
-
+        
         for (String MyArg : MyArgs) {
             if (MyArg.equals("-s")) {
                 System.out.println(System.getProperty("os.name"));
