@@ -371,10 +371,14 @@ public void touch(String com) { // 20220027
         // for(int i = 1; i < MyArgs.length; i++) {
         //     System.out.println(MyArgs[i]);
         // }
-        String[] MyArgs = proccess_args(com);
+        String[] Folders = proccess_args(com);
 
-        for (String MyArg : MyArgs) {
-            File folderToDelete = new File(this.currentDir, MyArg);
+        for (String Folder : Folders) {
+            File folderToDelete = new File(this.currentDir, Folder);
+
+            if(Folder.charAt(1) == ':') {
+                folderToDelete = new File(Folder);
+            }
 
             if (!folderToDelete.exists()) {
                 System.out.println("Error: Folder does not exists.");
