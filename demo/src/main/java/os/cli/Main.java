@@ -1,12 +1,18 @@
-// package os.cli;
+package os.cli;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -63,9 +69,11 @@ public class Main {
 class CLI {
 
     private String currentDir;
+    private String homeDir;
 
     public CLI(String currentDir) {
         this.currentDir = currentDir;
+        this.homeDir = currentDir;
     }
 
     public String getCurrentDir() {
@@ -95,15 +103,96 @@ class CLI {
     }
 
     public void ls(String com) { //20220028
-        System.out.println("ls called");
-        System.out.println("args in comm: " + com);
-
         String[] MyArgs = proccess_args(com);
-
-        for (int i = 1; i < MyArgs.length; i++) {
-            System.out.println(MyArgs[i]);
+    
+        boolean showAll = false;    
+        boolean longFormat = false;  
+        boolean humanReadable = false; 
+        boolean recursive = false;    
+        boolean sortByTime = false;   
+        boolean reverseOrder = false; 
+        boolean sortBySize = false;   
+    
+        for (String param : MyArgs) {
+            switch (param) {
+                case "-a": showAll = true; break;
+                case "-l": longFormat = true; break;
+                case "-h": humanReadable = true; break;
+                case "-R": recursive = true; break;
+                case "-t": sortByTime = true; break;
+                case "-r": reverseOrder = true; break;
+                case "-S": sortBySize = true; break;
+            }
+        }
+    
+        File dir = new File(this.currentDir);
+        File[] files = dir.listFiles();
+    
+        if (files == null) {
+            System.out.println("Error: Could not access directory.");
+            return;
+        }
+    
+        if (!showAll) {
+            files = Arrays.stream(files)
+                    .filter(file -> !file.getName().startsWith("."))
+                    .toArray(File[]::new);
+        }
+    
+        if (sortByTime) {
+            Arrays.sort(files, Comparator.comparingLong(File::lastModified));
+        } else if (sortBySize) {
+            Arrays.sort(files, Comparator.comparingLong(File::length));
+        }
+    
+        if (reverseOrder) {
+            Collections.reverse(Arrays.asList(files));
+        }
+    
+        for (File file : files) {
+            String output = file.getName();
+            if (longFormat) {
+                output = getLongFormatString(file, humanReadable);
+            }
+            System.out.println(output);
+        }
+    
+        if (recursive) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    System.out.println("\n" + file.getName() + ":");
+                    CLI subCLI = new CLI(file.getAbsolutePath());
+                    subCLI.ls("");
+                }
+            }
         }
     }
+    
+    private String getLongFormatString(File file, boolean humanReadable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(file.canRead() ? "r" : "-");
+        sb.append(file.canWrite() ? "w" : "-");
+        sb.append(file.canExecute() ? "x" : "-");
+        sb.append(" ");
+        sb.append(file.isDirectory() ? "d" : "-");
+        sb.append(" ");
+        sb.append(getSizeString(file.length(), humanReadable));
+        sb.append(" ");
+        sb.append(file.getName());
+        return sb.toString();
+    }
+    
+    private String getSizeString(long size, boolean humanReadable) {
+        if (humanReadable) {
+            if (size < 1024) return size + " B";
+            else if (size < 1048576) return (size / 1024) + " KB";
+            else if (size < 1073741824) return (size / 1048576) + " MB";
+            else return (size / 1073741824) + " GB";
+        }
+        return String.valueOf(size);
+    }
+    
+
     
     // --------------------------- # philo karam 20220246 # --------------------------- //
     private void createParentDirectory(String path) {
@@ -612,14 +701,79 @@ public void touch(String com) { // 20220027
         }
     }
 
-    public void mv(String com) { //20220028
+    public void mv(String com) { // 20220028
         System.out.println("mv called");
-        System.out.println("args in comm: " + com);
+        String[] args = proccess_args(com);
+        String targetDirectory = null;
 
-        String[] MyArgs = proccess_args(com);
+        if (args.length > 0) {
+            File potentialDir = new File(this.currentDir, args[args.length - 1]);
+            if (potentialDir.isDirectory() && potentialDir.exists()) {
+                targetDirectory = potentialDir.getAbsolutePath();
+            }
+        }
 
-        for (int i = 1; i < MyArgs.length; i++) {
-            System.out.println(MyArgs[i]);
+        if (targetDirectory != null) {
+            List<File> filesToMove = new ArrayList<>();
+
+            for (int i = 0; i < args.length - 1; i++) {
+                File fileToMove = new File(this.currentDir, args[i]);
+                if (fileToMove.exists()) {
+                    filesToMove.add(fileToMove);
+                } else {
+                    System.out.println("Error: File " + args[i] + " does not exist.");
+                }
+            }
+
+            for (File file : filesToMove) {
+                File destinationFile = new File(targetDirectory, file.getName());
+                if (destinationFile.exists()) {
+                    System.out.print("File " + destinationFile.getName() + " exists. Overwrite? (y/n): ");
+                    try (Scanner scanner = new Scanner(System.in)) {
+                        String response = scanner.nextLine();
+                        if (!response.equalsIgnoreCase("y")) {
+                            System.out.println("Skipping " + file.getName());
+                            continue;
+                        }
+                    }
+                }
+
+                try {
+                    Files.move(file.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    System.out.println("Moved " + file.getName() + " to " + targetDirectory);
+                } catch (IOException e) {
+                    System.out.println("Error moving " + file.getName() + ": " + e.getMessage());
+                }
+            }
+        } else {
+            if (args.length == 2) {
+                File fileToRename = new File(this.currentDir, args[0]);
+                File newFileName = new File(this.currentDir, args[1]);
+
+                if (fileToRename.exists()) {
+                    if (newFileName.exists()) {
+                        System.out.print("File " + newFileName.getName() + " exists. Overwrite? (y/n): ");
+                        try (Scanner scanner = new Scanner(System.in)) {
+                            String response = scanner.nextLine();
+                            if (!response.equalsIgnoreCase("y")) {
+                                System.out.println("Skipping rename of " + fileToRename.getName());
+                                return;
+                            }
+                        }
+                    }
+
+                    try {
+                        Files.move(fileToRename.toPath(), newFileName.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        System.out.println("Renamed " + fileToRename.getName() + " to " + newFileName.getName());
+                    } catch (IOException e) {
+                        System.out.println("Error renaming file: " + e.getMessage());
+                    }
+                } else {
+                    System.out.println("Error: File " + args[0] + " does not exist.");
+                }
+            } else {
+                System.out.println("Usage: mv [source] [destination_directory] or [source] [new_name]");
+            }
         }
     }
 
@@ -628,14 +782,35 @@ public void touch(String com) { // 20220027
     // --------------------------- # Mahmoud Khaled 20220317 # --------------------------- //
 
     public void cd(String com) {
+        if("--help".equals(com)) {
+            System.out.println("""
+                cd: cd [DIRECTORY]\r
+                Change the shell working directory.\r
+                \r
+                    Change the current directory to DIRECTORY.  The variable $HOME is\r
+                    the default DIRECTORY.  The environment variable CDPATH defines\r
+                    the search path for the directory.  A null directory argument\r
+                    is the same as `cd $HOME'.\r
+                \r
+                Options:\r
+                    -P    use the physical directory structure instead of the logical\r
+                        one, resolving symbolic links\r
+                    -L    use the logical directory structure (default)\r
+                \r
+                For more information, see the Bash manual.\r
+                """ //
+            );
 
-        if ("..".equals(com)) {
+        } else if ("~".equals(com)) {
+            this.currentDir = this.homeDir;
+
+        } else if ("..".equals(com)) {
             File newdir = new File(this.currentDir).getParentFile();
             if (newdir != null) {
                 this.currentDir = newdir.getAbsolutePath();
             }
+
         } else {
-            
             File newdir = new File(this.currentDir, com);
 
             if(com.charAt(1) == ':') {
@@ -654,7 +829,6 @@ public void touch(String com) { // 20220027
     }
 
     public void rmdir(String com) {                          //20220317
-
         String[] Folders = proccess_args(com);
 
         HashMap<String, Integer> options = new HashMap<>();
@@ -750,23 +924,15 @@ public void touch(String com) { // 20220027
     }
 
     public void cat(String com, Scanner input) {                           //20220317
-        // System.out.println("cat called");
-        // System.out.println("args in comm: " + com);
-
-        // String[] MyArgs = proccess_args(com);
-        // for(int i = 1; i < MyArgs.length; i++) {
-            //     System.out.println(MyArgs[i]);
-            // }
-
-
         String[] MyArgs = proccess_args(com);
 
         HashMap<String, Integer> options = new HashMap<>();
 
         options.put(">", 0);
-        // options.put("-v", 0);
-        // options.put("--help", 0);
-        // options.put("--version", 0);
+        options.put(">>", 0);
+        options.put("-n", 0);
+        options.put("--help", 0);
+        options.put("--version", 0);
 
         for (String arg : MyArgs) {
             options.put(arg, 1);
@@ -774,18 +940,58 @@ public void touch(String com) { // 20220027
 
         for (String file : MyArgs) {
 
-            if(file.equals(">")) {
+            if(file.equals(">") || file.equals(">>") || file.equals("-n")) {
                 continue;
             }
+            int lineNum = 0;
             
             File FileToPrint = new File(this.currentDir, file);
             
             if (file.charAt(1) == ':') {
                 FileToPrint = new File(file);
             }
-            
-            // System.out.println(FileToPrint.getAbsolutePath());
-            // System.out.println(FileToPrint.exists());
+
+            if (options.get("--help") == 1) {
+                System.out.println("""
+                    Usage: cat [OPTION]... [FILE]...\r
+                    Concatenate FILE(s) to standard output.\r
+                    \r
+                        -A, --show-all           equivalent to -vET\r
+                        -b, --number-nonblank    number nonempty output lines, overrides -n\r
+                        -e                       equivalent to -vE\r
+                        -E, --show-ends          display $ at end of each line\r
+                        -n, --number             number all output lines\r
+                        -s, --squeeze-blank      suppress repeated empty output lines\r
+                        -T, --show-tabs          display TAB characters as ^I\r
+                        -v, --show-nonprinting   use ^ and M- notation, except for LFD and TAB\r
+                            --help               display this help and exit\r
+                            --version            output version information and exit\r
+                    \r
+                    Examples:\r
+                        cat f - g  Output f's contents, then standard input, then g's contents.\r
+                        cat        Copy standard input to standard output.\r
+                    \r
+                    GNU coreutils online help: <https://www.gnu.org/software/coreutils/>\r
+                    Full documentation at: <https://www.gnu.org/software/coreutils/cat>\r
+                    or available locally via: info '(coreutils) cat invocation'\r
+                    """ //
+                );
+                return;
+            }
+
+            if (options.get("--version") == 1) {
+                System.out.println("""
+                    cat (GNU coreutils) 2.0\r
+                    Copyright (C) YEAR Free Software Foundation, Inc.\r
+                    License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.\r
+                    This is free software: you are free to change and redistribute it.\r
+                    There is NO WARRANTY, to the extent permitted by law.\r
+                    \r
+                    Written by Mahmoud Khaled.\r
+                    """ //
+                );
+                return;
+            }
 
             if (options.get(">") == 1) {
                 String inputText = input.nextLine();
@@ -793,6 +999,27 @@ public void touch(String com) { // 20220027
                     FileWriter writer = new FileWriter(FileToPrint);
                     writer.write(inputText);
                     writer.close();
+                } catch (IOException ex) {
+                    System.out.println("Error: Failed to create file");
+                }
+                continue;
+            }
+
+            if (options.get(">>") == 1) {
+                String fileText = "";
+                
+                try {
+                    Scanner fileReader = new Scanner(FileToPrint);
+                    while(fileReader.hasNextLine()) {
+                        fileText += fileReader.nextLine();
+                    }
+                    fileText += input.nextLine();
+                    fileReader.close();
+
+                    FileWriter writer = new FileWriter(FileToPrint);
+                    writer.write(fileText);
+                    writer.close();
+
                 } catch (IOException ex) {
                     System.out.println("Error: Failed to create file");
                 }
@@ -807,7 +1034,8 @@ public void touch(String com) { // 20220027
                 try {
                     try (Scanner scanner = new Scanner(FileToPrint)) {
                         while (scanner.hasNextLine()) {
-                            System.err.println(scanner.nextLine());
+                            ++lineNum;
+                            System.err.println(lineNum + "- " + scanner.nextLine());
                         }
                     }
                 } catch (FileNotFoundException e) {
@@ -819,13 +1047,6 @@ public void touch(String com) { // 20220027
     }
 
     public void uname(String com) {                           //20220317
-        // System.out.println("uname called");
-        // System.out.println("args in comm: " + com);
-        
-        // String[] MyArgs = proccess_args(com);
-        // for(int i = 1; i < MyArgs.length; i++) {
-        //     System.out.println(MyArgs[i]);
-        // }
         String[] MyArgs = proccess_args(com);
         
         for (String MyArg : MyArgs) {
@@ -849,7 +1070,7 @@ public void touch(String com) { // 20220027
 
     }
 
-    public void cp(String com, Scanner inputChoice) { //20220317
+    public void cp(String com, Scanner inputChoice) {                        //20220317
         // System.out.println("cp called");
         // System.out.println("args in comm: " + com);
 
