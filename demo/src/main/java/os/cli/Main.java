@@ -1,4 +1,4 @@
-package os.cli;
+// package os.cli;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -120,6 +120,77 @@ class CLI {
         } 
         return path;
     } 
+   //--------------------------------------------------------------------------------------------------- 
+    private void removeAllInADir(String path,boolean iOption ,boolean verboseOption){
+        File f = new File(path),child;
+        Scanner in = new Scanner(System.in);
+        String remove;
+        if(f.listFiles() == null ||f.listFiles().length == 0){
+            if(iOption){
+                System.out.println("rm: remove directory \'" + path + "\'?");
+                remove = in.next();
+                if(remove.equals("y")){
+                    f.delete();
+                    if (verboseOption) {
+                        System.out.println("removed \'" + path + "\' ");
+                    }
+                }
+            }else{
+                f.delete();
+                if (verboseOption) {
+                    System.out.println("removed \'" + path + "\' ");
+                }
+            }
+            return;
+        }
+
+            for(int i = 0 ; i < f.listFiles().length ;i++){
+                if (f.listFiles()[i].isFile()){
+                    child = f.listFiles()[i];
+                    if(iOption){
+                        System.out.print("rm: remove regular file \\'" + child.getAbsolutePath() + "\\'(y/n)?");
+                        remove = in.next();
+                        if(remove.equals("y")){
+                            child.delete();
+                            if (verboseOption) {
+                                System.out.println("removed \'" + child.getAbsolutePath() + "\' ");
+                            }
+                        }
+                    }
+                    else{
+                        child.delete();
+                        if (verboseOption) {
+                            System.out.println("removed \'" + child.getAbsolutePath() + "\' ");
+                        }
+                    }
+                }
+                else{
+                    if(f.listFiles() == null ||f.listFiles().length == 0){
+                        System.out.println(path);
+                        if(iOption){
+                            System.out.println("rm: remove directory \'" + path + "\'?");
+                            remove = in.next();
+                            if(remove.equals("y")){
+                                f.delete();
+                                if (verboseOption) {
+                                    System.out.println("removed \'" + path + "\' ");
+                                }
+                            }
+                        }else{
+                            f.delete();
+                            if (verboseOption) {
+                                System.out.println("removed \'" + path + "\' ");
+                            }
+                        }
+                    }
+                    else{
+
+                        removeAllInADir(f.listFiles()[i].getAbsolutePath(), iOption, verboseOption);
+                        i--;
+                    }
+                }
+        }
+    }
     //-------------------------------------------------------------------------------------
 
     public void mkdir(String com) {
@@ -246,7 +317,6 @@ public void rm(String com) {
         int size = 0;
         boolean recursive = false, verboseOption = false,dirOption = false,iOption=false;
         for (int i = 0; i < com.length(); i++) {
-
             if (i < com.length() - 1 && com.charAt(i) == '-' && com.charAt(i + 1) == '-') {
                 while (i < com.length() && com.charAt(i) != ' ') {
                     option += com.charAt(i);
@@ -260,6 +330,29 @@ public void rm(String com) {
                 }
                 else if (option.equals("--dir")) {
                     dirOption = true;
+                }else if (option.equals("--help")) {
+                    System.out.println("""
+                                    Usage: rm [OPTION]... [FILE]...
+                                    Remove (unlink) the FILE(s).
+                                    
+                                    -i                      prompt before every removal
+                                    r, -R, --recursive     remove directories and their contents recursively
+                                    -d, --dir               remove empty directories
+                                    --help     display this help and exit
+                                    --version  output version information and exit""" 
+                    );
+                    return;
+                }else if (option.equals("--version")) {
+                    System.out.println("""
+                                    rm (GNU coreutils) 8.32
+                                    Copyright (C) 2020 Free Software Foundation, Inc.
+                                    License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+                                    This is free software: you are free to change and redistribute it.
+                                    There is NO WARRANTY, to the extent permitted by law.
+
+                                    Written by Richard Stallman and David MacKenzie.""" 
+                    );
+                    return;
                 }else {
                     System.out.println("rm: unrecognized option\'" + option + "\'");
                     System.out.println("Try \'rm --help\' for more information.");
@@ -298,12 +391,102 @@ public void rm(String com) {
             paths.add(path);
         }
 
-
-
-
+ /* 2-chick the paths is correct and remove it*/
+    File f;
+    String check_path;
+    Scanner in = new Scanner(System.in);
+    String remove;
+            for (int i = 0; i < paths.size(); i++) {
+                check_path = makeAbsolutePath(paths.get(i));
+                f = new File(check_path);
+                if (!f.exists()) {
+                    System.out.println("rm: cannot remove \'" + paths.get(i) + "\': No such file or directory");
+                }else{
+                    if(f.isFile()){
+                        if(iOption){
+                            System.out.print("rm: remove regular file \\'" + paths.get(i) + "\\'(y/n)?");
+                            remove = in.next();
+                            if(remove.equals("y")){
+                                f.delete();
+                                if (verboseOption) {
+                                    System.out.println("removed \'" + paths.get(i) + "\' ");
+                                }
+                            }
+                        }
+                        else{
+                            f.delete();
+                            if (verboseOption) {
+                                System.out.println("removed \'" + paths.get(i) + "\' ");
+                            }
+                        }
+                    }
+                    else{ //is directory
+                        String[] list = f.list();
+                        if(dirOption == true && recursive == false){
+                            if(list == null || list.length == 0){
+                                if(iOption){
+                                    System.out.println("rm: remove directory \'" + paths.get(i) + "\'?");
+                                    remove = in.next();
+                                    if(remove.equals("y")){
+                                        f.delete();
+                                        if (verboseOption) {
+                                            System.out.println("removed \'" + paths.get(i) + "\' ");
+                                        }
+                                    }
+                                }else{
+                                    f.delete();
+                                    if (verboseOption) {
+                                        System.out.println("removed \'" + paths.get(i) + "\' ");
+                                    }
+                                }
+                            }else{
+                                if(verboseOption){
+                                    System.out.println("rm: cannot remove \'" + paths.get(i) + "\': Directory not empty");
+                                }
+                            }
+                        }
+                        else if (recursive == true) {
+                            if(list == null || list.length == 0){
+                                if(iOption){
+                                    System.out.println("rm: remove directory \'" + paths.get(i) + "\'?");
+                                    remove = in.next();
+                                    if(remove.equals("y")){
+                                        f.delete();
+                                        if (verboseOption) {
+                                            System.out.println("removed \'" + paths.get(i) + "\' ");
+                                        }
+                                    }
+                                }
+                            }else{
+                                removeAllInADir(currentDir+"\\"+paths.get(i),iOption,verboseOption);
+                                if(iOption){
+                                    System.out.println("rm: remove directory \'" + paths.get(i) + "\'?");
+                                    remove = in.next();
+                                    if(remove.equals("y")){
+                                        f.delete();
+                                        if (verboseOption) {
+                                            System.out.println("removed \'" + paths.get(i) + "\' ");
+                                        }
+                                    }
+                                }else{
+                                    f.delete();
+                                    if (verboseOption) {
+                                        System.out.println("removed \'" + paths.get(i) + "\' ");
+                                    }
+                                }
+                            }
+                        }
+                        else{
+                            if (verboseOption) {
+                                System.out.println("rm: cannot remove \'" + paths.get(i) + "\': Is a directory");
+                            } 
+                        }
+                    }
+                }
+            }
 }
 
-
+//---------------------------------------------------------------------------------------------------------------
 public void touch(String com) { // 20220027
         System.out.println("touch called");
         System.out.println("args in comm: " + com);
