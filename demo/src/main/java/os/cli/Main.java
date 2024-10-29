@@ -534,6 +534,7 @@ public void touch(String com) { // 20220027
                 For more information, see the Bash manual.\r
                 """ //
             );
+
         } else if ("~".equals(com)) {
             this.currentDir = this.homeDir;
 
@@ -544,7 +545,6 @@ public void touch(String com) { // 20220027
             }
 
         } else {
-            
             File newdir = new File(this.currentDir, com);
 
             if(com.charAt(1) == ':') {
@@ -563,7 +563,6 @@ public void touch(String com) { // 20220027
     }
 
     public void rmdir(String com) {                          //20220317
-
         String[] Folders = proccess_args(com);
 
         HashMap<String, Integer> options = new HashMap<>();
@@ -659,7 +658,6 @@ public void touch(String com) { // 20220027
     }
 
     public void cat(String com, Scanner input) {                           //20220317
-
         String[] MyArgs = proccess_args(com);
 
         HashMap<String, Integer> options = new HashMap<>();
