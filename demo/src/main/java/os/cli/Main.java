@@ -5,11 +5,14 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -584,14 +587,79 @@ public void touch(String com) { // 20220027
         }
     }
 
-    public void mv(String com) { //20220028
+    public void mv(String com) { // 20220028
         System.out.println("mv called");
-        System.out.println("args in comm: " + com);
+        String[] args = proccess_args(com);
+        String targetDirectory = null;
 
-        String[] MyArgs = proccess_args(com);
+        if (args.length > 0) {
+            File potentialDir = new File(this.currentDir, args[args.length - 1]);
+            if (potentialDir.isDirectory() && potentialDir.exists()) {
+                targetDirectory = potentialDir.getAbsolutePath();
+            }
+        }
 
-        for (int i = 1; i < MyArgs.length; i++) {
-            System.out.println(MyArgs[i]);
+        if (targetDirectory != null) {
+            List<File> filesToMove = new ArrayList<>();
+
+            for (int i = 0; i < args.length - 1; i++) {
+                File fileToMove = new File(this.currentDir, args[i]);
+                if (fileToMove.exists()) {
+                    filesToMove.add(fileToMove);
+                } else {
+                    System.out.println("Error: File " + args[i] + " does not exist.");
+                }
+            }
+
+            for (File file : filesToMove) {
+                File destinationFile = new File(targetDirectory, file.getName());
+                if (destinationFile.exists()) {
+                    System.out.print("File " + destinationFile.getName() + " exists. Overwrite? (y/n): ");
+                    try (Scanner scanner = new Scanner(System.in)) {
+                        String response = scanner.nextLine();
+                        if (!response.equalsIgnoreCase("y")) {
+                            System.out.println("Skipping " + file.getName());
+                            continue;
+                        }
+                    }
+                }
+
+                try {
+                    Files.move(file.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    System.out.println("Moved " + file.getName() + " to " + targetDirectory);
+                } catch (IOException e) {
+                    System.out.println("Error moving " + file.getName() + ": " + e.getMessage());
+                }
+            }
+        } else {
+            if (args.length == 2) {
+                File fileToRename = new File(this.currentDir, args[0]);
+                File newFileName = new File(this.currentDir, args[1]);
+
+                if (fileToRename.exists()) {
+                    if (newFileName.exists()) {
+                        System.out.print("File " + newFileName.getName() + " exists. Overwrite? (y/n): ");
+                        try (Scanner scanner = new Scanner(System.in)) {
+                            String response = scanner.nextLine();
+                            if (!response.equalsIgnoreCase("y")) {
+                                System.out.println("Skipping rename of " + fileToRename.getName());
+                                return;
+                            }
+                        }
+                    }
+
+                    try {
+                        Files.move(fileToRename.toPath(), newFileName.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        System.out.println("Renamed " + fileToRename.getName() + " to " + newFileName.getName());
+                    } catch (IOException e) {
+                        System.out.println("Error renaming file: " + e.getMessage());
+                    }
+                } else {
+                    System.out.println("Error: File " + args[0] + " does not exist.");
+                }
+            } else {
+                System.out.println("Usage: mv [source] [destination_directory] or [source] [new_name]");
+            }
         }
     }
 
