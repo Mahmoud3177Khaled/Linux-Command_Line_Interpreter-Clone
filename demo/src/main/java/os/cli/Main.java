@@ -407,6 +407,13 @@ public void touch(String com) { // 20220027
         // }
         File FileToPrint = new File(this.currentDir, com);
 
+        if (com.charAt(1) == ':') {
+            FileToPrint = new File(com);
+        }
+
+        // System.out.println(FileToPrint.getAbsolutePath());
+        // System.out.println(FileToPrint.exists());
+
         if (!FileToPrint.exists()) {
             System.out.println("Error: File does not exists.");
         } else if (!FileToPrint.isFile()) {
