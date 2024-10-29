@@ -61,9 +61,11 @@ public class Main {
 class CLI {
 
     private String currentDir;
+    private String homeDir;
 
     public CLI(String currentDir) {
         this.currentDir = currentDir;
+        this.homeDir = currentDir;
     }
 
     public String getCurrentDir() {
@@ -514,12 +516,15 @@ public void touch(String com) { // 20220027
     // --------------------------- # Mahmoud Khaled 20220317 # --------------------------- //
 
     public void cd(String com) {
+        if ("~".equals(com)) {
+            this.currentDir = this.homeDir;
 
-        if ("..".equals(com)) {
+        } else if ("..".equals(com)) {
             File newdir = new File(this.currentDir).getParentFile();
             if (newdir != null) {
                 this.currentDir = newdir.getAbsolutePath();
             }
+
         } else {
             
             File newdir = new File(this.currentDir, com);
