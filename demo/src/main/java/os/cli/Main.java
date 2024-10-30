@@ -1,4 +1,4 @@
-// package os.cli;
+package os.cli;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,7 +36,7 @@ public class Main {
                 command = input.next();
                 arg = input.nextLine().trim();
                 if (arg.contains("|")) {
-                    cli.pipe(command +" "+ arg);
+                    cli.pipe(command + arg);
                 } else {
                     switch (command) {
                         case "pwd" ->
@@ -1640,6 +1640,9 @@ Written by Philopateer Karam.
     }
 
 //---------------------------------------------------------------------------------------------------------------
+    private String isPiped = "";
+    private String inputOfPipe = "";
+    private String outputOfPipe = "";
 
     public void pipe(String all) {
         Scanner input = new Scanner(System.in);
@@ -1661,47 +1664,86 @@ Written by Philopateer Karam.
                 arg = (commands[i].substring(j + 1, commands[i].length())).trim();
             }
             switch (com) {
-                case "pwd" -> 
+                case "pwd" -> {
                     pwd(arg);
-                case "cd" ->
+                    this.isPiped = "pwd";
+                }
+                case "cd" -> {
                     cd(arg);
-                case "mkdir" ->
+                    this.isPiped = "cd";
+                }
+                case "mkdir" -> {
                     mkdir(arg);
-                case "touch" -> 
+                    this.isPiped = "mkdir";
+                }
+                case "touch" -> {
                     touch(arg);
-                case "mv" -> 
+                    this.isPiped = "touch";
+                }
+                case "mv" -> {
                     mv(arg);
-                case "rm" -> 
+                    this.isPiped = "mv";
+                }
+                case "rm" -> {
                     rm(arg);
-                case "echo" -> 
+                    this.isPiped = "rm";
+                }
+                case "echo" -> {
                     echo(arg);
-                case "man" -> 
+                    this.isPiped = "echo";
+                }
+                case "man" -> {
                     man(arg);
-                case "rmdir" -> 
+                    this.isPiped = "man";
+                }
+                case "rmdir" -> {
                     rmdir(arg);
-                case "cat" -> 
+                    this.isPiped = "rmdir";
+                }
+                case "cat" -> {
                     cat(arg, input);
-                case "ls" -> 
+                    this.isPiped = "cat";
+                }
+                case "ls" -> {
                     ls(arg);
-                case "uname" -> 
+                    this.isPiped = "ls";
+                }
+                case "uname" -> {
                     uname(arg);
-                case "cp" -> 
+                    this.isPiped = "uname";
+                }
+                case "cp" -> {
                     cp(arg, input);
-                // case "<" ->
+                    this.isPiped = "cp";
+                }
+                // case "<" ->{
                 //     inputOp(arg);
-                case ">" ->
+                //     this.isPiped = "<";
+                // }
+                case ">" -> {
                     redirectOutput(arg);
-                case "users" ->
+                    this.isPiped = ">";
+                }
+                case "users" -> {
                     users();
-                case "clear" ->
-                    clear(); 
+                    this.isPiped = "users";
+                }
+                case "clear" -> {
+                    clear();
+                    this.isPiped = "clear";
+                }
                 case "exit" -> {
                     return;
                 }
                 default ->
                     UndefinedInput(com);
             }
+            this.inputOfPipe = this.outputOfPipe;
+            this.outputOfPipe = "";
         }
+        this.isPiped = "";
+        this.inputOfPipe = "";
+        this.outputOfPipe = "";
     }
 //---------------------------------------------------------------------------------------------------------------
 
@@ -2050,6 +2092,7 @@ Written by Philopateer Karam.
             return;
         }
 
+        int i = 0;
         for (String file : MyArgs) {
             if(file.isEmpty()) {
                 continue;
@@ -2114,14 +2157,20 @@ Written by Philopateer Karam.
                 try {
                     try (Scanner scanner = new Scanner(FileToPrint)) {
                         while (scanner.hasNextLine()) {
-                            ++lineNum;
-                            System.err.println(lineNum + "- " + scanner.nextLine());
+                            if(options.get("-n") == 1) {
+                                ++lineNum; 
+                                System.err.println(lineNum + "- " + scanner.nextLine());
+                            } else {
+                                System.err.println(scanner.nextLine());
+                            }
+
                         }
                     }
                 } catch (FileNotFoundException e) {
                     System.out.println("Error: Unable to read from file.");
                 }
             }
+            i++;
         }
 
     }
