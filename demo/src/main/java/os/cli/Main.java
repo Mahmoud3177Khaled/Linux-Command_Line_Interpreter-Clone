@@ -1,4 +1,4 @@
-// package os.cli;
+package os.cli;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -1625,8 +1625,52 @@ public void touch(String com) { // 20220027
         }
     }
 
-    
+    public void redirectOutput(String com) {
+        try {
+            if (com.isEmpty()) {
+                System.out.println("missing file operand");
+            } else {
+                File file = new File(this.currentDir, com);
+                if (!file.exists()) {
+                    file.createNewFile();
+                } else {
+                    file.delete();
+                    file.createNewFile();
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error creating file: " + e.getMessage());
+        }
+    }
 
+    
+    public void users() {
+        String command = System.getProperty("os.name").toLowerCase().contains("win") ?
+                "query user" : "who";
+
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
+            Process process = processBuilder.start();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            System.out.println("Currently logged in users:");
+
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void clear() {
+        // Couldn't think of a way better than this since this is a simulated IDE terminal, not an actual terminal.
+        for (int i = 0; i < 50; i++) {
+            System.out.println();
+        }
+    }
+    
     // --------------------------- # Mahmoud Khaled 20220317 # --------------------------- //
 
     public void cd(String com) {
@@ -1928,158 +1972,264 @@ public void touch(String com) { // 20220027
         // }
         String[] parameters = proccess_args(com);
 
-        File OgfileToCopy = new File(this.currentDir, parameters[0]);
-        File fileToCopy = new File(this.currentDir, parameters[1]);
+        HashMap<String, Integer> options = new HashMap<>();
 
-        int destType = 1; // 0 --> file 1 --> folder
-        int srcType = 1; // 0 --> file 1 --> folder
-        int ogpathType = 0; // 0 --> relative 1 --> absolute
-        int pathType = 0; // 0 --> relative 1 --> absolute
+        options.put("-f", 0);
+        options.put("--force", 0);
+        options.put("-i", 0);
+        options.put("--iteractive", 0);
+        options.put("-n", 0);
+        options.put("--no-clobber", 0);
 
-        for (int i = 0; i < parameters[0].length(); i++) {
-            if (parameters[0].charAt(i) == '.') {
-                srcType = 0;
-            }
-            if (parameters[0].charAt(i) == ':') {
-                ogpathType = 1;
-            }
+        options.put("-v", 0);
+        options.put("--verbose", 0);
+
+        options.put("--help", 0);
+        options.put("--version", 0);
+
+        for (String arg : parameters) {
+            options.put(arg, 1);
         }
 
-        for (int i = 0; i < parameters[1].length(); i++) {
-            if (parameters[1].charAt(i) == '.') {
-                destType = 0;
-            }
-            if (parameters[1].charAt(i) == ':') {
-                pathType = 1;
-            }
+        if (options.get("--help") == 1) {
+            System.out.println("""
+                Usage: cp [OPTION]... [-T] SOURCE DEST\r
+                    or:  cp [OPTION]... SOURCE... DIRECTORY\r
+                    or:  cp [OPTION]... -t DIRECTORY SOURCE...\r
+                Copy SOURCE to DEST, or multiple SOURCE(s) to DIRECTORY.\r
+                \r
+                    -a, --archive                same as -dR --preserve=all\r
+                        --attributes-only        copy only the attributes of the files\r
+                        --backup[=CONTROL]       make a backup of each existing destination file\r
+                    -b                           like --backup but does not accept an argument\r
+                        --copy-contents          copy contents of special files when recursive\r
+                    -d                           same as --no-dereference --preserve=links\r
+                    -f, --force                  if an existing destination file cannot be\r
+                                                opened, remove it and try again\r
+                    -i, --interactive            prompt before overwrite\r
+                    -H                           follow command-line symbolic links in SOURCE\r
+                    -l, --link                   hard link files instead of copying\r
+                    -L, --dereference            always follow symbolic links in SOURCE\r
+                    -n, --no-clobber             do not overwrite an existing file\r
+                    -P, --no-dereference         never follow symbolic links in SOURCE\r
+                    -p                           same as --preserve=mode,ownership,timestamps\r
+                        --preserve[=ATTR_LIST]   preserve the specified attributes (default:\r
+                                                mode,ownership,timestamps), if possible\r
+                        --no-preserve=ATTR_LIST  don't preserve the specified attributes\r
+                        --parents                use full source file name under DIRECTORY\r
+                    -R, -r, --recursive          copy directories recursively\r
+                        --reflink[=WHEN]         control clone/CoW copies. See below\r
+                        --remove-destination     remove each existing destination file before\r
+                                                attempting to open it (contrast with --force)\r
+                        --sparse=WHEN            control creation of sparse files. See below\r
+                        --strip-trailing-slashes remove any trailing slashes from each SOURCE\r
+                    -s, --symbolic-link          make symbolic links instead of copying\r
+                    -S, --suffix=SUFFIX          override the usual backup suffix\r
+                    -t, --target-directory=DIRECTORY  copy all SOURCE arguments into DIRECTORY\r
+                    -T, --no-target-directory    treat DEST as a normal file\r
+                    -u, --update                 copy only when the SOURCE file is newer\r
+                                                than the destination file or when the\r
+                                                destination file is missing\r
+                    -v, --verbose                explain what is being done\r
+                    -x, --one-file-system        stay on this file system\r
+                    -Z                           set SELinux security context of destination\r
+                                                file to default type\r
+                        --context[=CTX]          like -Z, or if CTX is specified then set the\r
+                                                SELinux or SMACK security context to CTX\r
+                        --help                   display this help and exit\r
+                        --version                output version information and exit\r
+                \r
+                By default, sparse SOURCE files are detected by a crude heuristic and the\r
+                corresponding DEST file is made sparse as well.  That is the behavior\r
+                selected by --sparse=auto.  Specify --sparse=always to create a sparse DEST\r
+                file whenever the SOURCE file contains a long enough sequence of zero bytes.\r
+                Use --sparse=never to inhibit creation of sparse files.\r
+                \r
+                The backup suffix is '~', unless set with --suffix or SIMPLE_BACKUP_SUFFIX.\r
+                The version control method may be selected via the --backup option or through\r
+                the VERSION_CONTROL environment variable.  Here are the values:\r
+                \r
+                    none, off       never make backups (even if --backup is given)\r
+                    numbered, t     make numbered backups\r
+                    existing, nil   numbered if numbered backups exist, simple otherwise\r
+                    simple, never   always make simple backups\r
+                \r
+                GNU coreutils online help: <https://www.gnu.org/software/coreutils/>\r
+                Full documentation at: <https://www.gnu.org/software/coreutils/cp>\r
+                or available locally via: info '(coreutils) cp invocation'\r
+                """
+            );
+            return;
         }
 
-        if (ogpathType == 1) {
-            OgfileToCopy = new File(parameters[0]);
+        if (options.get("--version") == 1) {
+            System.out.println("""
+                cp (GNU coreutils) X.Y\r
+                Copyright (C) YEAR Free Software Foundation, Inc.\r
+                License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.\r
+                This is free software: you are free to change and redistribute it.\r
+                There is NO WARRANTY, to the extent permitted by law.\r
+                \r
+                Written by Torbjorn Granlund, David MacKenzie, and Jim Meyering.\r
+                """
+            );
+            return;
         }
-        if (pathType == 1) {
-            fileToCopy = new File(parameters[1]);
-        }
+        
 
-        if (srcType == 0 && destType == 0) {
-            // System.out.println("0 0");
+        for (String parameter : parameters) {
 
-            if (!OgfileToCopy.exists()) {
-                System.out.println("Error: File does not exists.");
-                return;
+            if(parameter.equals("-f") || parameter.equals("--force") || parameter.equals("-i") ||
+                parameter.equals("--iteractive") ||parameter.equals("-n") ||parameter.equals("--no-clobber") || 
+                parameter.equals("-v") ||parameter.equals("--verbose") ||parameter.equals("--help") ||
+                parameter.equals("--version") || parameter.equals(parameters[parameters.length-1])) {
+                continue;
             }
+            
+            File OgfileToCopy = new File(this.currentDir, parameter);
+            File fileToCopy = new File(this.currentDir, parameters[parameters.length-1]);
+            
+            int destType = 1; // 0 --> file 1 --> folder
+            int srcType = 1; // 0 --> file 1 --> folder
+            int ogpathType = 0; // 0 --> relative 1 --> absolute
+            int pathType = 0; // 0 --> relative 1 --> absolute
 
-            if (fileToCopy.exists()) {
-                System.out.print("File with this name already exists. Overide? [y/n] ");
-                String choice = inputChoice.next();
-                if (choice.equals("n") || choice.equals("N")) {
-                    System.out.println("cp cancelled");
-                    return;
+            for (int i = 0; i < parameter.length(); i++) {
+                if (parameter.charAt(i) == '.') {
+                    srcType = 0;
+                }
+                if (parameter.charAt(i) == ':') {
+                    ogpathType = 1;
                 }
             }
 
-            try {
-                fileToCopy.createNewFile();
+            for (int i = 0; i < parameters[parameters.length-1].length(); i++) {
+                if (parameters[parameters.length-1].charAt(i) == '.') {
+                    destType = 0;
+                }
+                if (parameters[parameters.length-1].charAt(i) == ':') {
+                    pathType = 1;
+                }
+            }
 
-                FileWriter outputFile;
-                try (Scanner inputFile = new Scanner(OgfileToCopy)) {
-                    outputFile = new FileWriter(fileToCopy);
+            if (ogpathType == 1) {
+                OgfileToCopy = new File(parameter);
+            }
+            if (pathType == 1) {
+                fileToCopy = new File(parameters[parameters.length-1]);
+            }
 
-                    String line;
-                    while (inputFile.hasNextLine()) {
-                        line = inputFile.nextLine();
-                        outputFile.write(line + "\n");
+            if (srcType == 0 && destType == 0) {
+                // System.out.println("0 0");
+
+                if (!OgfileToCopy.exists()) {
+                    System.out.println("Error: File does not exists.");
+                    return;
+                }
+
+                if (fileToCopy.exists()) {
+                    System.out.print("File with this name already exists. Overide? [y/n] ");
+                    String choice = inputChoice.next();
+                    if (choice.equals("n") || choice.equals("N")) {
+                        System.out.println("cp cancelled");
+                        return;
                     }
                 }
-                outputFile.close();
-            } catch (IOException ex) {
-                System.out.println("Error: Failed to copy file.");
-            }
 
-        } else if (srcType == 1 && destType == 1) {
+                try {
+                    fileToCopy.createNewFile();
+                    
+                    FileWriter outputFile;
+                    try (Scanner inputFile = new Scanner(OgfileToCopy)) {
+                        outputFile = new FileWriter(fileToCopy);
 
-            // System.out.println("1 1");
-            if (!OgfileToCopy.exists()) {
-                System.out.println("Error: File does not exists.");
-                return;
-            }
+                        String line;
+                        while (inputFile.hasNextLine()) {
+                            line = inputFile.nextLine();
+                            outputFile.write(line + "\n");
+                        }
+                    }
+                    outputFile.close();
+                } catch (IOException ex) {
+                    System.out.println("Error: Failed to copy file.");
+                }
 
-            if (fileToCopy.exists()) {
-                System.out.print("File with this name already exists. Overide? [y/n] ");
-                String choice = inputChoice.next();
-                if (choice.equals("n") || choice.equals("N")) {
-                    System.out.println("cp cancelled");
+            } else if (srcType == 0 && destType == 1) {
+                fileToCopy = new File(this.currentDir, parameters[parameters.length-1] + "/" + OgfileToCopy.getName());
+
+                // System.out.println(fileToCopy.getAbsolutePath());
+
+                if (!OgfileToCopy.exists()) {
+                    System.out.println("Error: File does not exists.");
                     return;
                 }
-            }
 
-            fileToCopy.mkdir();
-
-            for (File file : OgfileToCopy.listFiles()) {
-
-                String newComm = file.getPath() + " " + parameters[1] + "/" + file.getName();
-                System.out.println(newComm);
-                cp(newComm, inputChoice);
-
-            }
-
-        }
-
-    }
-
-    public void redirectOutput(String com) {
-        try {
-            if (com.isEmpty()) {
-                System.out.println("missing file operand");
-            } else {
-                File file = new File(this.currentDir, com);
-                if (!file.exists()) {
-                    file.createNewFile();
-                } else {
-                    file.delete();
-                    file.createNewFile();
+                if (fileToCopy.exists()) {
+                    System.out.print("File with this name already exists. Overide? [y/n] ");
+                    String choice = inputChoice.next();
+                    if (choice.equals("n") || choice.equals("N")) {
+                        System.out.println("cp cancelled");
+                        return;
+                    }
                 }
+
+                try {
+                    fileToCopy.createNewFile();
+                    
+                    FileWriter outputFile;
+                    try (Scanner inputFile = new Scanner(OgfileToCopy)) {
+                        outputFile = new FileWriter(fileToCopy);
+
+                        String line;
+                        while (inputFile.hasNextLine()) {
+                            line = inputFile.nextLine();
+                            outputFile.write(line + "\n");
+                        }
+                    }
+                    outputFile.close();
+                } catch (IOException ex) {
+                    System.out.println("Error: Failed to copy file.");
+                }
+            } else if (srcType == 1 && destType == 1) {
+
+                // System.out.println("1 1");
+                if (!OgfileToCopy.exists()) {
+                    System.out.println("Error: File does not exists.");
+                    return;
+                }
+
+                if (fileToCopy.exists()) {
+                    System.out.print("File with this name already exists. Overide? [y/n] ");
+                    String choice = inputChoice.next();
+                    if (choice.equals("n") || choice.equals("N")) {
+                        System.out.println("cp cancelled");
+                        return;
+                    }
+                }
+
+                fileToCopy.mkdir();
+
+                for (File file : OgfileToCopy.listFiles()) {
+
+                    String newComm = file.getPath() + " " + parameters[parameters.length-1] + "/" + file.getName();
+                    System.out.println(newComm);
+                    cp(newComm, inputChoice);
+
+                }
+                
             }
-        } catch (IOException e) {
-            System.out.println("Error creating file: " + e.getMessage());
         }
+
     }
 
     public void inputOp(String com) {                           //20220317
         System.out.println("inputOp called");
         System.out.println("args in comm: " + com);
-
+    
         String[] MyArgs = proccess_args(com);
-
+    
         for (int i = 1; i < MyArgs.length; i++) {
             System.out.println(MyArgs[i]);
-        }
-    }
-
-    public void users() {
-        String command = System.getProperty("os.name").toLowerCase().contains("win") ?
-                "query user" : "who";
-
-        try {
-            ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
-            Process process = processBuilder.start();
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            System.out.println("Currently logged in users:");
-
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void clear() {
-        // Couldn't think of a way better than this since this is a simulated IDE terminal, not an actual terminal.
-        for (int i = 0; i < 50; i++) {
-            System.out.println();
         }
     }
 }
