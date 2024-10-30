@@ -2187,13 +2187,20 @@ public void touch(String com) { // 20220027
                     return;
                 }
 
-                if (fileToCopy.exists() && options.get("-f") == 0 && options.get("--force") == 0) {
+                if (fileToCopy.exists() && options.get("-f") == 0 && options.get("--force") == 0 && (options.get("-i") == 1 || options.get("--iteractive") == 1)) {
                     System.out.print("File '" + fileToCopy.getName() + "' this name already exists. Overide? [y/n] ");
                     String choice = inputChoice.next();
                     if (choice.equals("n") || choice.equals("N")) {
                         // System.out.println("cp cancelled");
                         return;
                     }
+                }
+
+                if(fileToCopy.exists() && (options.get("-n") == 1 || options.get("--no-clobber") == 1)) {
+                    if ((options.get("-v") == 1 || options.get("--verbose") == 1)) {
+                        System.out.println("skipped '" + fileToCopy.getName() + "'");
+                    }
+                    return;
                 }
 
                 try {
@@ -2236,13 +2243,20 @@ public void touch(String com) { // 20220027
                     return;
                 }
 
-                if (fileToCopy.exists() && options.get("-f") == 0 && options.get("--force") == 0) {
+                if (fileToCopy.exists() && options.get("-f") == 0 && options.get("--force") == 0 && (options.get("-i") == 1 || options.get("--iteractive") == 1)) {
                     System.out.print("File '" + fileToCopy.getName() + "' this name already exists. Overide? [y/n] ");
                     String choice = inputChoice.next();
                     if (choice.equals("n") || choice.equals("N")) {
                         // System.out.println("cp cancelled");
                         return;
                     }
+                }
+
+                if(fileToCopy.exists() && (options.get("-n") == 1 || options.get("--no-clobber") == 1)) {
+                    if ((options.get("-v") == 1 || options.get("--verbose") == 1)) {
+                        System.out.println("skipped '" + fileToCopy.getName() + "'");
+                    }
+                    return;
                 }
 
                 try {
@@ -2274,7 +2288,7 @@ public void touch(String com) { // 20220027
                     return;
                 }
 
-                if (fileToCopy.exists() && options.get("-f") == 0 && options.get("--force") == 0) {
+                if (fileToCopy.exists() && options.get("-f") == 0 && options.get("--force") == 0 && (options.get("-i") == 1 || options.get("--iteractive") == 1)) {
                     System.out.print("File '" + fileToCopy.getName() + "' this name already exists. Overide? [y/n] ");
                     String choice = inputChoice.next();
                     if (choice.equals("n") || choice.equals("N")) {
@@ -2282,6 +2296,13 @@ public void touch(String com) { // 20220027
                         return;
                     }
                 }
+
+                // if(fileToCopy.exists() && (options.get("-n") == 1 || options.get("--no-clobber") == 1)) {
+                //     if ((options.get("-v") == 1 || options.get("--verbose") == 1)) {
+                //         System.out.println("skipped '" + fileToCopy.getName() + "'");
+                //     }
+                //     return;
+                // }
 
                 fileToCopy.mkdir();
                 if(options.get("-v") == 1 || options.get("--verbose") == 1) {
