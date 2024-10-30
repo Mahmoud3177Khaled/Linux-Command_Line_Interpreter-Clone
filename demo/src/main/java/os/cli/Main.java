@@ -61,9 +61,12 @@ public class Main {
                         cli.cp(arg, input);
                     case "<" ->
                         cli.inputOp(arg);
+                    case "users" ->
+                        cli.users();
                     case "exit" -> {
                         return;
                     }
+
                     default ->
                         cli.UndefinedInput(command);
                 }
@@ -1299,4 +1302,23 @@ public void touch(String com) { // 20220027
         }
     }
 
+    public void users() {
+        String command = System.getProperty("os.name").toLowerCase().contains("win") ?
+                "query user" : "who";
+
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
+            Process process = processBuilder.start();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            System.out.println("Currently logged in users:");
+
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
