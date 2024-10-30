@@ -2030,7 +2030,6 @@ Written by Philopateer Karam.
             return;
         }
 
-        int i = 0;
         for (String file : MyArgs) {
             if(file.isEmpty()) {
                 continue;
@@ -2172,7 +2171,6 @@ Written by Philopateer Karam.
                     System.out.println("Error: Unable to read from file.");
                 }
             }
-            i++;
         }
 
     }
