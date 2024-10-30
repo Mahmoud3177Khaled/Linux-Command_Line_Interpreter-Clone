@@ -1983,7 +1983,11 @@ Written by Philopateer Karam.
         }
 
         for (String Folder : Folders) {
-            if(Folder.charAt(0) == '-' || Folder.isEmpty()) {
+            if(Folder.isEmpty()) {
+                continue;
+            }
+            
+            if(Folder.charAt(0) == '-') {
                 if (!Folder.equals("--ignore-fail-on-non-empty") && 
                 !Folder.equals("-p") && 
                 !Folder.equals("-v") && 
