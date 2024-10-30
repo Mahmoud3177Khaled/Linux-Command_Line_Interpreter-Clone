@@ -2174,10 +2174,10 @@ public void touch(String com) { // 20220027
         for (String parameter : parameters) {
 
             if(parameter.charAt(0) == '-' || parameter.equals(parameters[parameters.length-1])) {
-                if(!parameter.equals("-f") || !parameter.equals("--force") || !parameter.equals("-i") ||
-                !parameter.equals("--iteractive") ||!parameter.equals("-n") ||!parameter.equals("--no-clobber") || 
-                !parameter.equals("-v") ||!parameter.equals("--verbose") ||!parameter.equals("--help") ||
-                !parameter.equals("--version")) {
+                if(!parameter.equals("-f") && !parameter.equals("--force") && !parameter.equals("-i") &&
+                !parameter.equals("--iteractive") &&!parameter.equals("-n") &&!parameter.equals("--no-clobber") && 
+                !parameter.equals("-v") &&!parameter.equals("--verbose") && !parameter.equals("--help") &&
+                !parameter.equals("--version") && !parameter.equals(parameters[parameters.length-1])) {
                     System.out.println("Error: '" + parameter + "' is not a recognized option");
                 }
                 continue;
