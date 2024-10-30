@@ -2038,10 +2038,10 @@ Written by Philopateer Karam.
 
             if(file.equals(">") || file.equals(">>") || file.charAt(0) == '-') {
                 if (!file.equals(">") && 
-                !file.equals(">>") && 
-                !file.equals("-n") && 
-                !file.equals("--help") && 
-                !file.equals("--version")) { 
+                    !file.equals(">>") && 
+                    !file.equals("-n") && 
+                    !file.equals("--help") && 
+                    !file.equals("--version")) { 
                     System.out.println("'" + file + "' is not a recognized option");
                 }
                 continue;
@@ -2075,11 +2075,50 @@ Written by Philopateer Karam.
                     outputWriter.close();
 
                     return;
-                } catch (Exception ex) {
-                    System.out.println("Error: File does not exist");
+                    } catch (Exception ex) {
+                        System.out.println("Error: File does not exist");
+                    }
                 }
             }
-        }
+
+            if(MyArgs.length > 1) {
+                if(options.get(">>") == 1 && MyArgs[1].equals(">>")) {
+                    File inputFile = new File(this.currentDir, MyArgs[0]);
+                    File outputFile = new File(this.currentDir, MyArgs[2]);
+
+                    Scanner inputScanner;
+                    Scanner outputOriginal;
+                    FileWriter outputWriter;
+                    String inputText = "";
+                    // String OriginalText = "";
+                    try {
+                        inputScanner = new Scanner(inputFile);
+                        outputOriginal = new Scanner(outputFile);
+
+                        while (outputOriginal.hasNextLine()) { 
+                            inputText += outputOriginal.nextLine() + "\n";  
+                            // System.out.println(inputText);
+                        }
+                        outputOriginal.close();
+
+                        outputWriter = new FileWriter(outputFile);
+                        outputWriter.write(inputText);
+
+                        while (inputScanner.hasNextLine()) { 
+                            inputText = inputScanner.nextLine() + "\n";  
+                            // System.out.println(inputText);
+                            outputWriter.write(inputText);
+                        }
+
+                        inputScanner.close();
+                        outputWriter.close();
+
+                        return;
+                    } catch (Exception ex) {
+                        System.out.println("Error: File does not exist");
+                    }
+                }
+            }
 
             if (options.get(">") == 1) {
                 String inputText = input.nextLine();
