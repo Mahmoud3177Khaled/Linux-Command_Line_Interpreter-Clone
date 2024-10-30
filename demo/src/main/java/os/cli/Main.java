@@ -1,4 +1,4 @@
-package os.cli;
+// package os.cli;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -606,19 +606,20 @@ public void echo(String com){
                             newText += "    ";
                             i++;
 
-                        }else if (text.charAt(i+1) == '\b') {
+                        }else if (text.charAt(i+1) == 'b') {
                             int j = newText.length()-1;
                             for (; j >= 0;j--) {
-                                if(text.charAt(j) != ' '){
+                                if(newText.charAt(j) != ' '){
                                     break;
                                 }
                             }
                             if(j != newText.length()-1){
-                                newText = newText.substring(0, j);
+                                newText = newText.substring(0, j+1);
                             }
-                            for (int k = i+2; k < text.length(); k++) {
-                                if(){
-                                    
+                            for ( i = i+2; i < text.length(); i++) {
+                                if(text.charAt(i) != ' '){
+                                    i--;
+                                    break;
                                 }
                             }
 
@@ -631,6 +632,12 @@ public void echo(String com){
                     else{
                         newText += text.charAt(i);
                     }
+                }
+                if (newline) {
+                    System.out.println(newText);
+                }
+                else{
+                    System.out.print(newText);
                 }
             }
 
