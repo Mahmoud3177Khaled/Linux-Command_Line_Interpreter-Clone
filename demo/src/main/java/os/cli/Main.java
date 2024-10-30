@@ -1119,10 +1119,7 @@ else{
     
        The options below modify the behavior of `mkdir`.
     
-    OPTIONS
-       -m, --mode=MODE
-              Set the permission mode (as in chmod), instead of the default. The mode can be specified in octal (e.g., 0755) or symbolic (e.g., u+rwx,g+rx,o+rx).
-    
+    OPTIONS   
        -p, --parents
               No error if existing, make parent directories as needed.
     
@@ -1146,15 +1143,10 @@ else{
     DESCRIPTION
        Remove (unlink) the FILE(s).
     
-       Options:
-       -f, --force
-              Ignore nonexistent files and never prompt.
-    
+       Options:  
        -i, --interactive
               Prompt before every removal.
-    
-       -I     Prompt once before removing more than three files, or when removing recursively.
-    
+     
        -r, -R, --recursive
               Remove directories and their contents recursively.
     
@@ -1213,31 +1205,10 @@ else{
        Man is the system's manual pager.  Each page contains documentation about a command,
        utility, or function.
     
-    OPTIONS
-       -a, --all
-              Show all available man pages for the specified name.
-    
-       -k, --apropos
-              Search the manual page names and descriptions for the keyword.
-    
+    OPTIONS    
        -f, --whatis
               Display a short description of the specified command.
-    
-       -l, --local-file
-              Treat the specified file as a man page.
-    
-       -M, --manpath=MANPATH
-              Set the search path for manual pages.
-    
-       -P, --pager=PAGER
-              Use the specified pager program instead of the default.
-    
-       -r, --regex
-              Interpret the given names as regular expressions.
-    
-       -S, --sections=SECTIONS
-              Search only in the specified sections.
-    
+                
        --help
               Display this help and exit.
     
