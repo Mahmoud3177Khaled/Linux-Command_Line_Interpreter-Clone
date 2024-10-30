@@ -67,6 +67,8 @@ public class Main {
                             cli.cp(arg, input);
                         // case "<" ->
                         //     cli.inputOp(arg);
+                        // case "<" ->
+                        //     cli.inputOp(arg);
                         case ">" ->
                             cli.redirectOutput(arg);
                         case "users" ->
@@ -1880,6 +1882,7 @@ Written by Philopateer Karam.
     }
 
     // --------------------------- # Mahmoud Khaled 20220317 # --------------------------- //
+
     public void cd(String com) {
         if ("--help".equals(com)) {
             System.out.println("""
@@ -2270,11 +2273,11 @@ Written by Philopateer Karam.
 
         for (String parameter : parameters) {
 
-            if (parameter.charAt(0) == '-' || parameter.equals(parameters[parameters.length - 1])) {
-                if (!parameter.equals("-f") || !parameter.equals("--force") || !parameter.equals("-i")
-                        || !parameter.equals("--iteractive") || !parameter.equals("-n") || !parameter.equals("--no-clobber")
-                        || !parameter.equals("-v") || !parameter.equals("--verbose") || !parameter.equals("--help")
-                        || !parameter.equals("--version")) {
+            if(parameter.charAt(0) == '-' || parameter.equals(parameters[parameters.length-1])) {
+                if(!parameter.equals("-f") && !parameter.equals("--force") && !parameter.equals("-i") &&
+                !parameter.equals("--iteractive") &&!parameter.equals("-n") &&!parameter.equals("--no-clobber") && 
+                !parameter.equals("-v") &&!parameter.equals("--verbose") && !parameter.equals("--help") &&
+                !parameter.equals("--version") && !parameter.equals(parameters[parameters.length-1])) {
                     System.out.println("Error: '" + parameter + "' is not a recognized option");
                 }
                 continue;
@@ -2326,7 +2329,7 @@ Written by Philopateer Karam.
                     String choice = inputChoice.next();
                     if (choice.equals("n") || choice.equals("N")) {
                         // System.out.println("cp cancelled");
-                        return;
+                        continue;
                     }
                 }
 
@@ -2334,7 +2337,7 @@ Written by Philopateer Karam.
                     if ((options.get("-v") == 1 || options.get("--verbose") == 1)) {
                         System.out.println("skipped '" + fileToCopy.getName() + "'");
                     }
-                    return;
+                    continue;
                 }
 
                 try {
@@ -2382,7 +2385,7 @@ Written by Philopateer Karam.
                     String choice = inputChoice.next();
                     if (choice.equals("n") || choice.equals("N")) {
                         // System.out.println("cp cancelled");
-                        return;
+                        continue;
                     }
                 }
 
@@ -2390,7 +2393,7 @@ Written by Philopateer Karam.
                     if ((options.get("-v") == 1 || options.get("--verbose") == 1)) {
                         System.out.println("skipped '" + fileToCopy.getName() + "'");
                     }
-                    return;
+                    continue;
                 }
 
                 try {
@@ -2427,7 +2430,7 @@ Written by Philopateer Karam.
                     String choice = inputChoice.next();
                     if (choice.equals("n") || choice.equals("N")) {
                         // System.out.println("cp cancelled");
-                        return;
+                        continue;
                     }
                 }
 
