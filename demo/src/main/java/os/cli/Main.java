@@ -97,9 +97,36 @@ class CLI {
 
     // 
     public void pwd(String com) {  //20220027
-        Path currentDirectoryPath = FileSystems.getDefault().getPath("");
-        String currentDirectoryName = currentDirectoryPath.toAbsolutePath().toString();
-        System.out.println(currentDirectoryName + "\"");
+        try {
+            if (com.isEmpty() || com.equalsIgnoreCase("-l")) {
+                Path currentDirectoryPath = FileSystems.getDefault().getPath("");
+                String currentDirectoryName = currentDirectoryPath.toAbsolutePath().toString();
+                System.out.println(currentDirectoryName + "\"");
+            } else if (com.equalsIgnoreCase("-p")) {
+                // -p option for physical path
+                Path currentDirectoryPath = FileSystems.getDefault().getPath("").toRealPath();
+                String currentDirectoryName = currentDirectoryPath.toString();
+                System.out.println(currentDirectoryName + "\"");
+            } else if (com.equals("--help")) {
+                System.out.println("pwd: pwd [-LP]");
+                System.out.println("    Print the name of the current working directory.");
+                System.out.println();
+                System.out.println("    Options:");
+                System.out.println("      -L        print the value of $PWD if it names the current working");
+                System.out.println("                directory");
+                System.out.println("      -P        print the physical directory, without any symbolic links");
+                System.out.println();
+                System.out.println("    By default, `pwd' behaves as if `-L' were specified.");
+                System.out.println();
+                System.out.println("    Exit Status:");
+                System.out.println("    Returns 0 unless an invalid option is given or the current directory");
+                System.out.println("    cannot be read.");
+            } else {
+                System.out.println(com + " is an unknown argument." + "\n");
+            }
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred: " + e.getMessage());
+        }
     }
     public void who(String com) {
         String[] args = proccess_args(com);
