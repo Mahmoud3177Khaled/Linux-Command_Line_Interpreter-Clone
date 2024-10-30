@@ -2088,8 +2088,11 @@ Written by Philopateer Karam.
         }
 
         for (String file : MyArgs) {
+            if(file.isEmpty()) {
+                continue;
+            }
 
-            if(file.equals(">") || file.equals(">>") || file.charAt(0) == '-' || file.isEmpty()) {
+            if(file.equals(">") || file.equals(">>") || file.charAt(0) == '-') {
                 if (!file.equals(">") && 
                 !file.equals(">>") && 
                 !file.equals("-n") && 
@@ -2282,7 +2285,7 @@ Written by Philopateer Karam.
                 continue;
             }
 
-            if(parameter.charAt(0) == '-' || parameter.equals(parameters[parameters.length-1]) || parameter.isEmpty()) {
+            if(parameter.charAt(0) == '-' || parameter.equals(parameters[parameters.length-1])) {
                 if(!parameter.equals("-f") && !parameter.equals("--force") && !parameter.equals("-i") &&
                 !parameter.equals("--iteractive") &&!parameter.equals("-n") &&!parameter.equals("--no-clobber") && 
                 !parameter.equals("-v") &&!parameter.equals("--verbose") && !parameter.equals("--help") &&
