@@ -816,47 +816,28 @@ Written by Philopateer Karam.
             }
         } else {
             if (com.equals("pwd")) {
-                System.out.println("NAME\n"
-                        + //
-                        "       pwd - print name of current working directory\n"
-                        + //
-                        "\n"
-                        + //
-                        "SYNOPSIS\n"
-                        + //
-                        "       pwd [OPTION]\n"
-                        + //
-                        "\n"
-                        + //
-                        "DESCRIPTION\n"
-                        + //
-                        "       The pwd command prints the full filename of the current working directory.\n"
-                        + //
-                        "\n"
-                        + //
-                        "OPTIONS\n"
-                        + //
-                        "       -L, --logical\n"
-                        + //
-                        "              use PWD from environment, even if it contains symlinks\n"
-                        + //
-                        "\n"
-                        + //
-                        "       -P, --physical\n"
-                        + //
-                        "              avoid all symlinks; print the actual physical directory\n"
-                        + //
-                        "\n"
-                        + //
-                        "       --help\n"
-                        + //
-                        "              display this help and exit\n"
-                        + //
-                        "\n"
-                        + //
-                        "       --version\n"
-                        + //
-                        "              output version information and exit");
+                System.out.println("""
+                                   NAME
+                                          pwd - print name of current working directory
+                                   
+                                   SYNOPSIS
+                                          pwd [OPTION]
+                                   
+                                   DESCRIPTION
+                                          The pwd command prints the full filename of the current working directory.
+                                   
+                                   OPTIONS
+                                          -L, --logical
+                                                 use PWD from environment, even if it contains symlinks
+                                   
+                                          -P, --physical
+                                                 avoid all symlinks; print the actual physical directory
+                                   
+                                          --help
+                                                 display this help and exit
+                                   
+                                          --version
+                                                 output version information and exit""" );
             } else if (com.equals("touch")) {
                 System.out.println("""
                            NAME
@@ -1245,7 +1226,6 @@ Written by Philopateer Karam.
     
     BACKSLASH ESCAPES
        The following sequences are recognized only if the -e option is used:
-           \\a     alert (bell)
            \\b     backspace
            \\c     suppress trailing newline
            \\f     form feed
