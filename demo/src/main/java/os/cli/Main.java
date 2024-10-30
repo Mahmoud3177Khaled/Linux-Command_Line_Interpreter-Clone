@@ -1,4 +1,4 @@
-package os.cli;
+// package os.cli;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -1640,9 +1640,6 @@ Written by Philopateer Karam.
     }
 
 //---------------------------------------------------------------------------------------------------------------
-    private String isPiped = "";
-    private String inputOfPipe = "";
-    private String outputOfPipe = "";
 
     public void pipe(String all) {
         Scanner input = new Scanner(System.in);
@@ -1664,86 +1661,47 @@ Written by Philopateer Karam.
                 arg = (commands[i].substring(j + 1, commands[i].length())).trim();
             }
             switch (com) {
-                case "pwd" -> {
+                case "pwd" -> 
                     pwd(arg);
-                    this.isPiped = "pwd";
-                }
-                case "cd" -> {
+                case "cd" ->
                     cd(arg);
-                    this.isPiped = "cd";
-                }
-                case "mkdir" -> {
+                case "mkdir" ->
                     mkdir(arg);
-                    this.isPiped = "mkdir";
-                }
-                case "touch" -> {
+                case "touch" -> 
                     touch(arg);
-                    this.isPiped = "touch";
-                }
-                case "mv" -> {
+                case "mv" -> 
                     mv(arg);
-                    this.isPiped = "mv";
-                }
-                case "rm" -> {
+                case "rm" -> 
                     rm(arg);
-                    this.isPiped = "rm";
-                }
-                case "echo" -> {
+                case "echo" -> 
                     echo(arg);
-                    this.isPiped = "echo";
-                }
-                case "man" -> {
+                case "man" -> 
                     man(arg);
-                    this.isPiped = "man";
-                }
-                case "rmdir" -> {
+                case "rmdir" -> 
                     rmdir(arg);
-                    this.isPiped = "rmdir";
-                }
-                case "cat" -> {
+                case "cat" -> 
                     cat(arg, input);
-                    this.isPiped = "cat";
-                }
-                case "ls" -> {
+                case "ls" -> 
                     ls(arg);
-                    this.isPiped = "ls";
-                }
-                case "uname" -> {
+                case "uname" -> 
                     uname(arg);
-                    this.isPiped = "uname";
-                }
-                case "cp" -> {
+                case "cp" -> 
                     cp(arg, input);
-                    this.isPiped = "cp";
-                }
-                // case "<" ->{
+                // case "<" ->
                 //     inputOp(arg);
-                //     this.isPiped = "<";
-                // }
-                case ">" -> {
+                case ">" ->
                     redirectOutput(arg);
-                    this.isPiped = ">";
-                }
-                case "users" -> {
+                case "users" ->
                     users();
-                    this.isPiped = "users";
-                }
-                case "clear" -> {
-                    clear();
-                    this.isPiped = "clear";
-                }
+                case "clear" ->
+                    clear(); 
                 case "exit" -> {
                     return;
                 }
                 default ->
                     UndefinedInput(com);
             }
-            this.inputOfPipe = this.outputOfPipe;
-            this.outputOfPipe = "";
         }
-        this.isPiped = "";
-        this.inputOfPipe = "";
-        this.outputOfPipe = "";
     }
 //---------------------------------------------------------------------------------------------------------------
 
