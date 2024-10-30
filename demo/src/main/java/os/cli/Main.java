@@ -2090,14 +2090,12 @@ Written by Philopateer Karam.
                     Scanner outputOriginal;
                     FileWriter outputWriter;
                     String inputText = "";
-                    // String OriginalText = "";
                     try {
                         inputScanner = new Scanner(inputFile);
                         outputOriginal = new Scanner(outputFile);
 
                         while (outputOriginal.hasNextLine()) { 
                             inputText += outputOriginal.nextLine() + "\n";  
-                            // System.out.println(inputText);
                         }
                         outputOriginal.close();
 
@@ -2106,7 +2104,6 @@ Written by Philopateer Karam.
 
                         while (inputScanner.hasNextLine()) { 
                             inputText = inputScanner.nextLine() + "\n";  
-                            // System.out.println(inputText);
                             outputWriter.write(inputText);
                         }
 
