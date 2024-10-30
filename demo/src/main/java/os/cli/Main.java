@@ -66,8 +66,8 @@ public class Main {
                             cli.uname(arg);
                         case "cp" ->
                             cli.cp(arg, input);
-                        case "<" ->
-                            cli.inputOp(arg);
+                        // case "<" ->
+                        //     cli.inputOp(arg);
                         case ">" ->
                             cli.redirectOutput(arg);
                         case "users" ->
@@ -1712,10 +1712,10 @@ Written by Philopateer Karam.
                     cp(arg, input);
                     this.isPiped = "cp";
                 }
-                case "<" ->{
-                    inputOp(arg);
-                    this.isPiped = "<";
-                }
+                // case "<" ->{
+                //     inputOp(arg);
+                //     this.isPiped = "<";
+                // }
                 case ">" ->{
                     redirectOutput(arg);
                     this.isPiped = ">";
