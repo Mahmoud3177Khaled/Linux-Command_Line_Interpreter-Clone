@@ -2214,6 +2214,9 @@ Written by Philopateer Karam.
 
         for (String arg : parameters) {
             options.put(arg, 1);
+            if(arg.isEmpty()) {
+                continue;
+            }
             if (arg.charAt(0) == '-') {
                 nextCommArgs += arg + " ";
             }
@@ -2275,6 +2278,9 @@ Written by Philopateer Karam.
         }
 
         for (String parameter : parameters) {
+            if(parameter.isEmpty()) {
+                continue;
+            }
 
             if(parameter.charAt(0) == '-' || parameter.equals(parameters[parameters.length-1]) || parameter.isEmpty()) {
                 if(!parameter.equals("-f") && !parameter.equals("--force") && !parameter.equals("-i") &&
