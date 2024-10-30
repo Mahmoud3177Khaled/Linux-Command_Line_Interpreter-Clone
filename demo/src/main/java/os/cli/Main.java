@@ -1,14 +1,17 @@
 package os.cli;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.UnknownHostException;
-import java.nio.file.*;
-import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.FileReader;
+import java.net.UnknownHostException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -441,7 +444,7 @@ class CLI {
                                         This is free software: you are free to change and redistribute it.\r
                                         There is NO WARRANTY, to the extent permitted by law.\r
                                         \r
-                                        Written by David MacKenzie.\r
+                                        Written by Philopateer Karam.\r
                                         """
                     );
                     return;
@@ -544,6 +547,7 @@ public void echo(String com){
                                     License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
                                     This is free software: you are free to change and redistribute it.
                                     There is NO WARRANTY, to the extent permitted by law.
+                                    Written by Philopateer Karam.\r
                                         """
                     );
                     return;
@@ -596,13 +600,25 @@ public void echo(String com){
                             newText += '\\';
                             i++;
 
-                        }else if (text.charAt(i+1) == '\t') {
+                        }else if (text.charAt(i+1) == 't') {
                             newText += "    ";
                             i++;
 
-                        }else if (text.charAt(i+1) == '\\') {
-                            newText += '\\';
-                            i++;
+                        }else if (text.charAt(i+1) == '\b') {
+                            int j = newText.length()-1;
+                            for (; j >= 0;j--) {
+                                if(text.charAt(j) != ' '){
+                                    break;
+                                }
+                            }
+                            if(j != newText.length()-1){
+                                newText = newText.substring(0, j);
+                            }
+                            for (int k = i+2; k < text.length(); k++) {
+                                if(){
+                                    
+                                }
+                            }
 
                         }else if (text.charAt(i+1) == '\\') {
                             newText += '\\';
@@ -665,7 +681,7 @@ public void rm(String com) {
                                     This is free software: you are free to change and redistribute it.
                                     There is NO WARRANTY, to the extent permitted by law.
 
-                                    Written by Richard Stallman and David MacKenzie.""" 
+                                    Written by Philopateer Karam.""" 
                     );
                     return;
                 }else {
