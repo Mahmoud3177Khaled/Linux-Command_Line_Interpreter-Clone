@@ -485,7 +485,6 @@ class CLI {
         if (size != 0) {
             paths.add(path);
     }
-
     /* 2-chick the paths is correct and create directories*/
     File f, pf;
     String check_path;
@@ -576,7 +575,12 @@ public void echo(String com){
                     return;
                 }
                 i++;
-            } else if (i < com.length() - 1 && (com.charAt(i) != '-' )&& (com.charAt(i) != ' ' )) {
+            }
+            else if(com.charAt(i) == '*'){
+                ls(com);
+                return;
+            }
+            else if (i < com.length() - 1 && (com.charAt(i) != '-' )&& (com.charAt(i) != ' ' )) {
                 for (int j = i; j < com.length(); j++) {
                     text += com.charAt(j);
                 }
@@ -1208,7 +1212,7 @@ else{
     OPTIONS    
        -f, --whatis
               Display a short description of the specified command.
-                
+
        --help
               Display this help and exit.
     
@@ -1406,8 +1410,6 @@ else{
 }
 
 }    
- 
-
 
 //----------------------------------------------------------------------------------------------------
 public void rm(String com) { 
