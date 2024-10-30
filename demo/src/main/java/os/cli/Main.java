@@ -1878,7 +1878,7 @@ Written by Philopateer Karam.
     }
 
     // --------------------------- # Mahmoud Khaled 20220317 # --------------------------- //
-    
+
     public void cd(String com) {
         if ("--help".equals(com)) {
             System.out.println("""
@@ -2325,7 +2325,7 @@ Written by Philopateer Karam.
                     String choice = inputChoice.next();
                     if (choice.equals("n") || choice.equals("N")) {
                         // System.out.println("cp cancelled");
-                        return;
+                        continue;
                     }
                 }
 
@@ -2333,7 +2333,7 @@ Written by Philopateer Karam.
                     if ((options.get("-v") == 1 || options.get("--verbose") == 1)) {
                         System.out.println("skipped '" + fileToCopy.getName() + "'");
                     }
-                    return;
+                    continue;
                 }
 
                 try {
@@ -2381,7 +2381,7 @@ Written by Philopateer Karam.
                     String choice = inputChoice.next();
                     if (choice.equals("n") || choice.equals("N")) {
                         // System.out.println("cp cancelled");
-                        return;
+                        continue;
                     }
                 }
 
@@ -2389,7 +2389,7 @@ Written by Philopateer Karam.
                     if ((options.get("-v") == 1 || options.get("--verbose") == 1)) {
                         System.out.println("skipped '" + fileToCopy.getName() + "'");
                     }
-                    return;
+                    continue;
                 }
 
                 try {
@@ -2426,7 +2426,7 @@ Written by Philopateer Karam.
                     String choice = inputChoice.next();
                     if (choice.equals("n") || choice.equals("N")) {
                         // System.out.println("cp cancelled");
-                        return;
+                        continue;
                     }
                 }
 
