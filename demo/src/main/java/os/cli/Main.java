@@ -1979,7 +1979,7 @@ Written by Philopateer Karam.
         }
 
         for (String Folder : Folders) {
-            if(Folder.charAt(0) == '-') {
+            if(Folder.charAt(0) == '-' || Folder.equals("")) {
                 if (!Folder.equals("--ignore-fail-on-non-empty") && 
                 !Folder.equals("-p") && 
                 !Folder.equals("-v") && 
@@ -2085,7 +2085,7 @@ Written by Philopateer Karam.
 
         for (String file : MyArgs) {
 
-            if(file.equals(">") || file.equals(">>") || file.charAt(0) == '-') {
+            if(file.equals(">") || file.equals(">>") || file.charAt(0) == '-' || file.equals("")) {
                 if (!file.equals(">") && 
                 !file.equals(">>") && 
                 !file.equals("-n") && 
@@ -2160,6 +2160,9 @@ Written by Philopateer Karam.
         String[] MyArgs = proccess_args(com);
 
         for (String MyArg : MyArgs) {
+            if(MyArg.equals("")) {
+                continue;
+            }
             if (MyArg.equals("-s")) {
                 System.out.print(System.getProperty("os.name") + " ");
             }
@@ -2269,7 +2272,7 @@ Written by Philopateer Karam.
 
         for (String parameter : parameters) {
 
-            if(parameter.charAt(0) == '-' || parameter.equals(parameters[parameters.length-1])) {
+            if(parameter.charAt(0) == '-' || parameter.equals(parameters[parameters.length-1]) || parameter.equals("")) {
                 if(!parameter.equals("-f") && !parameter.equals("--force") && !parameter.equals("-i") &&
                 !parameter.equals("--iteractive") &&!parameter.equals("-n") &&!parameter.equals("--no-clobber") && 
                 !parameter.equals("-v") &&!parameter.equals("--verbose") && !parameter.equals("--help") &&
