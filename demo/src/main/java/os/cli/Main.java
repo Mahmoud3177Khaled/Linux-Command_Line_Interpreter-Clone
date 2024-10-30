@@ -1,4 +1,4 @@
-// package os.cli;
+package os.cli;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -2050,6 +2050,7 @@ Written by Philopateer Karam.
             return;
         }
 
+        int i = 0;
         for (String file : MyArgs) {
             if(file.isEmpty()) {
                 continue;
@@ -2114,14 +2115,21 @@ Written by Philopateer Karam.
                 try {
                     try (Scanner scanner = new Scanner(FileToPrint)) {
                         while (scanner.hasNextLine()) {
-                            ++lineNum;
-                            System.err.println(lineNum + "- " + scanner.nextLine());
+                            if(options.get("-n") == 1) {
+                                ++lineNum; 
+                                System.err.println(lineNum + "- " + scanner.nextLine());
+                            } else {
+                                System.err.println(scanner.nextLine());
+                            }
+
                         }
+
                     }
                 } catch (FileNotFoundException e) {
                     System.out.println("Error: Unable to read from file.");
                 }
             }
+            i++;
         }
 
     }
