@@ -52,6 +52,8 @@ public class Main {
                         cli.rm(arg);
                     case "echo" ->
                         cli.echo(arg);
+                    case "man" ->
+                        cli.man(arg);
                     case "rmdir" ->
                         cli.rmdir(arg);
                     case "cat" ->
@@ -675,7 +677,81 @@ public void echo(String com){
 
 
         }
-    
+//----------------------------------------------------------------------------------------------------
+public void man(String com){
+    com.trim();
+    if(com.equals("pwd")){
+        System.out.println("NAME\n" + //
+                        "       pwd - print name of current working directory\n" + //
+                        "\n" + //
+                        "SYNOPSIS\n" + //
+                        "       pwd [OPTION]\n" + //
+                        "\n" + //
+                        "DESCRIPTION\n" + //
+                        "       The pwd command prints the full filename of the current working directory.\n" + //
+                        "\n" + //
+                        "OPTIONS\n" + //
+                        "       -L, --logical\n" + //
+                        "              use PWD from environment, even if it contains symlinks\n" + //
+                        "\n" + //
+                        "       -P, --physical\n" + //
+                        "              avoid all symlinks; print the actual physical directory\n" + //
+                        "\n" + //
+                        "       --help\n" + //
+                        "              display this help and exit\n" + //
+                        "\n" + //
+                        "       --version\n" + //
+                        "              output version information and exit");
+    }else if(com =="touch"){
+        System.out.println("NAME\n" + //
+                        "       touch - change file timestamps\n" + //
+                        "\n" + //
+                        "SYNOPSIS\n" + //
+                        "       touch [OPTION]... FILE...\n" + //
+                        "\n" + //
+                        "DESCRIPTION\n" + //
+                        "       The  touch command updates the access and modification timestamps of the specified FILEs.  If FILE does not exist, and if the -c option is not given, an empty file is created.\n" + //
+                        "\n" + //
+                        "OPTIONS\n" + //
+                        "       -a, --time=atime\n" + //
+                        "              change only the access time\n" + //
+                        "\n" + //
+                        "       -m, --time=mtime\n" + //
+                        "              change only the modification time\n" + //
+                        "\n" + //
+                        "       -c, --no-create\n" + //
+                        "              do not create any files\n" + //
+                        "\n" + //
+                        "       -d, --date=STRING\n" + //
+                        "              parse STRING and use it instead of the current time\n" + //
+                        "\n" + //
+                        "       -r, --reference=FILE\n" + //
+                        "              use this file's times instead of the current time\n" + //
+                        "\n" + //
+                        "       --help\n" + //
+                        "              display this help and exit\n" + //
+                        "\n" + //
+                        "       --version\n" + //
+                        "              output version information and exit");
+    }else if(com ==""){
+        System.out.println();
+    }else if(com ==""){
+        System.out.println();
+    }else if(com ==""){
+        System.out.println();
+    }else if(com ==""){
+        System.out.println();
+    }else if(com ==""){
+        System.out.println();
+    }else if(com ==""){
+        System.out.println();
+    }else if(com ==""){
+        System.out.println();
+    }else if(com ==""){
+        System.out.println();
+    }
+
+}    
  
 
 
