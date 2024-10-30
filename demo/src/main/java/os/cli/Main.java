@@ -586,6 +586,23 @@ class CLI {
         /* 1- split command to options and paths  */
         String text = "";
         String option = "";
+        String path = "";
+        boolean mode = false;
+        boolean toFile = false;
+        if(com.contains(">>")){
+            toFile =true;
+            mode = true;
+            int index = com.indexOf(">>");
+            path= (com.substring(index+2, com.length())).trim();
+            com = (com.substring(0, index)).trim();
+        }else if(com.contains(">")){
+            System.out.println(555);
+            toFile =true;
+            mode = false;
+            int index = com.indexOf(">");
+            path= (com.substring(index+1, com.length())).trim();
+            com = (com.substring(0, index)).trim();
+        }
         boolean newline = true, enableEscapeCarcters = false;
         for (int i = 0; i < com.length(); i++) {
 
@@ -648,7 +665,23 @@ class CLI {
         }
         /* 2-print the input*/
         if (!enableEscapeCarcters) {
-            if (newline) {
+            if (toFile){
+                File f = new File(currentDir +"\\"+ path);
+                if(!f.exists()){
+                    try {
+                        f.createNewFile();
+                    } catch (IOException ex) {
+                    }
+                }
+                try {
+                    FileWriter outF = new FileWriter(f,mode);
+                    outF.write(text);
+                    outF.close();
+                } catch (IOException e) {
+                }
+
+            }
+            else if (newline) {
                 System.out.println(text);
             } else {
                 System.out.print(text);
@@ -720,7 +753,25 @@ class CLI {
             if (newText.length() != 0) {
                 lines.add(newText);
             }
-            if (newline) {
+            if (toFile){
+                File f = new File(currentDir +"\\"+ path);
+                if(!f.exists()){
+                    try {
+                        f.createNewFile();
+                    } catch (IOException ex) {
+                    }
+                }
+                try {
+                    FileWriter outF = new FileWriter(f,mode);
+                    for (int j = 0; j < lines.size(); j++) {
+                        outF.write(lines.get(j)+"\n");
+                    }
+                    outF.close();
+                } catch (IOException e) {
+                }
+
+            }
+            else if (newline) {
                 for (int j = 0; j < lines.size(); j++) {
                     System.out.println(lines.get(j));
                 }
