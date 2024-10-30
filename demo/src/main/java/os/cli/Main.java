@@ -61,6 +61,9 @@ public class Main {
                         cli.cp(arg, input);
                     case "<" ->
                         cli.inputOp(arg);
+                    case "exit" -> {
+                        return;
+                    }
                     default ->
                         cli.UndefinedInput(command);
                 }
