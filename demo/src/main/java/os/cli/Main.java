@@ -5,10 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
+import java.nio.file.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.FileReader;
@@ -798,15 +795,17 @@ public void rm(String com) {
 
 //---------------------------------------------------------------------------------------------------------------
 public void touch(String com) { // 20220027
-        System.out.println("touch called");
-        System.out.println("args in comm: " + com);
-
-        String[] MyArgs = proccess_args(com);
-
-        for (int i = 1; i < MyArgs.length; i++) {
-            System.out.println(MyArgs[i]);
+    try {
+        if (com.isEmpty()) {
+            System.out.println("touch: missing file operand");
+        } else {
+            File file = new File(this.currentDir, com);
+            file.createNewFile();
         }
+    } catch (IOException e) {
+        System.out.println("Error creating file: " + e.getMessage());
     }
+}
 
     public void mv(String com) { // 20220028
         System.out.println("mv called");
