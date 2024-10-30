@@ -1,4 +1,4 @@
-package os.cli;
+// package os.cli;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,7 +19,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-
 
 public class Main {
 
@@ -66,6 +65,8 @@ public class Main {
                             cli.uname(arg);
                         case "cp" ->
                             cli.cp(arg, input);
+                        // case "<" ->
+                        //     cli.inputOp(arg);
                         // case "<" ->
                         //     cli.inputOp(arg);
                         case ">" ->
@@ -335,7 +336,7 @@ class CLI {
             System.err.println("Error reading the file: " + e.getMessage());
         }
     }
-    
+
     public void less(String com) {
         String[] args = proccess_args(com);
         if (args.length < 1) {
@@ -1645,12 +1646,13 @@ Written by Philopateer Karam.
 
     public void pipe(String all) {
         Scanner input = new Scanner(System.in);
-        String[] commands = all.split("|");
+        String[] commands = all.split("\\|");
         String com, arg;
         for (int i = 0; i < commands.length; i++) {
             com = "";
             arg = "";
             int j = 0;
+            commands[i] = commands[i].trim();
             for (; j < commands[i].length(); j++) {
                 if (com.length() != 0 && commands[i].charAt(j) == ' ') {
                     break;
@@ -1658,57 +1660,59 @@ Written by Philopateer Karam.
                     com += commands[i].charAt(j);
                 }
             }
-            arg = (commands[i].substring(j + 1, commands[i].length())).trim();
+            if (j < commands[i].length()-1) {
+                arg = (commands[i].substring(j + 1, commands[i].length())).trim();
+            }
             switch (com) {
                 case "pwd" -> {
                     pwd(arg);
                     this.isPiped = "pwd";
                 }
-                case "cd" ->{
+                case "cd" -> {
                     cd(arg);
                     this.isPiped = "cd";
                 }
-                case "mkdir" ->{
+                case "mkdir" -> {
                     mkdir(arg);
                     this.isPiped = "mkdir";
                 }
-                case "touch" ->{
+                case "touch" -> {
                     touch(arg);
                     this.isPiped = "touch";
                 }
-                case "mv" ->{
+                case "mv" -> {
                     mv(arg);
                     this.isPiped = "mv";
                 }
-                case "rm" ->{
+                case "rm" -> {
                     rm(arg);
                     this.isPiped = "rm";
                 }
-                case "echo" ->{
+                case "echo" -> {
                     echo(arg);
                     this.isPiped = "echo";
                 }
-                case "man" ->{
+                case "man" -> {
                     man(arg);
                     this.isPiped = "man";
                 }
-                case "rmdir" ->{
+                case "rmdir" -> {
                     rmdir(arg);
                     this.isPiped = "rmdir";
                 }
-                case "cat" ->{
+                case "cat" -> {
                     cat(arg, input);
                     this.isPiped = "cat";
                 }
-                case "ls" ->{
+                case "ls" -> {
                     ls(arg);
                     this.isPiped = "ls";
                 }
-                case "uname" ->{
+                case "uname" -> {
                     uname(arg);
                     this.isPiped = "uname";
                 }
-                case "cp" ->{
+                case "cp" -> {
                     cp(arg, input);
                     this.isPiped = "cp";
                 }
@@ -1716,15 +1720,15 @@ Written by Philopateer Karam.
                 //     inputOp(arg);
                 //     this.isPiped = "<";
                 // }
-                case ">" ->{
+                case ">" -> {
                     redirectOutput(arg);
                     this.isPiped = ">";
                 }
-                case "users" ->{
+                case "users" -> {
                     users();
                     this.isPiped = "users";
                 }
-                case "clear" ->{
+                case "clear" -> {
                     clear();
                     this.isPiped = "clear";
                 }
@@ -1735,7 +1739,7 @@ Written by Philopateer Karam.
                     UndefinedInput(com);
             }
             this.inputOfPipe = this.outputOfPipe;
-            this.outputOfPipe= "";
+            this.outputOfPipe = "";
         }
         this.isPiped = "";
         this.inputOfPipe = "";
@@ -2096,9 +2100,9 @@ Written by Philopateer Karam.
                 continue;
             }
             int lineNum = 0;
-            
+
             File FileToPrint = new File(this.currentDir, file);
-            
+
             if (file.charAt(1) == ':') {
                 FileToPrint = new File(file);
             }
@@ -2179,8 +2183,8 @@ Written by Philopateer Karam.
                     System.out.print("Failed to retrive info");
                 }
             }
-            if(!MyArg.equals("-s") && !MyArg.equals("-r") && !MyArg.equals("-m") && !MyArg.equals("-n")) {
-                System.out.print( MyArg + " is not recognized");
+            if (!MyArg.equals("-s") && !MyArg.equals("-r") && !MyArg.equals("-m") && !MyArg.equals("-n")) {
+                System.out.print(MyArg + " is not recognized");
             }
             System.out.println();
         }
@@ -2188,7 +2192,7 @@ Written by Philopateer Karam.
     }
 
     public void cp(String com, Scanner inputChoice) {                        //20220317
-        
+
         String[] parameters = proccess_args(com);
 
         HashMap<String, Integer> options = new HashMap<>();
@@ -2332,7 +2336,7 @@ Written by Philopateer Karam.
                     }
                 }
 
-                if(fileToCopy.exists() && (options.get("-n") == 1 || options.get("--no-clobber") == 1)) {
+                if (fileToCopy.exists() && (options.get("-n") == 1 || options.get("--no-clobber") == 1)) {
                     if ((options.get("-v") == 1 || options.get("--verbose") == 1)) {
                         System.out.println("skipped '" + fileToCopy.getName() + "'");
                     }
@@ -2354,7 +2358,7 @@ Written by Philopateer Karam.
                     }
                     outputFile.close();
 
-                    if(options.get("-v") == 1 || options.get("--verbose") == 1) {
+                    if (options.get("-v") == 1 || options.get("--verbose") == 1) {
                         System.out.println("Copyied '" + OgfileToCopy.getPath() + "' to '" + fileToCopy.getPath() + "' Successfully");
                     }
 
@@ -2365,13 +2369,13 @@ Written by Philopateer Karam.
             } else if (srcType == 0 && destType == 1) {
                 fileToCopy = new File(this.currentDir, parameters[parameters.length - 1] + "/" + OgfileToCopy.getName());
 
-                for (int i = 0; i < parameters[parameters.length-1].length(); i++) {
-                    if (parameters[parameters.length-1].charAt(i) == ':') {
+                for (int i = 0; i < parameters[parameters.length - 1].length(); i++) {
+                    if (parameters[parameters.length - 1].charAt(i) == ':') {
                         pathType = 1;
                     }
                 }
                 if (pathType == 1) {
-                    fileToCopy = new File(parameters[parameters.length-1] + "/" + OgfileToCopy.getName());
+                    fileToCopy = new File(parameters[parameters.length - 1] + "/" + OgfileToCopy.getName());
                 }
 
                 if (!OgfileToCopy.exists()) {
@@ -2388,7 +2392,7 @@ Written by Philopateer Karam.
                     }
                 }
 
-                if(fileToCopy.exists() && (options.get("-n") == 1 || options.get("--no-clobber") == 1)) {
+                if (fileToCopy.exists() && (options.get("-n") == 1 || options.get("--no-clobber") == 1)) {
                     if ((options.get("-v") == 1 || options.get("--verbose") == 1)) {
                         System.out.println("skipped '" + fileToCopy.getName() + "'");
                     }
@@ -2410,7 +2414,7 @@ Written by Philopateer Karam.
                     }
                     outputFile.close();
 
-                    if(options.get("-v") == 1 || options.get("--verbose") == 1) {
+                    if (options.get("-v") == 1 || options.get("--verbose") == 1) {
                         System.out.println("Copyied '" + OgfileToCopy.getPath() + "' to '" + fileToCopy.getPath() + "' Successfully");
                     }
                 } catch (IOException ex) {
@@ -2439,15 +2443,14 @@ Written by Philopateer Karam.
                 //     }
                 //     return;
                 // }
-
                 fileToCopy.mkdir();
-                if(options.get("-v") == 1 || options.get("--verbose") == 1) {
+                if (options.get("-v") == 1 || options.get("--verbose") == 1) {
                     System.out.println("Created Directory '" + fileToCopy.getName() + "' inside '" + fileToCopy.getParent() + "' Successfully");
                 }
 
                 for (File file : OgfileToCopy.listFiles()) {
 
-                    String newComm = nextCommArgs + file.getPath() + " " + parameters[parameters.length-1] + "/" + file.getName();
+                    String newComm = nextCommArgs + file.getPath() + " " + parameters[parameters.length - 1] + "/" + file.getName();
                     // System.out.println(newComm);
                     cp(newComm, inputChoice);
 
@@ -2461,9 +2464,7 @@ Written by Philopateer Karam.
     // public void inputOp(String com) {                           //20220317
     //     System.out.println("inputOp called");
     //     System.out.println("args in comm: " + com);
-    
     //     String[] MyArgs = proccess_args(com);
-    
     //     for (int i = 1; i < MyArgs.length; i++) {
     //         System.out.println(MyArgs[i]);
     //     }
