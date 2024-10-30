@@ -36,50 +36,50 @@ public class Main {
 
                 command = input.next();
                 arg = input.nextLine().trim();
-
-                switch (command) {
-                    case "pwd" ->
+                if (arg.contains("|")) {
+                    cli.pipe(command + arg);
+                } else {
+                    switch (command) {
+                        case "pwd" ->
                             cli.pwd(arg);
-                    case "cd" ->
+                        case "cd" ->
                             cli.cd(arg);
-                    case "mkdir" ->
+                        case "mkdir" ->
                             cli.mkdir(arg);
-                    case "touch" ->
+                        case "touch" ->
                             cli.touch(arg);
-                    case "mv" ->
+                        case "mv" ->
                             cli.mv(arg);
-                    case "rm" ->
+                        case "rm" ->
                             cli.rm(arg);
-                    case "echo" ->
+                        case "echo" ->
                             cli.echo(arg);
-                    case "man" ->
+                        case "man" ->
                             cli.man(arg);
-                    case "rmdir" ->
+                        case "rmdir" ->
                             cli.rmdir(arg);
-                    case "cat" ->
+                        case "cat" ->
                             cli.cat(arg, input);
-                    case "ls" ->
+                        case "ls" ->
                             cli.ls(arg);
-                    case "uname" ->
+                        case "uname" ->
                             cli.uname(arg);
-                    case "cp" ->
+                        case "cp" ->
                             cli.cp(arg, input);
-                    // case "<" ->
-                    //         cli.inputOp(arg);
-                    case ">" ->
+                        case "<" ->
+                            cli.inputOp(arg);
+                        case ">" ->
                             cli.redirectOutput(arg);
-                    case "more" ->
-                            cli.more(arg);
-                    case "users" ->
+                        case "users" ->
                             cli.users();
-                    case "clear" ->
+                        case "clear" ->
                             cli.clear();
-                    case "exit" -> {
-                        return;
-                    }
-
-                    default ->
+                        case "exit" -> {
+                            return;
+                        }
+                        default ->
                             cli.UndefinedInput(command);
+                    }
                 }
             }
         }
@@ -87,6 +87,7 @@ public class Main {
 }
 
 class CLI {
+
     private String currentDir;
     private String homeDir;
 
@@ -165,90 +166,103 @@ class CLI {
             System.err.println("An unexpected error occurred: " + e.getMessage());
         }
     }
+
     public void who(String com) {
         String[] args = proccess_args(com);
         boolean quietMode = args.length > 0 && "-q".equals(args[0]);
-    
+
         try {
             // Using PowerShell to get the logged-in username
-            ProcessBuilder processBuilder = new ProcessBuilder("powershell.exe", 
-                "-Command", 
-                "Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty UserName");
+            ProcessBuilder processBuilder = new ProcessBuilder("powershell.exe",
+                    "-Command",
+                    "Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty UserName");
             Process process = processBuilder.start();
-    
-        
+
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                 String line;
                 StringBuilder users = new StringBuilder();
-    
+
                 while ((line = reader.readLine()) != null) {
-                    String username = line.trim(); 
+                    String username = line.trim();
                     if (!quietMode) {
-                        System.out.println(username); 
+                        System.out.println(username);
                     }
-                    users.append(username).append(" "); 
+                    users.append(username).append(" ");
                 }
-    
-                
+
                 if (quietMode) {
-                    System.out.println(users.toString().trim()); 
-                    System.out.println("Total users: " + users.toString().trim().split(" ").length); 
+                    System.out.println(users.toString().trim());
+                    System.out.println("Total users: " + users.toString().trim().split(" ").length);
                 }
             }
-    
-            process.waitFor(); 
+
+            process.waitFor();
         } catch (IOException | InterruptedException e) {
             System.out.println("Error executing who command: " + e.getMessage());
         }
     }
-    
+
     public void ls(String com) { //20220028
         String[] MyArgs = proccess_args(com);
-    
-        boolean showAll = false;    
-        boolean longFormat = false;  
-        boolean humanReadable = false; 
-        boolean recursive = false;    
-        boolean sortByTime = false;   
-        boolean reverseOrder = false; 
-        boolean sortBySize = false;   
-    
+
+        boolean showAll = false;
+        boolean longFormat = false;
+        boolean humanReadable = false;
+        boolean recursive = false;
+        boolean sortByTime = false;
+        boolean reverseOrder = false;
+        boolean sortBySize = false;
+
         for (String param : MyArgs) {
             switch (param) {
-                case "-a": showAll = true; break;
-                case "-l": longFormat = true; break;
-                case "-h": humanReadable = true; break;
-                case "-R": recursive = true; break;
-                case "-t": sortByTime = true; break;
-                case "-r": reverseOrder = true; break;
-                case "-S": sortBySize = true; break;
+                case "-a":
+                    showAll = true;
+                    break;
+                case "-l":
+                    longFormat = true;
+                    break;
+                case "-h":
+                    humanReadable = true;
+                    break;
+                case "-R":
+                    recursive = true;
+                    break;
+                case "-t":
+                    sortByTime = true;
+                    break;
+                case "-r":
+                    reverseOrder = true;
+                    break;
+                case "-S":
+                    sortBySize = true;
+                    break;
             }
         }
-    
+
         File dir = new File(this.currentDir);
         File[] files = dir.listFiles();
-    
+
         if (files == null) {
             System.out.println("Error: Could not access directory.");
             return;
         }
-    
+
         if (!showAll) {
             files = Arrays.stream(files)
                     .filter(file -> !file.getName().startsWith("."))
                     .toArray(File[]::new);
         }
-    
+
         if (sortByTime) {
             Arrays.sort(files, Comparator.comparingLong(File::lastModified));
         } else if (sortBySize) {
             Arrays.sort(files, Comparator.comparingLong(File::length));
         }
-    
+
         if (reverseOrder) {
             Collections.reverse(Arrays.asList(files));
         }
-    
+
         for (File file : files) {
             String output = file.getName();
             if (longFormat) {
@@ -256,7 +270,7 @@ class CLI {
             }
             System.out.println(output);
         }
-    
+
         if (recursive) {
             for (File file : files) {
                 if (file.isDirectory()) {
@@ -267,7 +281,7 @@ class CLI {
             }
         }
     }
-    
+
     private String getLongFormatString(File file, boolean humanReadable) {
         StringBuilder sb = new StringBuilder();
         sb.append(file.canRead() ? "r" : "-");
@@ -281,13 +295,18 @@ class CLI {
         sb.append(file.getName());
         return sb.toString();
     }
-    
+
     private String getSizeString(long size, boolean humanReadable) {
         if (humanReadable) {
-            if (size < 1024) return size + " B";
-            else if (size < 1048576) return (size / 1024) + " KB";
-            else if (size < 1073741824) return (size / 1048576) + " MB";
-            else return (size / 1073741824) + " GB";
+            if (size < 1024) {
+                return size + " B";
+            } else if (size < 1048576) {
+                return (size / 1024) + " KB";
+            } else if (size < 1073741824) {
+                return (size / 1048576) + " MB";
+            } else {
+                return (size / 1073741824) + " GB";
+            }
         }
         return String.valueOf(size);
     }
@@ -332,19 +351,17 @@ class CLI {
             return;
         }
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(file));
-             Scanner scanner = new Scanner(System.in)) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file)); Scanner scanner = new Scanner(System.in)) {
 
             String line;
             int lineCount = 0;
-            int pageSize = 20; 
+            int pageSize = 20;
             StringBuilder pageContent = new StringBuilder();
 
             while ((line = reader.readLine()) != null) {
                 pageContent.append(line).append(System.lineSeparator());
                 lineCount++;
 
-             
                 if (lineCount == pageSize) {
                     System.out.print(pageContent.toString());
                     System.out.println("Press Enter to continue...");
@@ -362,7 +379,7 @@ class CLI {
             System.out.println("Error reading file: " + e.getMessage());
         }
     }
-    
+
     // --------------------------- # philo karam 20220246 # --------------------------- //
     private void createParentDirectory(String path) {
         File f, pf;
@@ -374,28 +391,30 @@ class CLI {
         }
         f.mkdir();
     }
-    public String makeAbsolutePath(String path){
-        if ((!path.contains("\\") && !path.contains("/"))|| (path.charAt(1) != ':') ){
-            path = currentDir + "\\"+ path;
-        } 
+
+    public String makeAbsolutePath(String path) {
+        if ((!path.contains("\\") && !path.contains("/")) || (path.charAt(1) != ':')) {
+            path = currentDir + "\\" + path;
+        }
         return path;
-    } 
-   //--------------------------------------------------------------------------------------------------- 
-    private void removeAllInADir(String path,boolean iOption ,boolean verboseOption){
-        File f = new File(path),child;
+    }
+    //--------------------------------------------------------------------------------------------------- 
+
+    private void removeAllInADir(String path, boolean iOption, boolean verboseOption) {
+        File f = new File(path), child;
         Scanner in = new Scanner(System.in);
         String remove;
-        if(f.listFiles() == null ||f.listFiles().length == 0){
-            if(iOption){
+        if (f.listFiles() == null || f.listFiles().length == 0) {
+            if (iOption) {
                 System.out.println("rm: remove directory \'" + path + "\'?");
                 remove = in.next();
-                if(remove.equals("y")){
+                if (remove.equals("y")) {
                     f.delete();
                     if (verboseOption) {
                         System.out.println("removed \'" + path + "\' ");
                     }
                 }
-            }else{
+            } else {
                 f.delete();
                 if (verboseOption) {
                     System.out.println("removed \'" + path + "\' ");
@@ -404,51 +423,48 @@ class CLI {
             return;
         }
 
-            for(int i = 0 ; i < f.listFiles().length ;i++){
-                if (f.listFiles()[i].isFile()){
-                    child = f.listFiles()[i];
-                    if(iOption){
-                        System.out.print("rm: remove regular file \\'" + child.getAbsolutePath() + "\\'(y/n)?");
-                        remove = in.next();
-                        if(remove.equals("y")){
-                            child.delete();
-                            if (verboseOption) {
-                                System.out.println("removed \'" + child.getAbsolutePath() + "\' ");
-                            }
-                        }
-                    }
-                    else{
+        for (int i = 0; i < f.listFiles().length; i++) {
+            if (f.listFiles()[i].isFile()) {
+                child = f.listFiles()[i];
+                if (iOption) {
+                    System.out.print("rm: remove regular file \\'" + child.getAbsolutePath() + "\\'(y/n)?");
+                    remove = in.next();
+                    if (remove.equals("y")) {
                         child.delete();
                         if (verboseOption) {
                             System.out.println("removed \'" + child.getAbsolutePath() + "\' ");
                         }
                     }
+                } else {
+                    child.delete();
+                    if (verboseOption) {
+                        System.out.println("removed \'" + child.getAbsolutePath() + "\' ");
+                    }
                 }
-                else{
-                    if(f.listFiles() == null ||f.listFiles().length == 0){
-                        System.out.println(path);
-                        if(iOption){
-                            System.out.println("rm: remove directory \'" + path + "\'?");
-                            remove = in.next();
-                            if(remove.equals("y")){
-                                f.delete();
-                                if (verboseOption) {
-                                    System.out.println("removed \'" + path + "\' ");
-                                }
-                            }
-                        }else{
+            } else {
+                if (f.listFiles() == null || f.listFiles().length == 0) {
+                    System.out.println(path);
+                    if (iOption) {
+                        System.out.println("rm: remove directory \'" + path + "\'?");
+                        remove = in.next();
+                        if (remove.equals("y")) {
                             f.delete();
                             if (verboseOption) {
                                 System.out.println("removed \'" + path + "\' ");
                             }
                         }
+                    } else {
+                        f.delete();
+                        if (verboseOption) {
+                            System.out.println("removed \'" + path + "\' ");
+                        }
                     }
-                    else{
+                } else {
 
-                        removeAllInADir(f.listFiles()[i].getAbsolutePath(), iOption, verboseOption);
-                        i--;
-                    }
+                    removeAllInADir(f.listFiles()[i].getAbsolutePath(), iOption, verboseOption);
+                    i--;
                 }
+            }
         }
     }
     //-------------------------------------------------------------------------------------------------
@@ -511,11 +527,9 @@ class CLI {
             } else if (i < com.length() - 1 && com.charAt(i) == '-' && Character.isAlphabetic(com.charAt(i + 1))) {
                 if (com.charAt(i + 1) == 'p') {
                     parentOption = true;
-                }
-                else if (com.charAt(i + 1) == 'v') {
+                } else if (com.charAt(i + 1) == 'v') {
                     verboseOption = true;
-                }
-                else {
+                } else {
                     System.out.println("mkdir: unrecognized option\'" + option + "\'");
                     System.out.println("Try \'mkdir --help\' for more information.");
                     return;
@@ -534,11 +548,11 @@ class CLI {
         }
         if (size != 0) {
             paths.add(path);
-    }
-    /* 2-chick the paths is correct and create directories*/
-    File f, pf;
-    String check_path;
-    if (!parentOption) {
+        }
+        /* 2-chick the paths is correct and create directories*/
+        File f, pf;
+        String check_path;
+        if (!parentOption) {
             for (int i = 0; i < paths.size(); i++) {
                 check_path = makeAbsolutePath(paths.get(i));
                 f = new File(check_path);
@@ -547,27 +561,26 @@ class CLI {
                 if (!pf.exists()) {
                     System.out.println("mkdir: cannot create directory \'" + paths.get(i) + "\': No such file or directory");
 
-                }else{
+                } else {
                     f.mkdir();
                     if (verboseOption) {
                         System.out.println("mkdir: created directory \'" + paths.get(i) + "\' ");
                     }
                 }
             }
-    }
-    else{
+        } else {
             for (int i = 0; i < paths.size(); i++) {
-            check_path = makeAbsolutePath(paths.get(i));
-            createParentDirectory(check_path);
-            if (verboseOption) {
-                System.out.println("mkdir: created directory \'" + paths.get(i) + "\' ");
+                check_path = makeAbsolutePath(paths.get(i));
+                createParentDirectory(check_path);
+                if (verboseOption) {
+                    System.out.println("mkdir: created directory \'" + paths.get(i) + "\' ");
+                }
             }
         }
     }
-}
 
 //------------------------------------------------------------------------------------------------------
-public void echo(String com){
+    public void echo(String com) {
 
         /* 1- split command to options and paths  */
         String text = "";
@@ -612,137 +625,125 @@ public void echo(String com){
             } else if (i < com.length() - 1 && com.charAt(i) == '-' && Character.isAlphabetic(com.charAt(i + 1))) {
                 if (com.charAt(i + 1) == 'n') {
                     newline = false;
-                }
-                else if (com.charAt(i + 1) == 'E') {
+                } else if (com.charAt(i + 1) == 'E') {
                     enableEscapeCarcters = false;
-                }
-                else if (com.charAt(i + 1) == 'e') {
+                } else if (com.charAt(i + 1) == 'e') {
                     enableEscapeCarcters = true;
-                }
-                else {
+                } else {
                     System.out.println("echo: invalid option \'" + option + "\'");
                     System.out.println("Try \'echo --help\' for more information.");
                     return;
                 }
                 i++;
-            }
-            else if(com.charAt(i) == '*'){
+            } else if (com.charAt(i) == '*') {
                 ls(com);
                 return;
-            }
-            else if (i < com.length() - 1 && (com.charAt(i) != '-' )&& (com.charAt(i) != ' ' )) {
+            } else if (i < com.length() - 1 && (com.charAt(i) != '-') && (com.charAt(i) != ' ')) {
                 for (int j = i; j < com.length(); j++) {
                     text += com.charAt(j);
                 }
                 break;
             }
-            } 
-            /* 2-print the input*/
-            if(!enableEscapeCarcters){
-                if (newline) {
-                    System.out.println(text);
-                }
-                else{
-                    System.out.print(text);
-                }
-            }else{
-                ArrayList<String> lines = new ArrayList<>();
-                String newText ="";
-                for (int i = 0; i < text.length(); i++) {
-                    if(text.charAt(i) == '\\' && i+1 <text.length()){
-                        if(text.charAt(i+1) == 'n' || text.charAt(i+1) == 'f' ){
-                                lines.add(newText);
-                                newText = "";
-                                i++;
-                        }else if (text.charAt(i+1) == '\\') {
-                            newText += '\\';
-                            i++;
+        }
+        /* 2-print the input*/
+        if (!enableEscapeCarcters) {
+            if (newline) {
+                System.out.println(text);
+            } else {
+                System.out.print(text);
+            }
+        } else {
+            ArrayList<String> lines = new ArrayList<>();
+            String newText = "";
+            for (int i = 0; i < text.length(); i++) {
+                if (text.charAt(i) == '\\' && i + 1 < text.length()) {
+                    if (text.charAt(i + 1) == 'n' || text.charAt(i + 1) == 'f') {
+                        lines.add(newText);
+                        newText = "";
+                        i++;
+                    } else if (text.charAt(i + 1) == '\\') {
+                        newText += '\\';
+                        i++;
 
-                        }else if (text.charAt(i+1) == '\'') {
-                            newText += '\'';
-                            i++;
+                    } else if (text.charAt(i + 1) == '\'') {
+                        newText += '\'';
+                        i++;
 
-                        }else if (text.charAt(i+1) == '\"') {
-                            newText += '\"';
-                            i++;
+                    } else if (text.charAt(i + 1) == '\"') {
+                        newText += '\"';
+                        i++;
 
-                        }else if (text.charAt(i+1) == 't') {
-                            newText += "    ";
-                            i++;
+                    } else if (text.charAt(i + 1) == 't') {
+                        newText += "    ";
+                        i++;
 
-                        }else if (text.charAt(i+1) == 'b') {
-                            int j = newText.length()-1;
-                            for (; j >= 0;j--) {
-                                if(newText.charAt(j) != ' '){
-                                    break;
-                                }
+                    } else if (text.charAt(i + 1) == 'b') {
+                        int j = newText.length() - 1;
+                        for (; j >= 0; j--) {
+                            if (newText.charAt(j) != ' ') {
+                                break;
                             }
-                            if(j != newText.length()-1){
-                                newText = newText.substring(0, j+1);
+                        }
+                        if (j != newText.length() - 1) {
+                            newText = newText.substring(0, j + 1);
+                        }
+                        for (i = i + 2; i < text.length(); i++) {
+                            if (text.charAt(i) != ' ') {
+                                i--;
+                                break;
                             }
-                            for ( i = i+2; i < text.length(); i++) {
-                                if(text.charAt(i) != ' '){
-                                    i--;
-                                    break;
-                                }
-                            }
+                        }
 
-                        }else if (text.charAt(i+1) == 'c') {
-                           newline = false;
-                            break;
+                    } else if (text.charAt(i + 1) == 'c') {
+                        newline = false;
+                        break;
+                    } else if (text.charAt(i + 1) == 'r') {
+                        newText = "";
+                        i++;
+                    } else if (text.charAt(i + 1) == 'v') {
+                        int size = newText.length();
+                        lines.add(newText);
+                        newText = "";
+                        while (size > 0) {
+                            newText += ' ';
+                            size--;
                         }
-                        else if (text.charAt(i+1) == 'r') {
-                            newText ="";
-                            i++;
-                        }
-                        else if (text.charAt(i+1) == 'v') {
-                            int size = newText.length();
-                            lines.add(newText);
-                            newText ="";
-                            while (size > 0) {
-                                newText += ' ';
-                                size--;
-                            }
-                            i++;
-                        }
-                        else if (text.charAt(i+1) == '0') {
-                            i++;
-                        }
+                        i++;
+                    } else if (text.charAt(i + 1) == '0') {
+                        i++;
                     }
-                    else{
-                        newText += text.charAt(i);
-                    }  
-                }
-                if(newText.length() != 0){
-                    lines.add(newText);
-                }
-                if (newline) {
-                    for(int j = 0 ; j <lines.size();j++){
-                        System.out.println(lines.get(j));
-                    }
-                }
-                else{
-                    for(int j = 0 ; j <lines.size()-1;j++){
-                        System.out.println(lines.get(j));
-                    }
-                    System.out.print(lines.get(lines.size()-1));
+                } else {
+                    newText += text.charAt(i);
                 }
             }
-
-
+            if (newText.length() != 0) {
+                lines.add(newText);
+            }
+            if (newline) {
+                for (int j = 0; j < lines.size(); j++) {
+                    System.out.println(lines.get(j));
+                }
+            } else {
+                for (int j = 0; j < lines.size() - 1; j++) {
+                    System.out.println(lines.get(j));
+                }
+                System.out.print(lines.get(lines.size() - 1));
+            }
         }
+
+    }
 //----------------------------------------------------------------------------------------------------
-public void man(String com){
-    com = com.trim();
-    boolean fOption = false;
-    if (com.charAt(0) == '-'){
-        if(com.charAt(1) == 'f'){
-            fOption = true;
-            com = com.substring(2,com.length());
-        }
-        else if(com.charAt(1) == '-'){
-            if(com.contains("--help")){
-                System.out.println("""
+
+    public void man(String com) {
+        com = com.trim();
+        boolean fOption = false;
+        if (com.charAt(0) == '-') {
+            if (com.charAt(1) == 'f') {
+                fOption = true;
+                com = com.substring(2, com.length());
+            } else if (com.charAt(1) == '-') {
+                if (com.contains("--help")) {
+                    System.out.println("""
  Usage: man [OPTION]... [PAGE]...
 Display the manual page for the specified command or topic.
 
@@ -751,10 +752,9 @@ Options:
   --help            Display this help message and exit.
   --version         Output version information and exit.                       
                         """);
-                        return;
-            }
-            else if(com.contains("--version")){
-                System.out.println("""
+                    return;
+                } else if (com.contains("--version")) {
+                    System.out.println("""
 man (GNU man) 2.9.3
 Copyright (C) 2020 Free Software Foundation, Inc.
 License GPLv3+: GNU General Public License v3 or later <https://gnu.org/licenses/gpl.html>.
@@ -763,89 +763,101 @@ There is NO WARRANTY, to the extent permitted by law.
 
 Written by Philopateer Karam.                       
                         """);
-                        return;
-            }
-            else if(com.contains("--whatis")){
-                fOption = true;
-                com = com.substring(8,com.length());
+                    return;
+                } else if (com.contains("--whatis")) {
+                    fOption = true;
+                    com = com.substring(8, com.length());
+                }
             }
         }
-    }
-    com = com.trim();
-if(fOption){
-    if(com.equals("pwd")){
-        System.out.println("pwd - print name of current working directory.");
-    }else if(com.equals("touch")){
-        System.out.println("touch - change file timestamps");
-    }else if(com.equals("clear")){
-        System.out.println("clear - clear the terminal screen");
-    }else if(com.equals("users")){
-        System.out.println("users - print the usernames of users currently logged in to the current host.");
-    }else if(com.equals("more")){
-        System.out.println("more - file perusal filter for viewing text one screen at a time");
-    }
-    else if(com.equals("cd")){
-        System.out.println("cd - Change the shell working directory.");
-    }
-    else if(com.equals("mv")){
-        System.out.println("mv - move (rename) files.");
-    }
-    else if(com.equals("date")){
-        System.out.println("date - print or set the system date and time");
-    }
-    else if(com.equals("who")){
-        System.out.println("who - show who is logged on");
-    }
-    else if(com.equals("less")){
-        System.out.println("less - opposite of more.");
-    }
-    else if(com.equals("mkdir")){
-        System.out.println("mkdir - make directories.");
-    }else if(com.equals("rm")){
-        System.out.println("rm - remove files or directories.");
-    }else if(com.equals("echo")){
-        System.out.println("echo - display a line of text.");
-    }else if(com.equals("man")){
-        System.out.println("man - an interface to the system reference manuals.");
-    }else if(com.equals("rmdir")){
-        System.out.println("rmdir - remove empty directories.");
-    }else if(com.equals("cat")){
-        System.out.println("cat - concatenate and display files.");
-    }else if(com.equals("ls")){
-        System.out.println("ls - list directory contents.");
-    }else if(com.equals("uname")){
-        System.out.println("uname - print system information.");
-    }else if(com.equals("cp")){
-        System.out.println("cp - copy files and directories.");
-    }else {
-        System.out.println("man: no entry for "+com);
-    }
-}
-else{
-    if(com.equals("pwd")){
-        System.out.println("NAME\n" + //
-                        "       pwd - print name of current working directory\n" + //
-                        "\n" + //
-                        "SYNOPSIS\n" + //
-                        "       pwd [OPTION]\n" + //
-                        "\n" + //
-                        "DESCRIPTION\n" + //
-                        "       The pwd command prints the full filename of the current working directory.\n" + //
-                        "\n" + //
-                        "OPTIONS\n" + //
-                        "       -L, --logical\n" + //
-                        "              use PWD from environment, even if it contains symlinks\n" + //
-                        "\n" + //
-                        "       -P, --physical\n" + //
-                        "              avoid all symlinks; print the actual physical directory\n" + //
-                        "\n" + //
-                        "       --help\n" + //
-                        "              display this help and exit\n" + //
-                        "\n" + //
-                        "       --version\n" + //
+        com = com.trim();
+        if (fOption) {
+            if (com.equals("pwd")) {
+                System.out.println("pwd - print name of current working directory.");
+            } else if (com.equals("touch")) {
+                System.out.println("touch - change file timestamps");
+            } else if (com.equals("clear")) {
+                System.out.println("clear - clear the terminal screen");
+            } else if (com.equals("users")) {
+                System.out.println("users - print the usernames of users currently logged in to the current host.");
+            } else if (com.equals("more")) {
+                System.out.println("more - file perusal filter for viewing text one screen at a time");
+            } else if (com.equals("cd")) {
+                System.out.println("cd - Change the shell working directory.");
+            } else if (com.equals("mv")) {
+                System.out.println("mv - move (rename) files.");
+            } else if (com.equals("date")) {
+                System.out.println("date - print or set the system date and time");
+            } else if (com.equals("who")) {
+                System.out.println("who - show who is logged on");
+            } else if (com.equals("less")) {
+                System.out.println("less - opposite of more.");
+            } else if (com.equals("mkdir")) {
+                System.out.println("mkdir - make directories.");
+            } else if (com.equals("rm")) {
+                System.out.println("rm - remove files or directories.");
+            } else if (com.equals("echo")) {
+                System.out.println("echo - display a line of text.");
+            } else if (com.equals("man")) {
+                System.out.println("man - an interface to the system reference manuals.");
+            } else if (com.equals("rmdir")) {
+                System.out.println("rmdir - remove empty directories.");
+            } else if (com.equals("cat")) {
+                System.out.println("cat - concatenate and display files.");
+            } else if (com.equals("ls")) {
+                System.out.println("ls - list directory contents.");
+            } else if (com.equals("uname")) {
+                System.out.println("uname - print system information.");
+            } else if (com.equals("cp")) {
+                System.out.println("cp - copy files and directories.");
+            } else {
+                System.out.println("man: no entry for " + com);
+            }
+        } else {
+            if (com.equals("pwd")) {
+                System.out.println("NAME\n"
+                        + //
+                        "       pwd - print name of current working directory\n"
+                        + //
+                        "\n"
+                        + //
+                        "SYNOPSIS\n"
+                        + //
+                        "       pwd [OPTION]\n"
+                        + //
+                        "\n"
+                        + //
+                        "DESCRIPTION\n"
+                        + //
+                        "       The pwd command prints the full filename of the current working directory.\n"
+                        + //
+                        "\n"
+                        + //
+                        "OPTIONS\n"
+                        + //
+                        "       -L, --logical\n"
+                        + //
+                        "              use PWD from environment, even if it contains symlinks\n"
+                        + //
+                        "\n"
+                        + //
+                        "       -P, --physical\n"
+                        + //
+                        "              avoid all symlinks; print the actual physical directory\n"
+                        + //
+                        "\n"
+                        + //
+                        "       --help\n"
+                        + //
+                        "              display this help and exit\n"
+                        + //
+                        "\n"
+                        + //
+                        "       --version\n"
+                        + //
                         "              output version information and exit");
-    }else if(com.equals("touch")){
-        System.out.println("""
+            } else if (com.equals("touch")) {
+                System.out.println("""
                            NAME
                                   touch - change file timestamps
                            
@@ -875,10 +887,10 @@ else{
                                          display this help and exit
                            
                                   --version
-                                        output version information and exit""" 
-        );
-    }else if(com.equals("clear")){
-        System.out.println("""
+                                        output version information and exit"""
+                );
+            } else if (com.equals("clear")) {
+                System.out.println("""
     NAME
        clear - clear the terminal screen
     
@@ -890,8 +902,8 @@ else{
     
        clear ignores any command-line parameters that may be present.           
                 """);
-    }else if(com.equals("users")){
-        System.out.println("""
+            } else if (com.equals("users")) {
+                System.out.println("""
     NAME
        users - print the usernames of users currently logged in to the current host
     
@@ -908,8 +920,8 @@ else{
        --version
               output version information and exit               
                 """);
-    }else if(com.equals("more")){
-        System.out.println("""
+            } else if (com.equals("more")) {
+                System.out.println("""
     NAME
        more - file perusal filter for viewing text one screen at a time
     
@@ -945,9 +957,8 @@ else{
               Quit.
     
                 """);
-    }
-    else if(com.equals("cd")){
-        System.out.println("""
+            } else if (com.equals("cd")) {
+                System.out.println("""
     cd: cd [-L|-P] [directory]
     Change the shell working directory.
     
@@ -963,9 +974,8 @@ else{
           cannot be determined successfully, exit with a non-zero status
                 
                 """);
-    }
-    else if(com.equals("mv")){
-        System.out.println("""
+            } else if (com.equals("mv")) {
+                System.out.println("""
     NAME
        mv - move (rename) files
     
@@ -1009,9 +1019,8 @@ else{
        --version
               Output version information and exit.               
                 """);
-    }
-    else if(com.equals("date")){
-        System.out.println("""
+            } else if (com.equals("date")) {
+                System.out.println("""
     NAME
        date - print or set the system date and time
     
@@ -1051,9 +1060,8 @@ else{
        --version
               Output version information and exit.              
                 """);
-    }
-    else if(com.equals("who")){
-        System.out.println("""
+            } else if (com.equals("who")) {
+                System.out.println("""
     NAME
        who - show who is logged on
     
@@ -1107,9 +1115,8 @@ else{
               Output version information and exit.
                
                 """);
-    }
-    else if(com.equals("less")){
-        System.out.println("""
+            } else if (com.equals("less")) {
+                System.out.println("""
      NAME
        less - opposite of more
     
@@ -1159,9 +1166,8 @@ else{
           n            Repeat the previous search.
           q            Quit.           
                 """);
-    }
-    else if(com.equals("mkdir")){
-        System.out.println("""
+            } else if (com.equals("mkdir")) {
+                System.out.println("""
      NAME
        mkdir - make directories
     
@@ -1186,8 +1192,8 @@ else{
               Output version information and exit.
            
                 """);
-    }else if(com.equals("rm")){
-        System.out.println("""
+            } else if (com.equals("rm")) {
+                System.out.println("""
     NAME
        rm - remove files or directories
     
@@ -1213,8 +1219,8 @@ else{
        --version
               Output version information and exit.                
                 """);
-    }else if(com.equals("echo")){
-        System.out.println("""
+            } else if (com.equals("echo")) {
+                System.out.println("""
     NAME
        echo - display a line of text
     
@@ -1247,8 +1253,8 @@ else{
            \\t     horizontal tab
            \\v     vertical tab               
                 """);
-    }else if(com.equals("man")){
-        System.out.println("""
+            } else if (com.equals("man")) {
+                System.out.println("""
     NAME
        man - an interface to the system reference manuals
     
@@ -1270,8 +1276,8 @@ else{
               Output version information and exit.
                
                 """);
-    }else if(com.equals("rmdir")){
-        System.out.println("""
+            } else if (com.equals("rmdir")) {
+                System.out.println("""
     NAME
        rmdir - remove empty directories
     
@@ -1291,8 +1297,8 @@ else{
        --version
               Output version information and exit.               
                 """);
-    }else if(com.equals("cat")){
-        System.out.println("""
+            } else if (com.equals("cat")) {
+                System.out.println("""
     NAME
        cat - concatenate and display files
     
@@ -1332,8 +1338,8 @@ else{
               Output version information and exit.
                 
                 """);
-    }else if(com.equals("ls")){
-        System.out.println("""
+            } else if (com.equals("ls")) {
+                System.out.println("""
     NAME
        ls - list directory contents
     
@@ -1369,8 +1375,8 @@ else{
        --version
               Output version information and exit.                
                 """);
-    }else if(com.equals("uname")){
-        System.out.println("""
+            } else if (com.equals("uname")) {
+                System.out.println("""
     NAME
        uname - print system information
     
@@ -1414,8 +1420,8 @@ else{
        --version
               Output version information and exit.               
                 """);
-    }else if(com.equals("cp")){
-        System.out.println("""
+            } else if (com.equals("cp")) {
+                System.out.println("""
     NAME
        cp - copy files and directories
     
@@ -1454,22 +1460,22 @@ else{
               Output version information and exit.
                
                 """);
-    }else {
-        System.out.println("man: no entry for "+com);
-    }    
-}
+            } else {
+                System.out.println("man: no entry for " + com);
+            }
+        }
 
-}    
+    }
 
 //----------------------------------------------------------------------------------------------------
-public void rm(String com) { 
+    public void rm(String com) {
 
         /* 1- split command to options and paths  */
         ArrayList<String> paths = new ArrayList<>();
         String path = "";
         String option = "";
         int size = 0;
-        boolean recursive = false, verboseOption = false,dirOption = false,iOption=false;
+        boolean recursive = false, verboseOption = false, dirOption = false, iOption = false;
         for (int i = 0; i < com.length(); i++) {
             if (i < com.length() - 1 && com.charAt(i) == '-' && com.charAt(i + 1) == '-') {
                 while (i < com.length() && com.charAt(i) != ' ') {
@@ -1478,13 +1484,11 @@ public void rm(String com) {
                 }
                 if (option.equals("--recursive")) {
                     recursive = true;
-                }
-                else if (option.equals("--verbose")) {
+                } else if (option.equals("--verbose")) {
                     verboseOption = true;
-                }
-                else if (option.equals("--dir")) {
+                } else if (option.equals("--dir")) {
                     dirOption = true;
-                }else if (option.equals("--help")) {
+                } else if (option.equals("--help")) {
                     System.out.println("""
                                     Usage: rm [OPTION]... [FILE]...
                                     Remove (unlink) the FILE(s).
@@ -1493,10 +1497,10 @@ public void rm(String com) {
                                     r, -R, --recursive     remove directories and their contents recursively
                                     -d, --dir               remove empty directories
                                     --help     display this help and exit
-                                    --version  output version information and exit""" 
+                                    --version  output version information and exit"""
                     );
                     return;
-                }else if (option.equals("--version")) {
+                } else if (option.equals("--version")) {
                     System.out.println("""
                                     rm (GNU coreutils) 8.32
                                     Copyright (C) 2020 Free Software Foundation, Inc.
@@ -1504,10 +1508,10 @@ public void rm(String com) {
                                     This is free software: you are free to change and redistribute it.
                                     There is NO WARRANTY, to the extent permitted by law.
 
-                                    Written by Philopateer Karam.""" 
+                                    Written by Philopateer Karam."""
                     );
                     return;
-                }else {
+                } else {
                     System.out.println("rm: unrecognized option\'" + option + "\'");
                     System.out.println("Try \'rm --help\' for more information.");
                     return;
@@ -1516,15 +1520,13 @@ public void rm(String com) {
             } else if (i < com.length() - 1 && com.charAt(i) == '-' && Character.isAlphabetic(com.charAt(i + 1))) {
                 if (com.charAt(i + 1) == 'r') {
                     recursive = true;
-                }
-                else if (com.charAt(i + 1) == 'v') {
+                } else if (com.charAt(i + 1) == 'v') {
                     verboseOption = true;
-                }
-                else if (com.charAt(i + 1) == 'd') {
+                } else if (com.charAt(i + 1) == 'd') {
                     dirOption = true;
-                }else if (com.charAt(i + 1) == 'i') {
+                } else if (com.charAt(i + 1) == 'i') {
                     iOption = true;
-                }else {
+                } else {
                     System.out.println("rm: unrecognized option\'" + option + "\'");
                     System.out.println("Try \'rm --help\' for more information.");
                     return;
@@ -1545,108 +1547,206 @@ public void rm(String com) {
             paths.add(path);
         }
 
- /* 2-chick the paths is correct and remove it*/
-    File f;
-    String check_path;
-    Scanner in = new Scanner(System.in);
-    String remove;
-            for (int i = 0; i < paths.size(); i++) {
-                check_path = makeAbsolutePath(paths.get(i));
-                f = new File(check_path);
-                if (!f.exists()) {
-                    System.out.println("rm: cannot remove \'" + paths.get(i) + "\': No such file or directory");
-                }else{
-                    if(f.isFile()){
-                        if(iOption){
-                            System.out.print("rm: remove regular file \\'" + paths.get(i) + "\\'(y/n)?");
-                            remove = in.next();
-                            if(remove.equals("y")){
+        /* 2-chick the paths is correct and remove it*/
+        File f;
+        String check_path;
+        Scanner in = new Scanner(System.in);
+        String remove;
+        for (int i = 0; i < paths.size(); i++) {
+            check_path = makeAbsolutePath(paths.get(i));
+            f = new File(check_path);
+            if (!f.exists()) {
+                System.out.println("rm: cannot remove \'" + paths.get(i) + "\': No such file or directory");
+            } else {
+                if (f.isFile()) {
+                    if (iOption) {
+                        System.out.print("rm: remove regular file \\'" + paths.get(i) + "\\'(y/n)?");
+                        remove = in.next();
+                        if (remove.equals("y")) {
+                            f.delete();
+                            if (verboseOption) {
+                                System.out.println("removed \'" + paths.get(i) + "\' ");
+                            }
+                        }
+                    } else {
+                        f.delete();
+                        if (verboseOption) {
+                            System.out.println("removed \'" + paths.get(i) + "\' ");
+                        }
+                    }
+                } else { //is directory
+                    String[] list = f.list();
+                    if (dirOption == true && recursive == false) {
+                        if (list == null || list.length == 0) {
+                            if (iOption) {
+                                System.out.println("rm: remove directory \'" + paths.get(i) + "\'?");
+                                remove = in.next();
+                                if (remove.equals("y")) {
+                                    f.delete();
+                                    if (verboseOption) {
+                                        System.out.println("removed \'" + paths.get(i) + "\' ");
+                                    }
+                                }
+                            } else {
+                                f.delete();
+                                if (verboseOption) {
+                                    System.out.println("removed \'" + paths.get(i) + "\' ");
+                                }
+                            }
+                        } else {
+                            if (verboseOption) {
+                                System.out.println("rm: cannot remove \'" + paths.get(i) + "\': Directory not empty");
+                            }
+                        }
+                    } else if (recursive == true) {
+                        if (list == null || list.length == 0) {
+                            if (iOption) {
+                                System.out.println("rm: remove directory \'" + paths.get(i) + "\'?");
+                                remove = in.next();
+                                if (remove.equals("y")) {
+                                    f.delete();
+                                    if (verboseOption) {
+                                        System.out.println("removed \'" + paths.get(i) + "\' ");
+                                    }
+                                }
+                            }
+                        } else {
+                            removeAllInADir(currentDir + "\\" + paths.get(i), iOption, verboseOption);
+                            if (iOption) {
+                                System.out.println("rm: remove directory \'" + paths.get(i) + "\'?");
+                                remove = in.next();
+                                if (remove.equals("y")) {
+                                    f.delete();
+                                    if (verboseOption) {
+                                        System.out.println("removed \'" + paths.get(i) + "\' ");
+                                    }
+                                }
+                            } else {
                                 f.delete();
                                 if (verboseOption) {
                                     System.out.println("removed \'" + paths.get(i) + "\' ");
                                 }
                             }
                         }
-                        else{
-                            f.delete();
-                            if (verboseOption) {
-                                System.out.println("removed \'" + paths.get(i) + "\' ");
-                            }
-                        }
-                    }
-                    else{ //is directory
-                        String[] list = f.list();
-                        if(dirOption == true && recursive == false){
-                            if(list == null || list.length == 0){
-                                if(iOption){
-                                    System.out.println("rm: remove directory \'" + paths.get(i) + "\'?");
-                                    remove = in.next();
-                                    if(remove.equals("y")){
-                                        f.delete();
-                                        if (verboseOption) {
-                                            System.out.println("removed \'" + paths.get(i) + "\' ");
-                                        }
-                                    }
-                                }else{
-                                    f.delete();
-                                    if (verboseOption) {
-                                        System.out.println("removed \'" + paths.get(i) + "\' ");
-                                    }
-                                }
-                            }else{
-                                if(verboseOption){
-                                    System.out.println("rm: cannot remove \'" + paths.get(i) + "\': Directory not empty");
-                                }
-                            }
-                        }
-                        else if (recursive == true) {
-                            if(list == null || list.length == 0){
-                                if(iOption){
-                                    System.out.println("rm: remove directory \'" + paths.get(i) + "\'?");
-                                    remove = in.next();
-                                    if(remove.equals("y")){
-                                        f.delete();
-                                        if (verboseOption) {
-                                            System.out.println("removed \'" + paths.get(i) + "\' ");
-                                        }
-                                    }
-                                }
-                            }else{
-                                removeAllInADir(currentDir+"\\"+paths.get(i),iOption,verboseOption);
-                                if(iOption){
-                                    System.out.println("rm: remove directory \'" + paths.get(i) + "\'?");
-                                    remove = in.next();
-                                    if(remove.equals("y")){
-                                        f.delete();
-                                        if (verboseOption) {
-                                            System.out.println("removed \'" + paths.get(i) + "\' ");
-                                        }
-                                    }
-                                }else{
-                                    f.delete();
-                                    if (verboseOption) {
-                                        System.out.println("removed \'" + paths.get(i) + "\' ");
-                                    }
-                                }
-                            }
-                        }
-                        else{
-                            if (verboseOption) {
-                                System.out.println("rm: cannot remove \'" + paths.get(i) + "\': Is a directory");
-                            } 
+                    } else {
+                        if (verboseOption) {
+                            System.out.println("rm: cannot remove \'" + paths.get(i) + "\': Is a directory");
                         }
                     }
                 }
             }
-}
+        }
+    }
 
 //---------------------------------------------------------------------------------------------------------------
-public void touch(String com) { // 20220027
+    private String isPiped = "";
+    private String inputOfPipe = "";
+    private String outputOfPipe = "";
+
+    public void pipe(String all) {
+        Scanner input = new Scanner(System.in);
+        String[] commands = all.split("|");
+        String com, arg;
+        for (int i = 0; i < commands.length; i++) {
+            com = "";
+            arg = "";
+            int j = 0;
+            for (; j < commands[i].length(); j++) {
+                if (com.length() != 0 && commands[i].charAt(j) == ' ') {
+                    break;
+                } else {
+                    com += commands[i].charAt(j);
+                }
+            }
+            arg = (commands[i].substring(j + 1, commands[i].length())).trim();
+            switch (com) {
+                case "pwd" -> {
+                    pwd(arg);
+                    this.isPiped = "pwd";
+                }
+                case "cd" ->{
+                    cd(arg);
+                    this.isPiped = "cd";
+                }
+                case "mkdir" ->{
+                    mkdir(arg);
+                    this.isPiped = "mkdir";
+                }
+                case "touch" ->{
+                    touch(arg);
+                    this.isPiped = "touch";
+                }
+                case "mv" ->{
+                    mv(arg);
+                    this.isPiped = "mv";
+                }
+                case "rm" ->{
+                    rm(arg);
+                    this.isPiped = "rm";
+                }
+                case "echo" ->{
+                    echo(arg);
+                    this.isPiped = "echo";
+                }
+                case "man" ->{
+                    man(arg);
+                    this.isPiped = "man";
+                }
+                case "rmdir" ->{
+                    rmdir(arg);
+                    this.isPiped = "rmdir";
+                }
+                case "cat" ->{
+                    cat(arg, input);
+                    this.isPiped = "cat";
+                }
+                case "ls" ->{
+                    ls(arg);
+                    this.isPiped = "ls";
+                }
+                case "uname" ->{
+                    uname(arg);
+                    this.isPiped = "uname";
+                }
+                case "cp" ->{
+                    cp(arg, input);
+                    this.isPiped = "cp";
+                }
+                case "<" ->{
+                    inputOp(arg);
+                    this.isPiped = "<";
+                }
+                case ">" ->{
+                    redirectOutput(arg);
+                    this.isPiped = ">";
+                }
+                case "users" ->{
+                    users();
+                    this.isPiped = "users";
+                }
+                case "clear" ->{
+                    clear();
+                    this.isPiped = "clear";
+                }
+                case "exit" -> {
+                    return;
+                }
+                default ->
+                    UndefinedInput(com);
+            }
+            this.inputOfPipe = this.outputOfPipe;
+            this.outputOfPipe= "";
+        }
+        this.isPiped = "";
+        this.inputOfPipe = "";
+        this.outputOfPipe = "";
+    }
+//---------------------------------------------------------------------------------------------------------------
+
+    public void touch(String com) { // 20220027
         try {
             if (com.isEmpty()) {
                 System.out.println("touch: missing file operand");
-            } else if (com.equalsIgnoreCase("--help")) {
-                System.out.println("touch FILE..." + "\n");
             } else {
                 File file = new File(this.currentDir, com);
                 file.createNewFile();
@@ -1750,10 +1850,9 @@ public void touch(String com) { // 20220027
         }
     }
 
-    
     public void users() {
-        String command = System.getProperty("os.name").toLowerCase().contains("win") ?
-                "query user" : "who";
+        String command = System.getProperty("os.name").toLowerCase().contains("win")
+                ? "query user" : "who";
 
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
@@ -1777,11 +1876,10 @@ public void touch(String com) { // 20220027
             System.out.println();
         }
     }
-    
-    // --------------------------- # Mahmoud Khaled 20220317 # --------------------------- //
 
+    // --------------------------- # Mahmoud Khaled 20220317 # --------------------------- //
     public void cd(String com) {
-        if("--help".equals(com)) {
+        if ("--help".equals(com)) {
             System.out.println("""
                 cd: cd [DIRECTORY]\r
                 Change the shell working directory.\r
@@ -1812,7 +1910,7 @@ public void touch(String com) { // 20220027
         } else {
             File newdir = new File(this.currentDir, com);
 
-            if(com.charAt(1) == ':') {
+            if (com.charAt(1) == ':') {
                 newdir = new File(com);
             }
 
@@ -1842,7 +1940,7 @@ public void touch(String com) { // 20220027
             options.put(arg, 1);
         }
 
-        if(options.get("--help") == 1) {
+        if (options.get("--help") == 1) {
             System.out.println("""
                 Usage: rmdir [OPTION]... DIRECTORY...\r
                 Remove the DIRECTORY(ies), if they are empty.\r
@@ -1865,7 +1963,7 @@ public void touch(String com) { // 20220027
             return;
         }
 
-        if(options.get("--version") == 1) {
+        if (options.get("--version") == 1) {
             System.out.println("""
                 rmdir (GNU coreutils) 2.0\r
                 Copyright (C) YEAR Free Software Foundation, Inc.\r
@@ -1878,7 +1976,6 @@ public void touch(String com) { // 20220027
             );
             return;
         }
-
 
         for (String Folder : Folders) {
             if(Folder.charAt(0) == '-') {
@@ -1894,7 +1991,7 @@ public void touch(String com) { // 20220027
 
             File folderToDelete = new File(this.currentDir, Folder);
 
-            if(Folder.charAt(1) == ':') {
+            if (Folder.charAt(1) == ':') {
                 folderToDelete = new File(Folder);
             }
 
@@ -1904,27 +2001,26 @@ public void touch(String com) { // 20220027
             } else if (!folderToDelete.isDirectory()) {
                 System.out.println("Error: Please provide a folder.");
             } else if (folderToDelete.listFiles().length != 0) {
-                if(options.get("--ignore-fail-on-non-empty") == 0) {
+                if (options.get("--ignore-fail-on-non-empty") == 0) {
                     System.out.println("Error: Please provide an empty folder.");
                 }
             } else {
                 if (folderToDelete.delete()) {
                     File FolderParent = new File(folderToDelete.getParent());
-                    if(options.get("-v") == 1) {
+                    if (options.get("-v") == 1) {
                         System.out.println("Deleted Folder '" + folderToDelete.getName() + "' successfully");
                     }
                     if (options.get("-p") == 1 && FolderParent.listFiles().length == 0) {
-                        FolderParent.delete(); 
-                        if(options.get("-v") == 1) {
+                        FolderParent.delete();
+                        if (options.get("-v") == 1) {
                             System.out.println("Deleted Folder '" + FolderParent.getName() + "' successfully");
-                        }   
+                        }
                     }
                 } else {
                     System.out.println("Error: Failed to delete folder");
                 }
             }
 
-            
         }
 
     }
@@ -2020,10 +2116,10 @@ public void touch(String com) { // 20220027
 
             if (options.get(">>") == 1) {
                 String fileText = "";
-                
+
                 try {
                     Scanner fileReader = new Scanner(FileToPrint);
-                    while(fileReader.hasNextLine()) {
+                    while (fileReader.hasNextLine()) {
                         fileText += fileReader.nextLine();
                     }
                     fileText += input.nextLine();
@@ -2061,7 +2157,7 @@ public void touch(String com) { // 20220027
 
     public void uname(String com) {                           //20220317
         String[] MyArgs = proccess_args(com);
-        
+
         for (String MyArg : MyArgs) {
             if (MyArg.equals("-s")) {
                 System.out.print(System.getProperty("os.name") + " ");
@@ -2169,7 +2265,6 @@ public void touch(String com) { // 20220027
             );
             return;
         }
-        
 
         for (String parameter : parameters) {
 
@@ -2182,10 +2277,10 @@ public void touch(String com) { // 20220027
                 }
                 continue;
             }
-            
+
             File OgfileToCopy = new File(this.currentDir, parameter);
-            File fileToCopy = new File(this.currentDir, parameters[parameters.length-1]);
-            
+            File fileToCopy = new File(this.currentDir, parameters[parameters.length - 1]);
+
             int destType = 1; // 0 --> file 1 --> folder
             int srcType = 1; // 0 --> file 1 --> folder
             int ogpathType = 0; // 0 --> relative 1 --> absolute
@@ -2200,11 +2295,11 @@ public void touch(String com) { // 20220027
                 }
             }
 
-            for (int i = 0; i < parameters[parameters.length-1].length(); i++) {
-                if (parameters[parameters.length-1].charAt(i) == '.') {
+            for (int i = 0; i < parameters[parameters.length - 1].length(); i++) {
+                if (parameters[parameters.length - 1].charAt(i) == '.') {
                     destType = 0;
                 }
-                if (parameters[parameters.length-1].charAt(i) == ':') {
+                if (parameters[parameters.length - 1].charAt(i) == ':') {
                     pathType = 1;
                 }
             }
@@ -2213,7 +2308,7 @@ public void touch(String com) { // 20220027
                 OgfileToCopy = new File(parameter);
             }
             if (pathType == 1) {
-                fileToCopy = new File(parameters[parameters.length-1]);
+                fileToCopy = new File(parameters[parameters.length - 1]);
             }
 
             if (srcType == 0 && destType == 0) {
@@ -2242,7 +2337,7 @@ public void touch(String com) { // 20220027
 
                 try {
                     fileToCopy.createNewFile();
-                    
+
                     FileWriter outputFile;
                     try (Scanner inputFile = new Scanner(OgfileToCopy)) {
                         outputFile = new FileWriter(fileToCopy);
@@ -2264,7 +2359,7 @@ public void touch(String com) { // 20220027
                 }
 
             } else if (srcType == 0 && destType == 1) {
-                fileToCopy = new File(this.currentDir, parameters[parameters.length-1] + "/" + OgfileToCopy.getName());
+                fileToCopy = new File(this.currentDir, parameters[parameters.length - 1] + "/" + OgfileToCopy.getName());
 
                 for (int i = 0; i < parameters[parameters.length-1].length(); i++) {
                     if (parameters[parameters.length-1].charAt(i) == ':') {
@@ -2298,7 +2393,7 @@ public void touch(String com) { // 20220027
 
                 try {
                     fileToCopy.createNewFile();
-                    
+
                     FileWriter outputFile;
                     try (Scanner inputFile = new Scanner(OgfileToCopy)) {
                         outputFile = new FileWriter(fileToCopy);
@@ -2353,7 +2448,7 @@ public void touch(String com) { // 20220027
                     cp(newComm, inputChoice);
 
                 }
-                
+
             }
         }
 
