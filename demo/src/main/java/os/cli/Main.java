@@ -8,9 +8,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -112,32 +112,55 @@ class CLI {
     // 
     public void pwd(String com) {  //20220027
         try {
-            if (com.isEmpty() || com.equalsIgnoreCase("-l")) {
-                Path currentDirectoryPath = FileSystems.getDefault().getPath("");
-                String currentDirectoryName = currentDirectoryPath.toAbsolutePath().toString();
-                System.out.println(currentDirectoryName + "\"");
-            } else if (com.equalsIgnoreCase("-p")) {
-                // -p option for physical path
-                Path currentDirectoryPath = FileSystems.getDefault().getPath("").toRealPath();
-                String currentDirectoryName = currentDirectoryPath.toString();
-                System.out.println(currentDirectoryName + "\"");
-            } else if (com.equals("--help")) {
-                System.out.println("pwd: pwd [-LP]");
-                System.out.println("    Print the name of the current working directory.");
-                System.out.println();
-                System.out.println("    Options:");
-                System.out.println("      -L        print the value of $PWD if it names the current working");
-                System.out.println("                directory");
-                System.out.println("      -P        print the physical directory, without any symbolic links");
-                System.out.println();
-                System.out.println("    By default, `pwd' behaves as if `-L' were specified.");
-                System.out.println();
-                System.out.println("    Exit Status:");
-                System.out.println("    Returns 0 unless an invalid option is given or the current directory");
-                System.out.println("    cannot be read.");
-            } else {
-                System.out.println(com + " is an unknown argument." + "\n");
+            String output = null;
+            boolean redirectToFile = false;
+            boolean appendMode = false;
+            String fileName = null;
+
+            if (com.contains(">")) {
+                redirectToFile = true;
+                String[] parts = com.split(">");
+                com = parts[0].trim();
+                fileName = parts[1].trim();
+            } else if (com.contains(">>")) {
+                redirectToFile = true;
+                appendMode = true;
+                String[] parts = com.split(">>");
+                com = parts[0].trim();
+                fileName = parts[1].trim();
             }
+
+            if (com.isEmpty() || com.equalsIgnoreCase("-l")) {
+                Path currentDirectoryPath = Paths.get(this.currentDir);
+                output = currentDirectoryPath.toAbsolutePath().toString() + "\\";
+            } else if (com.equalsIgnoreCase("-p")) {
+                Path currentDirectoryPath = Paths.get(this.currentDir);
+                output = currentDirectoryPath.toString() + "\\";
+            } else if (com.equals("--help")) {
+                output = "pwd: pwd [-LP]\n"
+                        + "    Print the name of the current working directory.\n\n"
+                        + "    Options:\n"
+                        + "      -L        print the value of $PWD if it names the current working\n"
+                        + "                directory\n"
+                        + "      -P        print the physical directory, without any symbolic links\n\n"
+                        + "    By default, `pwd' behaves as if `-L' were specified.\n\n"
+                        + "    Exit Status:\n"
+                        + "    Returns 0 unless an invalid option is given or the current directory\n"
+                        + "    cannot be read.\n";
+            } else {
+                output = com + " is an unknown argument.\n";
+            }
+
+            if (redirectToFile) {
+                FileWriter writer = new FileWriter(this.currentDir + "\\" + fileName, appendMode);
+                writer.write(output);
+                writer.close();
+            } else {
+                System.out.println(output);
+            }
+
+        } catch (IOException e) {
+            System.err.println("File operation error: " + e.getMessage());
         } catch (Exception e) {
             System.err.println("An unexpected error occurred: " + e.getMessage());
         }
@@ -287,6 +310,31 @@ class CLI {
         return String.valueOf(size);
     }
 
+    public void more(String com) {
+        try (BufferedReader br = new BufferedReader(new FileReader(this.currentDir + "\\" + com))) {
+            String line;
+            int countLines = 0;
+            while ((line = br.readLine()) != null) {
+                countLines++;
+                if (countLines > 10) {
+                    Scanner scanner = new Scanner(System.in);
+                    System.out.println("Continue printing? (Y/N)");
+                    String input = scanner.nextLine();
+                    if (input.equalsIgnoreCase("y")) {
+                        countLines = 0;
+                        System.out.println(line);
+                        continue;
+                    } else if (input.equalsIgnoreCase("n")) {
+                        return;
+                    }
+                }
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading the file: " + e.getMessage());
+        }
+    }
+    
     public void less(String com) {
         String[] args = proccess_args(com);
         if (args.length < 1) {
@@ -2141,8 +2189,13 @@ Written by Philopateer Karam.
         options.put("--help", 0);
         options.put("--version", 0);
 
+        String nextCommArgs = "";
+
         for (String arg : parameters) {
             options.put(arg, 1);
+            if (arg.charAt(0) == '-') {
+                nextCommArgs += arg + " ";
+            }
         }
 
         if (options.get("--help") == 1) {
@@ -2280,13 +2333,20 @@ Written by Philopateer Karam.
                     return;
                 }
 
-                if (fileToCopy.exists()) {
-                    System.out.print("File with this name already exists. Overide? [y/n] ");
+                if (fileToCopy.exists() && options.get("-f") == 0 && options.get("--force") == 0 && (options.get("-i") == 1 || options.get("--iteractive") == 1)) {
+                    System.out.print("File '" + fileToCopy.getName() + "' this name already exists. Overide? [y/n] ");
                     String choice = inputChoice.next();
                     if (choice.equals("n") || choice.equals("N")) {
-                        System.out.println("cp cancelled");
+                        // System.out.println("cp cancelled");
                         return;
                     }
+                }
+
+                if(fileToCopy.exists() && (options.get("-n") == 1 || options.get("--no-clobber") == 1)) {
+                    if ((options.get("-v") == 1 || options.get("--verbose") == 1)) {
+                        System.out.println("skipped '" + fileToCopy.getName() + "'");
+                    }
+                    return;
                 }
 
                 try {
@@ -2303,6 +2363,11 @@ Written by Philopateer Karam.
                         }
                     }
                     outputFile.close();
+
+                    if(options.get("-v") == 1 || options.get("--verbose") == 1) {
+                        System.out.println("Copyied '" + OgfileToCopy.getPath() + "' to '" + fileToCopy.getPath() + "' Successfully");
+                    }
+
                 } catch (IOException ex) {
                     System.out.println("Error: Failed to copy file.");
                 }
@@ -2310,19 +2375,34 @@ Written by Philopateer Karam.
             } else if (srcType == 0 && destType == 1) {
                 fileToCopy = new File(this.currentDir, parameters[parameters.length - 1] + "/" + OgfileToCopy.getName());
 
-                // System.out.println(fileToCopy.getAbsolutePath());
+                for (int i = 0; i < parameters[parameters.length-1].length(); i++) {
+                    if (parameters[parameters.length-1].charAt(i) == ':') {
+                        pathType = 1;
+                    }
+                }
+                if (pathType == 1) {
+                    fileToCopy = new File(parameters[parameters.length-1] + "/" + OgfileToCopy.getName());
+                }
+
                 if (!OgfileToCopy.exists()) {
                     System.out.println("Error: File does not exists.");
                     return;
                 }
 
-                if (fileToCopy.exists()) {
-                    System.out.print("File with this name already exists. Overide? [y/n] ");
+                if (fileToCopy.exists() && options.get("-f") == 0 && options.get("--force") == 0 && (options.get("-i") == 1 || options.get("--iteractive") == 1)) {
+                    System.out.print("File '" + fileToCopy.getName() + "' this name already exists. Overide? [y/n] ");
                     String choice = inputChoice.next();
                     if (choice.equals("n") || choice.equals("N")) {
-                        System.out.println("cp cancelled");
+                        // System.out.println("cp cancelled");
                         return;
                     }
+                }
+
+                if(fileToCopy.exists() && (options.get("-n") == 1 || options.get("--no-clobber") == 1)) {
+                    if ((options.get("-v") == 1 || options.get("--verbose") == 1)) {
+                        System.out.println("skipped '" + fileToCopy.getName() + "'");
+                    }
+                    return;
                 }
 
                 try {
@@ -2339,6 +2419,10 @@ Written by Philopateer Karam.
                         }
                     }
                     outputFile.close();
+
+                    if(options.get("-v") == 1 || options.get("--verbose") == 1) {
+                        System.out.println("Copyied '" + OgfileToCopy.getPath() + "' to '" + fileToCopy.getPath() + "' Successfully");
+                    }
                 } catch (IOException ex) {
                     System.out.println("Error: Failed to copy file.");
                 }
@@ -2350,21 +2434,31 @@ Written by Philopateer Karam.
                     return;
                 }
 
-                if (fileToCopy.exists()) {
-                    System.out.print("File with this name already exists. Overide? [y/n] ");
+                if (fileToCopy.exists() && options.get("-f") == 0 && options.get("--force") == 0 && (options.get("-i") == 1 || options.get("--iteractive") == 1)) {
+                    System.out.print("File '" + fileToCopy.getName() + "' this name already exists. Overide? [y/n] ");
                     String choice = inputChoice.next();
                     if (choice.equals("n") || choice.equals("N")) {
-                        System.out.println("cp cancelled");
+                        // System.out.println("cp cancelled");
                         return;
                     }
                 }
 
+                // if(fileToCopy.exists() && (options.get("-n") == 1 || options.get("--no-clobber") == 1)) {
+                //     if ((options.get("-v") == 1 || options.get("--verbose") == 1)) {
+                //         System.out.println("skipped '" + fileToCopy.getName() + "'");
+                //     }
+                //     return;
+                // }
+
                 fileToCopy.mkdir();
+                if(options.get("-v") == 1 || options.get("--verbose") == 1) {
+                    System.out.println("Created Directory '" + fileToCopy.getName() + "' inside '" + fileToCopy.getParent() + "' Successfully");
+                }
 
                 for (File file : OgfileToCopy.listFiles()) {
 
-                    String newComm = file.getPath() + " " + parameters[parameters.length - 1] + "/" + file.getName();
-                    System.out.println(newComm);
+                    String newComm = nextCommArgs + file.getPath() + " " + parameters[parameters.length-1] + "/" + file.getName();
+                    // System.out.println(newComm);
                     cp(newComm, inputChoice);
 
                 }
