@@ -11,6 +11,7 @@ import java.net.UnknownHostException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +20,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import java.nio.file.StandardOpenOption;
 
 
 public class Main {
@@ -39,45 +41,47 @@ public class Main {
 
                 switch (command) {
                     case "pwd" ->
-                        cli.pwd(arg);
+                            cli.pwd(arg);
                     case "cd" ->
-                        cli.cd(arg);
+                            cli.cd(arg);
                     case "mkdir" ->
-                        cli.mkdir(arg);
+                            cli.mkdir(arg);
                     case "touch" ->
-                        cli.touch(arg);
+                            cli.touch(arg);
                     case "mv" ->
-                        cli.mv(arg);
+                            cli.mv(arg);
                     case "rm" ->
-                        cli.rm(arg);
+                            cli.rm(arg);
                     case "echo" ->
-                        cli.echo(arg);
+                            cli.echo(arg);
                     case "man" ->
-                        cli.man(arg);
+                            cli.man(arg);
                     case "rmdir" ->
-                        cli.rmdir(arg);
+                            cli.rmdir(arg);
                     case "cat" ->
-                        cli.cat(arg, input);
+                            cli.cat(arg, input);
                     case "ls" ->
-                        cli.ls(arg);
+                            cli.ls(arg);
                     case "uname" ->
-                        cli.uname(arg);
+                            cli.uname(arg);
                     case "cp" ->
-                        cli.cp(arg, input);
+                            cli.cp(arg, input);
                     case "<" ->
-                        cli.inputOp(arg);
+                            cli.inputOp(arg);
                     case ">" ->
-                        cli.redirectOutput(arg);
+                            cli.redirectOutput(arg);
+                    case "more" ->
+                            cli.more(arg);
                     case "users" ->
-                        cli.users();
+                            cli.users();
                     case "clear" ->
-                        cli.clear();
+                            cli.clear();
                     case "exit" -> {
                         return;
                     }
 
                     default ->
-                        cli.UndefinedInput(command);
+                            cli.UndefinedInput(command);
                 }
             }
         }
@@ -110,32 +114,55 @@ class CLI {
     // 
     public void pwd(String com) {  //20220027
         try {
-            if (com.isEmpty() || com.equalsIgnoreCase("-l")) {
-                Path currentDirectoryPath = FileSystems.getDefault().getPath("");
-                String currentDirectoryName = currentDirectoryPath.toAbsolutePath().toString();
-                System.out.println(currentDirectoryName + "\"");
-            } else if (com.equalsIgnoreCase("-p")) {
-                // -p option for physical path
-                Path currentDirectoryPath = FileSystems.getDefault().getPath("").toRealPath();
-                String currentDirectoryName = currentDirectoryPath.toString();
-                System.out.println(currentDirectoryName + "\"");
-            } else if (com.equals("--help")) {
-                System.out.println("pwd: pwd [-LP]");
-                System.out.println("    Print the name of the current working directory.");
-                System.out.println();
-                System.out.println("    Options:");
-                System.out.println("      -L        print the value of $PWD if it names the current working");
-                System.out.println("                directory");
-                System.out.println("      -P        print the physical directory, without any symbolic links");
-                System.out.println();
-                System.out.println("    By default, `pwd' behaves as if `-L' were specified.");
-                System.out.println();
-                System.out.println("    Exit Status:");
-                System.out.println("    Returns 0 unless an invalid option is given or the current directory");
-                System.out.println("    cannot be read.");
-            } else {
-                System.out.println(com + " is an unknown argument." + "\n");
+            String output = null;
+            boolean redirectToFile = false;
+            boolean appendMode = false;
+            String fileName = null;
+
+            if (com.contains(">")) {
+                redirectToFile = true;
+                String[] parts = com.split(">");
+                com = parts[0].trim();
+                fileName = parts[1].trim();
+            } else if (com.contains(">>")) {
+                redirectToFile = true;
+                appendMode = true;
+                String[] parts = com.split(">>");
+                com = parts[0].trim();
+                fileName = parts[1].trim();
             }
+
+            if (com.isEmpty() || com.equalsIgnoreCase("-l")) {
+                Path currentDirectoryPath = Paths.get(this.currentDir);
+                output = currentDirectoryPath.toAbsolutePath().toString() + "\\";
+            } else if (com.equalsIgnoreCase("-p")) {
+                Path currentDirectoryPath = Paths.get(this.currentDir);
+                output = currentDirectoryPath.toString() + "\\";
+            } else if (com.equals("--help")) {
+                output = "pwd: pwd [-LP]\n"
+                        + "    Print the name of the current working directory.\n\n"
+                        + "    Options:\n"
+                        + "      -L        print the value of $PWD if it names the current working\n"
+                        + "                directory\n"
+                        + "      -P        print the physical directory, without any symbolic links\n\n"
+                        + "    By default, `pwd' behaves as if `-L' were specified.\n\n"
+                        + "    Exit Status:\n"
+                        + "    Returns 0 unless an invalid option is given or the current directory\n"
+                        + "    cannot be read.\n";
+            } else {
+                output = com + " is an unknown argument.\n";
+            }
+
+            if (redirectToFile) {
+                FileWriter writer = new FileWriter(this.currentDir + "\\" + fileName, appendMode);
+                writer.write(output);
+                writer.close();
+            } else {
+                System.out.println(output);
+            }
+
+        } catch (IOException e) {
+            System.err.println("File operation error: " + e.getMessage());
         } catch (Exception e) {
             System.err.println("An unexpected error occurred: " + e.getMessage());
         }
@@ -265,6 +292,31 @@ class CLI {
             else return (size / 1073741824) + " GB";
         }
         return String.valueOf(size);
+    }
+
+    public void more(String com) {
+        try (BufferedReader br = new BufferedReader(new FileReader(this.currentDir + "\\" + com))) {
+            String line;
+            int countLines = 0;
+            while ((line = br.readLine()) != null) {
+                countLines++;
+                if (countLines > 10) {
+                    Scanner scanner = new Scanner(System.in);
+                    System.out.println("Continue printing? (Y/N)");
+                    String input = scanner.nextLine();
+                    if (input.equalsIgnoreCase("y")) {
+                        countLines = 0;
+                        System.out.println(line);
+                        continue;
+                    } else if (input.equalsIgnoreCase("n")) {
+                        return;
+                    }
+                }
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading the file: " + e.getMessage());
+        }
     }
     
     public void less(String com) {
@@ -1592,17 +1644,19 @@ public void rm(String com) {
 
 //---------------------------------------------------------------------------------------------------------------
 public void touch(String com) { // 20220027
-    try {
-        if (com.isEmpty()) {
-            System.out.println("touch: missing file operand");
-        } else {
-            File file = new File(this.currentDir, com);
-            file.createNewFile();
+        try {
+            if (com.isEmpty()) {
+                System.out.println("touch: missing file operand");
+            } else if (com.equalsIgnoreCase("--help")) {
+                System.out.println("touch FILE..." + "\n");
+            } else {
+                File file = new File(this.currentDir, com);
+                file.createNewFile();
+            }
+        } catch (IOException e) {
+            System.out.println("Error creating file: " + e.getMessage());
         }
-    } catch (IOException e) {
-        System.out.println("Error creating file: " + e.getMessage());
     }
-}
 
     public void mv(String com) { // 20220028
         System.out.println("mv called");
