@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
+
 public class Main {
 
     public static void main(String[] args) {
@@ -1977,7 +1978,14 @@ Written by Philopateer Karam.
         }
 
         for (String Folder : Folders) {
-            if (Folder.charAt(0) == '-') {
+            if(Folder.charAt(0) == '-') {
+                if (!Folder.equals("--ignore-fail-on-non-empty") && 
+                !Folder.equals("-p") && 
+                !Folder.equals("-v") && 
+                !Folder.equals("--help") && 
+                !Folder.equals("--version")) { 
+                    System.out.println("Error: '" + Folder + "' is not a recognized option");
+                }
                 continue;
             }
 
@@ -2145,33 +2153,31 @@ Written by Philopateer Karam.
 
         for (String MyArg : MyArgs) {
             if (MyArg.equals("-s")) {
-                System.out.println(System.getProperty("os.name"));
+                System.out.print(System.getProperty("os.name") + " ");
             }
             if (MyArg.equals("-r")) {
-                System.out.println(System.getProperty("os.version"));
+                System.out.print(System.getProperty("os.version") + " ");
             }
             if (MyArg.equals("-m")) {
-                System.out.println(System.getProperty("os.arch"));
+                System.out.print(System.getProperty("os.arch") + " ");
             }
             if (MyArg.equals("-n")) {
                 try {
-                    System.out.println(java.net.InetAddress.getLocalHost().getHostName());
+                    System.out.print(java.net.InetAddress.getLocalHost().getHostName() + " ");
                 } catch (UnknownHostException ex) {
-                    System.out.println("Failed to retrive info");
+                    System.out.print("Failed to retrive info");
                 }
             }
+            if(!MyArg.equals("-s") && !MyArg.equals("-r") && !MyArg.equals("-m") && !MyArg.equals("-n")) {
+                System.out.print( MyArg + " is not recognized");
+            }
+            System.out.println();
         }
 
     }
 
     public void cp(String com, Scanner inputChoice) {                        //20220317
-        // System.out.println("cp called");
-        // System.out.println("args in comm: " + com);
-
-        // String[] MyArgs = proccess_args(com);
-        // for(int i = 1; i < MyArgs.length; i++) {
-        //     System.out.println(MyArgs[i]);
-        // }
+        
         String[] parameters = proccess_args(com);
 
         HashMap<String, Integer> options = new HashMap<>();
@@ -2205,44 +2211,14 @@ Written by Philopateer Karam.
                     or:  cp [OPTION]... -t DIRECTORY SOURCE...\r
                 Copy SOURCE to DEST, or multiple SOURCE(s) to DIRECTORY.\r
                 \r
-                    -a, --archive                same as -dR --preserve=all\r
-                        --attributes-only        copy only the attributes of the files\r
-                        --backup[=CONTROL]       make a backup of each existing destination file\r
-                    -b                           like --backup but does not accept an argument\r
-                        --copy-contents          copy contents of special files when recursive\r
-                    -d                           same as --no-dereference --preserve=links\r
+                                         same as --no-dereference --preserve=links\r
                     -f, --force                  if an existing destination file cannot be\r
                                                 opened, remove it and try again\r
                     -i, --interactive            prompt before overwrite\r
-                    -H                           follow command-line symbolic links in SOURCE\r
-                    -l, --link                   hard link files instead of copying\r
-                    -L, --dereference            always follow symbolic links in SOURCE\r
+            
                     -n, --no-clobber             do not overwrite an existing file\r
-                    -P, --no-dereference         never follow symbolic links in SOURCE\r
-                    -p                           same as --preserve=mode,ownership,timestamps\r
-                        --preserve[=ATTR_LIST]   preserve the specified attributes (default:\r
-                                                mode,ownership,timestamps), if possible\r
-                        --no-preserve=ATTR_LIST  don't preserve the specified attributes\r
-                        --parents                use full source file name under DIRECTORY\r
-                    -R, -r, --recursive          copy directories recursively\r
-                        --reflink[=WHEN]         control clone/CoW copies. See below\r
-                        --remove-destination     remove each existing destination file before\r
-                                                attempting to open it (contrast with --force)\r
-                        --sparse=WHEN            control creation of sparse files. See below\r
-                        --strip-trailing-slashes remove any trailing slashes from each SOURCE\r
-                    -s, --symbolic-link          make symbolic links instead of copying\r
-                    -S, --suffix=SUFFIX          override the usual backup suffix\r
-                    -t, --target-directory=DIRECTORY  copy all SOURCE arguments into DIRECTORY\r
-                    -T, --no-target-directory    treat DEST as a normal file\r
-                    -u, --update                 copy only when the SOURCE file is newer\r
-                                                than the destination file or when the\r
-                                                destination file is missing\r
+                    
                     -v, --verbose                explain what is being done\r
-                    -x, --one-file-system        stay on this file system\r
-                    -Z                           set SELinux security context of destination\r
-                                                file to default type\r
-                        --context[=CTX]          like -Z, or if CTX is specified then set the\r
-                                                SELinux or SMACK security context to CTX\r
                         --help                   display this help and exit\r
                         --version                output version information and exit\r
                 \r
@@ -2271,13 +2247,13 @@ Written by Philopateer Karam.
 
         if (options.get("--version") == 1) {
             System.out.println("""
-                cp (GNU coreutils) X.Y\r
+                cp (GNU coreutils) 3.0\r
                 Copyright (C) YEAR Free Software Foundation, Inc.\r
                 License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.\r
                 This is free software: you are free to change and redistribute it.\r
                 There is NO WARRANTY, to the extent permitted by law.\r
                 \r
-                Written by Torbjorn Granlund, David MacKenzie, and Jim Meyering.\r
+                Written by Mahmoud Khaled.\r
                 """
             );
             return;
@@ -2468,14 +2444,14 @@ Written by Philopateer Karam.
 
     }
 
-    public void inputOp(String com) {                           //20220317
-        System.out.println("inputOp called");
-        System.out.println("args in comm: " + com);
-
-        String[] MyArgs = proccess_args(com);
-
-        for (int i = 1; i < MyArgs.length; i++) {
-            System.out.println(MyArgs[i]);
-        }
-    }
+    // public void inputOp(String com) {                           //20220317
+    //     System.out.println("inputOp called");
+    //     System.out.println("args in comm: " + com);
+    
+    //     String[] MyArgs = proccess_args(com);
+    
+    //     for (int i = 1; i < MyArgs.length; i++) {
+    //         System.out.println(MyArgs[i]);
+    //     }
+    // }
 }
