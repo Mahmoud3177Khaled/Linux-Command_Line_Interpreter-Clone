@@ -1,4 +1,4 @@
-// package os.cli;
+package os.cli;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -2088,10 +2088,10 @@ Written by Philopateer Karam.
 
             if(file.equals(">") || file.equals(">>") || file.charAt(0) == '-') {
                 if (!file.equals(">") && 
-                !file.equals(">>") && 
-                !file.equals("-n") && 
-                !file.equals("--help") && 
-                !file.equals("--version")) { 
+                    !file.equals(">>") && 
+                    !file.equals("-n") && 
+                    !file.equals("--help") && 
+                    !file.equals("--version")) { 
                     System.out.println("'" + file + "' is not a recognized option");
                 }
                 continue;
@@ -2102,6 +2102,69 @@ Written by Philopateer Karam.
 
             if (file.charAt(1) == ':') {
                 FileToPrint = new File(file);
+            }
+
+            if(MyArgs.length > 1) {
+                if(options.get(">") == 1 && MyArgs[1].equals(">")) {
+                    File inputFile = new File(this.currentDir, MyArgs[0]);
+                    File outputFile = new File(this.currentDir, MyArgs[2]);
+
+                    Scanner inputScanner;
+                    FileWriter outputWriter;
+                    String inputText = "";
+                    try {
+                        inputScanner = new Scanner(inputFile);
+                        outputWriter = new FileWriter(outputFile);
+                        
+                    while (inputScanner.hasNextLine()) { 
+                        inputText = inputScanner.nextLine() + "\n";  
+                        // System.out.println(inputText);
+                        outputWriter.write(inputText);
+                    }
+                    inputScanner.close();
+                    outputWriter.close();
+
+                } catch (Exception ex) {
+                    System.out.println("Error: File does not exist");
+                }
+                return;
+                }
+            }
+
+            if(MyArgs.length > 1) {
+                if(options.get(">>") == 1 && MyArgs[1].equals(">>")) {
+                    File inputFile = new File(this.currentDir, MyArgs[0]);
+                    File outputFile = new File(this.currentDir, MyArgs[2]);
+
+                    Scanner inputScanner;
+                    Scanner outputOriginal;
+                    FileWriter outputWriter;
+                    String inputText = "";
+                    try {
+                        inputScanner = new Scanner(inputFile);
+                        outputOriginal = new Scanner(outputFile);
+
+                        while (outputOriginal.hasNextLine()) { 
+                            inputText += outputOriginal.nextLine() + "\n";  
+                        }
+                        outputOriginal.close();
+
+                        outputWriter = new FileWriter(outputFile);
+                        outputWriter.write(inputText);
+
+                        while (inputScanner.hasNextLine()) { 
+                            inputText = inputScanner.nextLine() + "\n";  
+                            outputWriter.write(inputText);
+                        }
+
+                        inputScanner.close();
+                        outputWriter.close();
+
+                    } catch (Exception ex) {
+                        System.out.println("Error: File does not exist");
+                    }
+                    return;
+                }
             }
 
             if (options.get(">") == 1) {
@@ -2145,9 +2208,15 @@ Written by Philopateer Karam.
                 try {
                     try (Scanner scanner = new Scanner(FileToPrint)) {
                         while (scanner.hasNextLine()) {
-                            ++lineNum;
-                            System.err.println(lineNum + "- " + scanner.nextLine());
+                            if(options.get("-n") == 1) {
+                                ++lineNum; 
+                                System.err.println(lineNum + "- " + scanner.nextLine());
+                            } else {
+                                System.err.println(scanner.nextLine());
+                            }
+
                         }
+
                     }
                 } catch (FileNotFoundException e) {
                     System.out.println("Error: Unable to read from file.");
