@@ -679,7 +679,7 @@ public void echo(String com){
         }
 //----------------------------------------------------------------------------------------------------
 public void man(String com){
-    com.trim();
+    com = com.trim();
     if(com.equals("pwd")){
         System.out.println("NAME\n" + //
                         "       pwd - print name of current working directory\n" + //
@@ -702,54 +702,655 @@ public void man(String com){
                         "\n" + //
                         "       --version\n" + //
                         "              output version information and exit");
-    }else if(com =="touch"){
-        System.out.println("NAME\n" + //
-                        "       touch - change file timestamps\n" + //
-                        "\n" + //
-                        "SYNOPSIS\n" + //
-                        "       touch [OPTION]... FILE...\n" + //
-                        "\n" + //
-                        "DESCRIPTION\n" + //
-                        "       The  touch command updates the access and modification timestamps of the specified FILEs.  If FILE does not exist, and if the -c option is not given, an empty file is created.\n" + //
-                        "\n" + //
-                        "OPTIONS\n" + //
-                        "       -a, --time=atime\n" + //
-                        "              change only the access time\n" + //
-                        "\n" + //
-                        "       -m, --time=mtime\n" + //
-                        "              change only the modification time\n" + //
-                        "\n" + //
-                        "       -c, --no-create\n" + //
-                        "              do not create any files\n" + //
-                        "\n" + //
-                        "       -d, --date=STRING\n" + //
-                        "              parse STRING and use it instead of the current time\n" + //
-                        "\n" + //
-                        "       -r, --reference=FILE\n" + //
-                        "              use this file's times instead of the current time\n" + //
-                        "\n" + //
-                        "       --help\n" + //
-                        "              display this help and exit\n" + //
-                        "\n" + //
-                        "       --version\n" + //
-                        "              output version information and exit");
-    }else if(com ==""){
-        System.out.println();
-    }else if(com ==""){
-        System.out.println();
-    }else if(com ==""){
-        System.out.println();
-    }else if(com ==""){
-        System.out.println();
-    }else if(com ==""){
-        System.out.println();
-    }else if(com ==""){
-        System.out.println();
-    }else if(com ==""){
-        System.out.println();
-    }else if(com ==""){
-        System.out.println();
+    }else if(com.equals("touch")){
+        System.out.println("""
+                           NAME
+                                  touch - change file timestamps
+                           
+                           SYNOPSIS
+                                  touch [OPTION]... FILE...
+                           
+                           DESCRIPTION
+                                  The  touch command updates the access and modification timestamps of the specified FILEs.  If FILE does not exist, and if the -c option is not given, an empty file is created.
+                           
+                           OPTIONS
+                                  -a, --time=atime
+                                         change only the access time
+                           
+                                  -m, --time=mtime
+                                         change only the modification time
+                           
+                                  -c, --no-create
+                                         do not create any files
+                           
+                                  -d, --date=STRING
+                                         parse STRING and use it instead of the current time
+                           
+                                  -r, --reference=FILE
+                                         use this file's times instead of the current time
+                           
+                                  --help
+                                         display this help and exit
+                           
+                                  --version
+                                        output version information and exit""" 
+        );
+    }else if(com.equals("clear")){
+        System.out.println("""
+ NAME
+       clear - clear the terminal screen
+
+SYNOPSIS
+       clear
+
+DESCRIPTION
+       clear clears your screen if this is possible, including its scrollback buffer (if the extended "E3" capability is defined).  clear looks in the environment for the terminal type and then in the terminfo database to determine how to clear the screen.
+
+       clear ignores any command-line parameters that may be present.           
+                """);
+    }else if(com.equals("users")){
+        System.out.println("""
+ NAME
+       users - print the usernames of users currently logged in to the current host
+
+SYNOPSIS
+       users [OPTION]... [FILE]
+
+DESCRIPTION
+       Output who is currently logged in according to FILE.  If FILE is not specified, use /var/run/utmp.  /var/log/wtmp as FILE is common.
+
+OPTIONS
+       -h, --help
+              display this help and exit
+
+       --version
+              output version information and exit               
+                """);
+    }else if(com.equals("more")){
+        System.out.println("""
+NAME
+       more - file perusal filter for viewing text one screen at a time
+
+SYNOPSIS
+       more [options] [file...]
+
+DESCRIPTION
+       more is a filter for paging through text one screenful at a time. This command is mostly used for viewing large files or command output.
+
+OPTIONS
+       -d     Prompt with [Press space to continue, 'q' to quit.] and display "[Press h for instructions.]" at the bottom of each screen.
+
+       -f     Count logical, rather than screen lines (i.e., long lines are not wrapped).
+
+       -p     Clear the screen before displaying each page.
+
+       -c     Do not scroll. Instead, paint each page directly onto the screen.
+
+       -s     Squeeze multiple blank lines into one.
+
+       -u     Suppress underlining.
+
+       +n     Start displaying each file at line n.
+
+       /pattern
+              Search for the specified pattern in the text.
+
+       :n     Go to the next file.
+
+       :p     Go to the previous file.
+
+       :q or q
+              Quit.
+
+                """);
     }
+    else if(com.equals("cd")){
+        System.out.println("""
+cd: cd [-L|-P] [directory]
+    Change the shell working directory.
+
+    Change the current directory to DIR. The default DIR is the value of the HOME shell variable.
+
+    Options:
+      -L  force symbolic links to be followed: resolve symbolic links in DIR
+          after processing instances of `..'
+      -P  use the physical directory structure without following symbolic links
+          (e.g., if in /tmp and /tmp is a symlink to /var/tmp, `cd -P ..` will
+          go to /var, whereas `cd ..` will go to /tmp)
+      -e  if the -P option is supplied, and the current working directory
+          cannot be determined successfully, exit with a non-zero status
+                
+                """);
+    }
+    else if(com.equals("mv")){
+        System.out.println("""
+ NAME
+       mv - move (rename) files
+
+SYNOPSIS
+       mv [OPTION]... SOURCE... DIRECTORY
+       mv [OPTION]... SOURCE... DEST
+
+DESCRIPTION
+       Rename SOURCE to DEST, or move SOURCE(s) to DIRECTORY.
+
+OPTIONS
+       -f, --force
+              Do not prompt before overwriting.
+
+       -i, --interactive
+              Prompt before overwriting (overrides --force).
+
+       -n, --no-clobber
+              Do not overwrite an existing file.
+
+       -u, --update
+              Move only when the SOURCE file is newer than the destination file or when the destination file is missing.
+
+       -v, --verbose
+              Explain what is being done.
+
+       --backup[=CONTROL]
+              Make a backup of each existing destination file.
+
+       --suffix=SUFFIX
+              Override the usual backup suffix.
+
+       -t, --target-directory=DIRECTORY
+              Move all SOURCE arguments into DIRECTORY.
+
+       -T, --no-target-directory
+              Treat DEST as a normal file.
+
+       --help Display this help and exit.
+
+       --version
+              Output version information and exit.               
+                """);
+    }
+    else if(com.equals("date")){
+        System.out.println("""
+  NAME
+       date - print or set the system date and time
+
+SYNOPSIS
+       date [OPTION]... [+FORMAT]
+       date [-u|--utc|--universal] [MMDDhhmm[[CC]YY][.ss]]
+
+DESCRIPTION
+       Display the current time in the given FORMAT, or set the system date.
+
+       With no options, `date` displays the current date and time.
+
+OPTIONS
+       -d, --date=STRING
+              Display time described by STRING, not 'now'.
+
+       -f, --file=DATEFILE
+              Like --date, but interprets each line of DATEFILE as a date.
+
+       -I[TIMESPEC], --iso-8601[=TIMESPEC]
+              Output date/time in ISO 8601 format. TIMESPEC='auto', 'date', 'hours', 'minutes', or 'seconds' for specific formats.
+
+       -r, --reference=FILE
+              Display the last modification time of FILE.
+
+       -R, --rfc-2822
+              Output date and time in RFC 2822 format.
+
+       -s, --set=STRING
+              Set time described by STRING.
+
+       -u, --utc, --universal
+              Display or set the date in UTC (Coordinated Universal Time).
+
+       --help Display help and exit.
+
+       --version
+              Output version information and exit.              
+                """);
+    }
+    else if(com.equals("who")){
+        System.out.println("""
+ NAME
+       who - show who is logged on
+
+SYNOPSIS
+       who [OPTION]... [FILE] [am i]
+
+DESCRIPTION
+       Print information about users who are currently logged in.
+
+OPTIONS
+       -a, --all
+              Same as -b -d --login -p -r -t -T -u.
+
+       -b, --boot
+              Time of last system boot.
+
+       -d, --dead
+              Print dead processes.
+
+       -H, --heading
+              Print a line of column headings.
+
+       -l, --login
+              Print system login processes.
+
+       -m     Same as `who am i'.
+
+       -p, --process
+              Print active processes spawned by init.
+
+       -q, --count
+              All login names and number of users logged on.
+
+       -r, --runlevel
+              Print the current runlevel.
+
+       -s     Ignored; included for compatibility.
+
+       -t, --time
+              Print last system clock change.
+
+       -T, -w, --mesg
+              Add user message status as +, - or ?.
+
+       -u, --users
+              List users logged in.
+
+       --help Display this help and exit.
+
+       --version
+              Output version information and exit.
+               
+                """);
+    }
+    else if(com.equals("less")){
+        System.out.println("""
+     NAME
+       less - opposite of more
+
+SYNOPSIS
+       less [options] [file...]
+
+DESCRIPTION
+       Less is a program similar to more, but which allows backward movement in the file as well as forward movement. Also, less does not have to read the entire file before starting, so with large files, it starts faster than text editors like vi.
+
+OPTIONS
+       -N, --LINE-NUMBERS
+              Display line numbers.
+
+       -G, --HIGHLIGHT-NUMBER
+              Disable highlighting of search matches.
+
+       -i, --ignore-case
+              Ignore case in all searches.
+
+       -m, --long-prompt
+              Show a more detailed prompt.
+
+       -p pattern
+              Start at the first occurrence of pattern.
+
+       -q, --quiet or --silent
+              Suppress terminal bell sounds.
+
+       -R, --RAW-CONTROL-CHARS
+              Display raw control characters.
+
+       -S, --chop-long-lines
+              Do not wrap long lines.
+
+       -X, --no-init
+              Do not clear the screen when exiting.
+
+       -? or --help
+              Display help and exit.
+
+COMMANDS
+       Within less, the following commands are useful:
+          Space        Scroll forward one page.
+          b            Scroll backward one page.
+          Enter        Scroll forward one line.
+          /pattern     Search for a pattern.
+          n            Repeat the previous search.
+          q            Quit.           
+                """);
+    }
+    else if(com.equals("mkdir")){
+        System.out.println("""
+     NAME
+       mkdir - make directories
+
+SYNOPSIS
+       mkdir [OPTION]... DIRECTORY...
+
+DESCRIPTION
+       Create the DIRECTORY(ies), if they do not already exist.
+
+       The options below modify the behavior of `mkdir`.
+
+OPTIONS
+       -m, --mode=MODE
+              Set the permission mode (as in chmod), instead of the default. The mode can be specified in octal (e.g., 0755) or symbolic (e.g., u+rwx,g+rx,o+rx).
+
+       -p, --parents
+              No error if existing, make parent directories as needed.
+
+       -v, --verbose
+              Print a message for each created directory.
+
+       --help Display this help and exit.
+
+       --version
+              Output version information and exit.
+           
+                """);
+    }else if(com.equals("rm")){
+        System.out.println("""
+NAME
+       rm - remove files or directories
+
+SYNOPSIS
+       rm [OPTION]... FILE...
+
+DESCRIPTION
+       Remove (unlink) the FILE(s).
+
+       Options:
+       -f, --force
+              Ignore nonexistent files and never prompt.
+
+       -i, --interactive
+              Prompt before every removal.
+
+       -I     Prompt once before removing more than three files, or when removing recursively.
+
+       -r, -R, --recursive
+              Remove directories and their contents recursively.
+
+       -d, --dir
+              Remove empty directories.
+
+       --help
+              Display this help and exit.
+
+       --version
+              Output version information and exit.                
+                """);
+    }else if(com.equals("echo")){
+        System.out.println("""
+ NAME
+       echo - display a line of text
+
+SYNOPSIS
+       echo [OPTION]... [STRING]...
+
+DESCRIPTION
+       Echo the STRING(s) to standard output.
+
+OPTIONS
+       -n     Do not output the trailing newline.
+
+       -e     Enable interpretation of backslash escapes.
+
+       -E     Disable interpretation of backslash escapes (default).
+
+       --help Display this help and exit.
+
+       --version
+              Output version information and exit.
+
+BACKSLASH ESCAPES
+       The following sequences are recognized only if the -e option is used:
+           \\a     alert (bell)
+           \\b     backspace
+           \\c     suppress trailing newline
+           \\f     form feed
+           \\n     new line
+           \\r     carriage return
+           \\t     horizontal tab
+           \\v     vertical tab               
+                """);
+    }else if(com.equals("man")){
+        System.out.println("""
+ NAME
+       man - an interface to the system reference manuals
+
+SYNOPSIS
+       man [OPTION]... [SECTION] PAGE...
+
+DESCRIPTION
+       Man is the system's manual pager.  Each page contains documentation about a command,
+       utility, or function.
+
+OPTIONS
+       -a, --all
+              Show all available man pages for the specified name.
+
+       -k, --apropos
+              Search the manual page names and descriptions for the keyword.
+
+       -f, --whatis
+              Display a short description of the specified command.
+
+       -l, --local-file
+              Treat the specified file as a man page.
+
+       -M, --manpath=MANPATH
+              Set the search path for manual pages.
+
+       -P, --pager=PAGER
+              Use the specified pager program instead of the default.
+
+       -r, --regex
+              Interpret the given names as regular expressions.
+
+       -S, --sections=SECTIONS
+              Search only in the specified sections.
+
+       --help
+              Display this help and exit.
+
+       --version
+              Output version information and exit.
+               
+                """);
+    }else if(com.equals("rmdir")){
+        System.out.println("""
+ NAME
+       rmdir - remove empty directories
+
+SYNOPSIS
+       rmdir [OPTION]... DIRECTORY...
+
+DESCRIPTION
+       Remove the DIRECTORY(ies), if they are empty.
+
+OPTIONS
+       -p, --parents
+              Remove DIRECTORY and its ancestors; e.g., 'rmdir -p a/b/c' will remove 'c', 'b', and 'a' if they are all empty.
+
+       --help
+              Display this help and exit.
+
+       --version
+              Output version information and exit.               
+                """);
+    }else if(com.equals("cat")){
+        System.out.println("""
+NAME
+       cat - concatenate and display files
+
+SYNOPSIS
+       cat [OPTION]... [FILE]...
+
+DESCRIPTION
+       Concatenate FILE(s) to standard output.
+
+OPTIONS
+       -A, --show-all
+              Equivalent to -vET.
+
+       -b, --number-nonblank
+              Number non-empty output lines, overrides -n.
+
+       -e     Equivalent to -vE.
+
+       -E, --show-ends
+              Display $ at the end of each line.
+
+       -n, --number
+              Number all output lines.
+
+       -s, --squeeze-blank
+              Suppress repeated empty output lines.
+
+       -T, --show-tabs
+              Display TAB characters as ^I.
+
+       -v, --show-nonprinting
+              Use ^ and M- notation to represent non-printing characters.
+
+       --help Display this help and exit.
+
+       --version
+              Output version information and exit.
+                
+                """);
+    }else if(com.equals("ls")){
+        System.out.println("""
+NAME
+       ls - list directory contents
+
+SYNOPSIS
+       ls [OPTION]... [FILE]...
+
+DESCRIPTION
+       List information about the FILEs (the current directory by default).
+
+OPTIONS
+       -a, --all
+              Do not ignore entries starting with .
+
+       -l     Use a long listing format.
+
+       -h, --human-readable
+              With -l, print sizes in human readable format (e.g., 1K 234M 2G).
+
+       -R, --recursive
+              List subdirectories recursively.
+
+       -t     Sort by time modified (most recent first).
+
+       -r     Reverse order while sorting.
+
+       -S     Sort by file size.
+
+       -d, --directory
+              List directories themselves, not their contents.
+
+       --help Display this help and exit.
+
+       --version
+              Output version information and exit.                
+                """);
+    }else if(com.equals("uname")){
+        System.out.println("""
+ NAME
+       uname - print system information
+
+SYNOPSIS
+       uname [OPTION]...
+
+DESCRIPTION
+       Print certain system information.  The options are as follows:
+
+OPTIONS
+       -a, --all
+              Print all information.
+
+       -s, --kernel-name
+              Print the kernel name.
+
+       -n, --nodename
+              Print the network node hostname.
+
+       -r, --kernel-release
+              Print the kernel release.
+
+       -v, --kernel-version
+              Print the kernel version.
+
+       -m, --machine
+              Print the machine hardware name.
+
+       -p, --processor
+              Print the processor type (deprecated).
+
+       -i, --hardware-platform
+              Print the hardware platform (deprecated).
+
+       -o, --operating-system
+              Print the operating system.
+
+       --help
+              Display this help and exit.
+
+       --version
+              Output version information and exit.               
+                """);
+    }else if(com.equals("cp")){
+        System.out.println("""
+ NAME
+       cp - copy files and directories
+
+SYNOPSIS
+       cp [OPTION]... SOURCE... DEST
+
+DESCRIPTION
+       Copy SOURCE to DEST, or multiple SOURCE(s) to a DIRECTORY.
+
+OPTIONS
+       -a, --archive
+              Preserve as much as possible of the original file attributes.
+
+       -f, --force
+              Remove existing destination files without prompting.
+
+       -i, --interactive
+              Prompt before overwrite.
+
+       -r, -R, --recursive
+              Copy directories recursively.
+
+       -u, --update
+              Copy only when the SOURCE file is newer than the destination file or when the destination file is missing.
+
+       -v, --verbose
+              Explain what is being done.
+
+       -n, --no-clobber
+              Do not overwrite an existing file.
+
+       --help
+              Display this help and exit.
+
+       --version
+              Output version information and exit.
+               
+                """);
+    }else if(com.equals("")){
+        System.out.println("""
+                
+                """);
+    }else if(com.equals("")){
+        System.out.println("""
+                
+                """);
+    }
+
 
 }    
  
