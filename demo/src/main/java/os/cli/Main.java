@@ -2054,6 +2054,33 @@ Written by Philopateer Karam.
                 FileToPrint = new File(file);
             }
 
+            if(MyArgs.length > 1) {
+                if(options.get(">") == 1 && MyArgs[1].equals(">")) {
+                    File inputFile = new File(this.currentDir, MyArgs[0]);
+                    File outputFile = new File(this.currentDir, MyArgs[2]);
+
+                    Scanner inputScanner;
+                    FileWriter outputWriter;
+                    String inputText = "";
+                    try {
+                        inputScanner = new Scanner(inputFile);
+                        outputWriter = new FileWriter(outputFile);
+                        
+                    while (inputScanner.hasNextLine()) { 
+                        inputText = inputScanner.nextLine() + "\n";  
+                        // System.out.println(inputText);
+                        outputWriter.write(inputText);
+                    }
+                    inputScanner.close();
+                    outputWriter.close();
+
+                    return;
+                } catch (Exception ex) {
+                    System.out.println("Error: File does not exist");
+                }
+            }
+        }
+
             if (options.get(">") == 1) {
                 String inputText = input.nextLine();
                 try {
