@@ -998,13 +998,11 @@ Written by Philopateer Karam.
     Change the current directory to DIR. The default DIR is the value of the HOME shell variable.
     
     Options:
-      -L  force symbolic links to be followed: resolve symbolic links in DIR
-          after processing instances of `..'
-      -P  use the physical directory structure without following symbolic links
-          (e.g., if in /tmp and /tmp is a symlink to /var/tmp, `cd -P ..` will
-          go to /var, whereas `cd ..` will go to /tmp)
-      -e  if the -P option is supplied, and the current working directory
-          cannot be determined successfully, exit with a non-zero status
+        -- help Display this help and exit.
+
+     Operator:
+        ~  go to home directory.
+        .. go to parent directory.
                 
                 """);
             } else if (com.equals("mv")) {
@@ -1320,9 +1318,13 @@ Written by Philopateer Karam.
        Remove the DIRECTORY(ies), if they are empty.
     
     OPTIONS
+    --ignore-fail-on-non-empty
+              revent rmdir from returning an error if it tries to remove a directory that is not empty.
+       -v, --verbose
+              Print a message for each created directory.
        -p, --parents
               Remove DIRECTORY and its ancestors; e.g., 'rmdir -p a/b/c' will remove 'c', 'b', and 'a' if they are all empty.
-    
+     
        --help
               Display this help and exit.
     
@@ -1341,33 +1343,17 @@ Written by Philopateer Karam.
        Concatenate FILE(s) to standard output.
     
     OPTIONS
-       -A, --show-all
-              Equivalent to -vET.
-    
-       -b, --number-nonblank
-              Number non-empty output lines, overrides -n.
-    
-       -e     Equivalent to -vE.
-    
-       -E, --show-ends
-              Display $ at the end of each line.
-    
        -n, --number
               Number all output lines.
-    
-       -s, --squeeze-blank
-              Suppress repeated empty output lines.
-    
-       -T, --show-tabs
-              Display TAB characters as ^I.
-    
-       -v, --show-nonprinting
-              Use ^ and M- notation to represent non-printing characters.
-    
+
        --help Display this help and exit.
     
        --version
               Output version information and exit.
+        
+    Operation
+        >  to override file.
+        >> to append at a file.
                 
                 """);
             } else if (com.equals("ls")) {
@@ -1419,9 +1405,6 @@ Written by Philopateer Karam.
        Print certain system information.  The options are as follows:
     
     OPTIONS
-       -a, --all
-              Print all information.
-    
        -s, --kernel-name
               Print the kernel name.
     
@@ -1431,20 +1414,8 @@ Written by Philopateer Karam.
        -r, --kernel-release
               Print the kernel release.
     
-       -v, --kernel-version
-              Print the kernel version.
-    
        -m, --machine
               Print the machine hardware name.
-    
-       -p, --processor
-              Print the processor type (deprecated).
-    
-       -i, --hardware-platform
-              Print the hardware platform (deprecated).
-    
-       -o, --operating-system
-              Print the operating system.
     
        --help
               Display this help and exit.
@@ -1463,22 +1434,13 @@ Written by Philopateer Karam.
     DESCRIPTION
        Copy SOURCE to DEST, or multiple SOURCE(s) to a DIRECTORY.
     
-    OPTIONS
-       -a, --archive
-              Preserve as much as possible of the original file attributes.
-    
+    OPTIONS    
        -f, --force
               Remove existing destination files without prompting.
     
        -i, --interactive
               Prompt before overwrite.
-    
-       -r, -R, --recursive
-              Copy directories recursively.
-    
-       -u, --update
-              Copy only when the SOURCE file is newer than the destination file or when the destination file is missing.
-    
+       
        -v, --verbose
               Explain what is being done.
     
