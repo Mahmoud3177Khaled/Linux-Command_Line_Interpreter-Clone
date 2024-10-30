@@ -36,7 +36,7 @@ public class Main {
                 command = input.next();
                 arg = input.nextLine().trim();
                 if (arg.contains("|")) {
-                    cli.pipe(command + arg);
+                    cli.pipe(command +" "+ arg);
                 } else {
                     switch (command) {
                         case "pwd" ->
