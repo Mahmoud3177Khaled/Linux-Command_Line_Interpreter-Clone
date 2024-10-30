@@ -1,4 +1,4 @@
-// package os.cli;
+package os.cli;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -132,7 +132,7 @@ class CLI {
                 fileName = parts[1].trim();
             }
 
-            if (com.isEmpty() || com.equalsIgnoreCase("-l")) {
+            if (com.equals("") || com.equalsIgnoreCase("-l")) {
                 Path currentDirectoryPath = Paths.get(this.currentDir);
                 output = currentDirectoryPath.toAbsolutePath().toString() + "\\";
             } else if (com.equalsIgnoreCase("-p")) {
@@ -1914,9 +1914,10 @@ Written by Philopateer Karam.
 
         } else {
             File newdir = new File(this.currentDir, com);
-
-            if (com.charAt(1) == ':') {
-                newdir = new File(com);
+            if (com.length() > 1) {
+                if (com.charAt(1) == ':') {
+                    newdir = new File(com);
+                }
             }
 
             if (newdir.isDirectory() && newdir.exists()) {
@@ -1983,12 +1984,16 @@ Written by Philopateer Karam.
         }
 
         for (String Folder : Folders) {
-            if (Folder.charAt(0) == '-') {
-                if (!Folder.equals("--ignore-fail-on-non-empty")
-                        && !Folder.equals("-p")
-                        && !Folder.equals("-v")
-                        && !Folder.equals("--help")
-                        && !Folder.equals("--version")) {
+            if(Folder.isEmpty()) {
+                continue;
+            }
+
+            if(Folder.charAt(0) == '-') {
+                if (!Folder.equals("--ignore-fail-on-non-empty") && 
+                !Folder.equals("-p") && 
+                !Folder.equals("-v") && 
+                !Folder.equals("--help") && 
+                !Folder.equals("--version")) { 
                     System.out.println("Error: '" + Folder + "' is not a recognized option");
                 }
                 continue;
@@ -2088,13 +2093,16 @@ Written by Philopateer Karam.
         }
 
         for (String file : MyArgs) {
+            if(file.isEmpty()) {
+                continue;
+            }
 
-            if (file.equals(">") || file.equals(">>") || file.charAt(0) == '-') {
-                if (!file.equals(">")
-                        && !file.equals(">>")
-                        && !file.equals("-n")
-                        && !file.equals("--help")
-                        && !file.equals("--version")) {
+            if(file.equals(">") || file.equals(">>") || file.charAt(0) == '-') {
+                if (!file.equals(">") && 
+                !file.equals(">>") && 
+                !file.equals("-n") && 
+                !file.equals("--help") && 
+                !file.equals("--version")) { 
                     System.out.println("'" + file + "' is not a recognized option");
                 }
                 continue;
@@ -2164,6 +2172,9 @@ Written by Philopateer Karam.
         String[] MyArgs = proccess_args(com);
 
         for (String MyArg : MyArgs) {
+            if(MyArg.isEmpty()) {
+                continue;
+            }
             if (MyArg.equals("-s")) {
                 System.out.print(System.getProperty("os.name") + " ");
             }
@@ -2211,6 +2222,9 @@ Written by Philopateer Karam.
 
         for (String arg : parameters) {
             options.put(arg, 1);
+            if(arg.isEmpty()) {
+                continue;
+            }
             if (arg.charAt(0) == '-') {
                 nextCommArgs += arg + " ";
             }
@@ -2272,6 +2286,9 @@ Written by Philopateer Karam.
         }
 
         for (String parameter : parameters) {
+            if(parameter.isEmpty()) {
+                continue;
+            }
 
             if(parameter.charAt(0) == '-' || parameter.equals(parameters[parameters.length-1])) {
                 if(!parameter.equals("-f") && !parameter.equals("--force") && !parameter.equals("-i") &&
