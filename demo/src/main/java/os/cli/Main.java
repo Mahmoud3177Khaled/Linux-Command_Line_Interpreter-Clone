@@ -594,12 +594,20 @@ public void echo(String com){
                 String newText ="";
                 for (int i = 0; i < text.length(); i++) {
                     if(text.charAt(i) == '\\' && i+1 <text.length()){
-                        if(text.charAt(i+1) == 'n'){
+                        if(text.charAt(i+1) == 'n' || text.charAt(i+1) == 'f' ){
                                 lines.add(newText);
                                 newText = "";
                                 i++;
                         }else if (text.charAt(i+1) == '\\') {
                             newText += '\\';
+                            i++;
+
+                        }else if (text.charAt(i+1) == '\'') {
+                            newText += '\'';
+                            i++;
+
+                        }else if (text.charAt(i+1) == '\"') {
+                            newText += '\"';
                             i++;
 
                         }else if (text.charAt(i+1) == 't') {
@@ -623,21 +631,45 @@ public void echo(String com){
                                 }
                             }
 
-                        }else if (text.charAt(i+1) == '\\') {
-                            newText += '\\';
+                        }else if (text.charAt(i+1) == 'c') {
+                           newline = false;
+                            break;
+                        }
+                        else if (text.charAt(i+1) == 'r') {
+                            newText ="";
                             i++;
-
+                        }
+                        else if (text.charAt(i+1) == 'v') {
+                            int size = newText.length();
+                            lines.add(newText);
+                            newText ="";
+                            while (size > 0) {
+                                newText += ' ';
+                                size--;
+                            }
+                            i++;
+                        }
+                        else if (text.charAt(i+1) == '0') {
+                            i++;
                         }
                     }
                     else{
                         newText += text.charAt(i);
-                    }
+                    }  
+                }
+                if(newText.length() != 0){
+                    lines.add(newText);
                 }
                 if (newline) {
-                    System.out.println(newText);
+                    for(int j = 0 ; j <lines.size();j++){
+                        System.out.println(lines.get(j));
+                    }
                 }
                 else{
-                    System.out.print(newText);
+                    for(int j = 0 ; j <lines.size()-1;j++){
+                        System.out.println(lines.get(j));
+                    }
+                    System.out.print(lines.get(lines.size()-1));
                 }
             }
 
