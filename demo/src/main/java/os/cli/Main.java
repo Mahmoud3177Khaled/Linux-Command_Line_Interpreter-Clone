@@ -63,6 +63,8 @@ public class Main {
                         cli.inputOp(arg);
                     case "users" ->
                         cli.users();
+                    case "clear" ->
+                        cli.clear();
                     case "exit" -> {
                         return;
                     }
@@ -1319,6 +1321,13 @@ public void touch(String com) { // 20220027
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void clear() {
+        // Couldn't think of a way better than this since this is a simulated IDE terminal, not an actual terminal.
+        for (int i = 0; i < 50; i++) {
+            System.out.println();
         }
     }
 }
