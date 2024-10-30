@@ -2042,8 +2042,13 @@ public void touch(String com) { // 20220027
         options.put("--help", 0);
         options.put("--version", 0);
 
+        String nextCommArgs = "";
+
         for (String arg : parameters) {
             options.put(arg, 1);
+            if (arg.charAt(0) == '-') {
+                nextCommArgs += arg + " ";
+            }
         }
 
         if (options.get("--help") == 1) {
@@ -2182,11 +2187,11 @@ public void touch(String com) { // 20220027
                     return;
                 }
 
-                if (fileToCopy.exists()) {
-                    System.out.print("File with this name already exists. Overide? [y/n] ");
+                if (fileToCopy.exists() && options.get("-f") == 0 && options.get("--force") == 0) {
+                    System.out.print("File '" + fileToCopy.getName() + "' this name already exists. Overide? [y/n] ");
                     String choice = inputChoice.next();
                     if (choice.equals("n") || choice.equals("N")) {
-                        System.out.println("cp cancelled");
+                        // System.out.println("cp cancelled");
                         return;
                     }
                 }
@@ -2231,11 +2236,11 @@ public void touch(String com) { // 20220027
                     return;
                 }
 
-                if (fileToCopy.exists()) {
-                    System.out.print("File with this name already exists. Overide? [y/n] ");
+                if (fileToCopy.exists() && options.get("-f") == 0 && options.get("--force") == 0) {
+                    System.out.print("File '" + fileToCopy.getName() + "' this name already exists. Overide? [y/n] ");
                     String choice = inputChoice.next();
                     if (choice.equals("n") || choice.equals("N")) {
-                        System.out.println("cp cancelled");
+                        // System.out.println("cp cancelled");
                         return;
                     }
                 }
@@ -2269,11 +2274,11 @@ public void touch(String com) { // 20220027
                     return;
                 }
 
-                if (fileToCopy.exists()) {
-                    System.out.print("File with this name already exists. Overide? [y/n] ");
+                if (fileToCopy.exists() && options.get("-f") == 0 && options.get("--force") == 0) {
+                    System.out.print("File '" + fileToCopy.getName() + "' this name already exists. Overide? [y/n] ");
                     String choice = inputChoice.next();
                     if (choice.equals("n") || choice.equals("N")) {
-                        System.out.println("cp cancelled");
+                        // System.out.println("cp cancelled");
                         return;
                     }
                 }
@@ -2285,8 +2290,8 @@ public void touch(String com) { // 20220027
 
                 for (File file : OgfileToCopy.listFiles()) {
 
-                    String newComm = file.getPath() + " " + parameters[parameters.length-1] + "/" + file.getName();
-                    System.out.println(newComm);
+                    String newComm = nextCommArgs + file.getPath() + " " + parameters[parameters.length-1] + "/" + file.getName();
+                    // System.out.println(newComm);
                     cp(newComm, inputChoice);
 
                 }
