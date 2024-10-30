@@ -2074,10 +2074,10 @@ Written by Philopateer Karam.
                     inputScanner.close();
                     outputWriter.close();
 
-                    return;
-                    } catch (Exception ex) {
-                        System.out.println("Error: File does not exist");
-                    }
+                } catch (Exception ex) {
+                    System.out.println("Error: File does not exist");
+                }
+                return;
                 }
             }
 
@@ -2113,10 +2113,10 @@ Written by Philopateer Karam.
                         inputScanner.close();
                         outputWriter.close();
 
-                        return;
                     } catch (Exception ex) {
                         System.out.println("Error: File does not exist");
                     }
+                    return;
                 }
             }
 
