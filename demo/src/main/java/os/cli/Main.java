@@ -2203,6 +2203,11 @@ public void touch(String com) { // 20220027
                         }
                     }
                     outputFile.close();
+
+                    if(options.get("-v") == 1 || options.get("--verbose") == 1) {
+                        System.out.println("Copyied '" + OgfileToCopy.getPath() + "' to '" + fileToCopy.getPath() + "' Successfully");
+                    }
+
                 } catch (IOException ex) {
                     System.out.println("Error: Failed to copy file.");
                 }
@@ -2210,7 +2215,14 @@ public void touch(String com) { // 20220027
             } else if (srcType == 0 && destType == 1) {
                 fileToCopy = new File(this.currentDir, parameters[parameters.length-1] + "/" + OgfileToCopy.getName());
 
-                // System.out.println(fileToCopy.getAbsolutePath());
+                for (int i = 0; i < parameters[parameters.length-1].length(); i++) {
+                    if (parameters[parameters.length-1].charAt(i) == ':') {
+                        pathType = 1;
+                    }
+                }
+                if (pathType == 1) {
+                    fileToCopy = new File(parameters[parameters.length-1] + "/" + OgfileToCopy.getName());
+                }
 
                 if (!OgfileToCopy.exists()) {
                     System.out.println("Error: File does not exists.");
@@ -2240,6 +2252,10 @@ public void touch(String com) { // 20220027
                         }
                     }
                     outputFile.close();
+
+                    if(options.get("-v") == 1 || options.get("--verbose") == 1) {
+                        System.out.println("Copyied '" + OgfileToCopy.getPath() + "' to '" + fileToCopy.getPath() + "' Successfully");
+                    }
                 } catch (IOException ex) {
                     System.out.println("Error: Failed to copy file.");
                 }
@@ -2261,6 +2277,9 @@ public void touch(String com) { // 20220027
                 }
 
                 fileToCopy.mkdir();
+                if(options.get("-v") == 1 || options.get("--verbose") == 1) {
+                    System.out.println("Created Directory '" + fileToCopy.getName() + "' inside '" + fileToCopy.getParent() + "' Successfully");
+                }
 
                 for (File file : OgfileToCopy.listFiles()) {
 
