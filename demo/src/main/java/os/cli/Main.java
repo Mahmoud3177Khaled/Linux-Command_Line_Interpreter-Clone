@@ -61,6 +61,8 @@ public class Main {
                         cli.cp(arg, input);
                     case "<" ->
                         cli.inputOp(arg);
+                    case ">" ->
+                        cli.redirectOutput(arg);
                     case "users" ->
                         cli.users();
                     case "clear" ->
@@ -1291,6 +1293,24 @@ public void touch(String com) { // 20220027
 
         }
 
+    }
+
+    public void redirectOutput(String com) {
+        try {
+            if (com.isEmpty()) {
+                System.out.println("missing file operand");
+            } else {
+                File file = new File(this.currentDir, com);
+                if (!file.exists()) {
+                    file.createNewFile();
+                } else {
+                    file.delete();
+                    file.createNewFile();
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error creating file: " + e.getMessage());
+        }
     }
 
     public void inputOp(String com) {                           //20220317
