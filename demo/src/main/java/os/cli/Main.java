@@ -1914,9 +1914,10 @@ Written by Philopateer Karam.
 
         } else {
             File newdir = new File(this.currentDir, com);
-
-            if (com.charAt(1) == ':') {
-                newdir = new File(com);
+            if (com.length() > 1) {
+                if (com.charAt(1) == ':') {
+                    newdir = new File(com);
+                }
             }
 
             if (newdir.isDirectory() && newdir.exists()) {
@@ -1986,7 +1987,7 @@ Written by Philopateer Karam.
             if(Folder.isEmpty()) {
                 continue;
             }
-            
+
             if(Folder.charAt(0) == '-') {
                 if (!Folder.equals("--ignore-fail-on-non-empty") && 
                 !Folder.equals("-p") && 
