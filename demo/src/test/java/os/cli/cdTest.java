@@ -157,4 +157,13 @@ public class cdTest {
         assertEquals(expectedOutput, actualOutput);
     }
 
+    @Test
+    void testRedirectOutput_FileDoesNotExist() {
+        String path = Paths.get("").toAbsolutePath().toString();
+        File testFile = new File(path + "\\" + "nonexistent.txt");
+        assertFalse(testFile.exists());
+        cli.redirectOutput("nonexistent.txt");
+        assertTrue(testFile.exists());
+    }
+
 }
