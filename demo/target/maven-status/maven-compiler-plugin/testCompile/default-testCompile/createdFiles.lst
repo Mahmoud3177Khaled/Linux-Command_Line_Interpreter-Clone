@@ -6,4 +6,5 @@ os\cli\rmdirTest.class
 os\cli\touchTest.class
 os\cli\mkdirTest.class
 os\cli\cdTest.class
+os\cli\pipeTest.class
 os\cli\echoTest.class
