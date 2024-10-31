@@ -3,6 +3,7 @@ package os.cli;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
+import java.nio.file.Paths;
 
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -67,4 +68,31 @@ public class cdTest {
         cli.cd(nonExistentDir);
         assertTrue(this.outputStream.toString().contains("Directory " + nonExistentDir + " does not exist"), "Error message for non-existent directory is incorrect");
     }
+
+    @Test
+    void testTouchCreatesFile() {
+        String path = Paths.get("").toAbsolutePath().toString();
+        cli.cd(path);
+        cli.touch("test.txt");
+
+        File testFile = new File(path + "\\" + "test.txt");
+        assertTrue(testFile.exists() && testFile.isFile());
+        testFile.delete();
+    }
+
+    @Test
+    void testTouchWithEmptyOperand() {
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        cli.touch("");
+
+        String expectedOutput = "touch: missing file operand";
+        String actualOutput = outContent.toString().replace(System.lineSeparator(), "").trim();
+
+        assertEquals(expectedOutput, actualOutput);
+
+        System.setOut(System.out);
+    }
+
 }
