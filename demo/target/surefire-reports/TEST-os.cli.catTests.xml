@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="os.cli.catTests" time="0.399" tests="8" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="os.cli.catTests" time="0.536" tests="8" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="20"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,7 +15,7 @@
     <property name="user.country" value="US"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-20\bin"/>
-    <property name="sun.java.command" value="C:\Users\Mahmoud\AppData\Local\Temp\surefire9296620245727022651\surefirebooter-20241031191723530_3.jar C:\Users\Mahmoud\AppData\Local\Temp\surefire9296620245727022651 2024-10-31T19-17-22_155-jvmRun1 surefire-20241031191723530_1tmp surefire_0-20241031191723530_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\Mahmoud\AppData\Local\Temp\surefire5763740720681738557\surefirebooter-20241031195130213_3.jar C:\Users\Mahmoud\AppData\Local\Temp\surefire5763740720681738557 2024-10-31T19-51-28_602-jvmRun1 surefire-20241031195130213_1tmp surefire_0-20241031195130213_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="test" value="os.cli.catTests"/>
     <property name="surefire.test.class.path" value="C:\Users\Mahmoud\Documents\GitHub\OS-Command_Line_Interpreter\demo\target\test-classes;C:\Users\Mahmoud\Documents\GitHub\OS-Command_Line_Interpreter\demo\target\classes;C:\Users\Mahmoud\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.8.1\junit-jupiter-engine-5.8.1.jar;C:\Users\Mahmoud\.m2\repository\org\junit\platform\junit-platform-engine\1.8.1\junit-platform-engine-1.8.1.jar;C:\Users\Mahmoud\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\Mahmoud\.m2\repository\org\junit\platform\junit-platform-commons\1.8.1\junit-platform-commons-1.8.1.jar;C:\Users\Mahmoud\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.8.1\junit-jupiter-api-5.8.1.jar;C:\Users\Mahmoud\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;"/>
@@ -31,7 +31,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\Mahmoud\AppData\Local\Temp\surefire9296620245727022651\surefirebooter-20241031191723530_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\Mahmoud\AppData\Local\Temp\surefire5763740720681738557\surefirebooter-20241031195130213_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="20.0.2+9-78"/>
@@ -60,12 +60,12 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="64.0"/>
   </properties>
-  <testcase name="catAppendToFileOp" classname="os.cli.catTests" time="0.117"/>
-  <testcase name="catWriteToFileOpFromFile" classname="os.cli.catTests" time="0.053"/>
-  <testcase name="catPrintFileWithLineNums" classname="os.cli.catTests" time="0.043"/>
-  <testcase name="catAppendToFileOpFromFile" classname="os.cli.catTests" time="0.037"/>
-  <testcase name="catWriteToFileOp" classname="os.cli.catTests" time="0.01"/>
-  <testcase name="catPrintFile" classname="os.cli.catTests" time="0.008"/>
-  <testcase name="versionOption" classname="os.cli.catTests" time="0.006"/>
-  <testcase name="helpOption" classname="os.cli.catTests" time="0.004"/>
+  <testcase name="catAppendToFileOp" classname="os.cli.catTests" time="0.171"/>
+  <testcase name="catWriteToFileOpFromFile" classname="os.cli.catTests" time="0.026"/>
+  <testcase name="catPrintFileWithLineNums" classname="os.cli.catTests" time="0.12"/>
+  <testcase name="catAppendToFileOpFromFile" classname="os.cli.catTests" time="0.062"/>
+  <testcase name="catWriteToFileOp" classname="os.cli.catTests" time="0.012"/>
+  <testcase name="catPrintFile" classname="os.cli.catTests" time="0.013"/>
+  <testcase name="versionOption" classname="os.cli.catTests" time="0.003"/>
+  <testcase name="helpOption" classname="os.cli.catTests" time="0.016"/>
 </testsuite>
