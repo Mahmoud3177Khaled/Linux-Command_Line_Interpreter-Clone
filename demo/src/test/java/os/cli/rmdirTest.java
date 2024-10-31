@@ -74,6 +74,8 @@ public class rmdirTest {
             cli.rmdir("AFileNotAFolder");
             assertTrue(this.outputStream.toString().contains("Error: Please provide a folder"),
             "The cli refuses as rmdir deletes empty FOLDERS only");
+
+            FileNotFolderToRemove.delete();
         } catch (IOException e) {
            
         }
@@ -90,6 +92,9 @@ public class rmdirTest {
             cli.rmdir("--ignore-fail-on-non-empty NonEmptyFolderToDelete");
             assertTrue(this.outputStream.toString().isEmpty() && NonEmptyFolderToDelete.exists(), 
             "no error is displayed and the folder is not deleted either");
+
+            Afile.delete();
+            NonEmptyFolderToDelete.delete();
 
         } catch (IOException e) {
             assertTrue(false);
@@ -127,6 +132,9 @@ public class rmdirTest {
             cli.rmdir("-v NonEmptyFolderToDelete");
             assertTrue(this.outputStream.toString().contains("Error: Please provide an empty folder") && NonEmptyFolderToDelete.exists(),
             "folder is not deleted as it's empty and a message is provided");
+
+            Afile.delete();
+            NonEmptyFolderToDelete.delete();
 
         } catch (IOException e) {
             assertTrue(false);
