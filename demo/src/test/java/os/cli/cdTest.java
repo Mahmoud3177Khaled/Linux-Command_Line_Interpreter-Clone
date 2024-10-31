@@ -149,4 +149,12 @@ public class cdTest {
         assertEquals(expectedOutput.replace(System.lineSeparator(), "\n"), actualOutput);
     }
 
+    @Test
+    public void testRedirectOutput_EmptyCommand() {
+        cli.redirectOutput("");
+        String expectedOutput = ">: missing file operand\n";
+        String actualOutput = outputStream.toString().replace(System.lineSeparator(), "\n");
+        assertEquals(expectedOutput, actualOutput);
+    }
+
 }
