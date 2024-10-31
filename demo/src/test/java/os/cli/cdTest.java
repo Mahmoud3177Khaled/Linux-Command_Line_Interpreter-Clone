@@ -9,10 +9,10 @@ import java.nio.file.Path;
 import java.nio.file.Files;
 
 import org.junit.jupiter.api.AfterEach;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class cdTest {
     private CLI cli;
@@ -145,7 +145,7 @@ public class cdTest {
     public void testPwdUnknownArgument() {
         cli.pwd("blahblah");
         String expectedOutput = "blahblah is an unknown argument.\n";
-        String actualOutput = outputStream.toString().replace(System.lineSeparator(), "\n");  
+        String actualOutput = outputStream.toString().replace(System.lineSeparator(), "\n");
         assertEquals(expectedOutput.replace(System.lineSeparator(), "\n"), actualOutput);
     }
 
@@ -160,10 +160,25 @@ public class cdTest {
     @Test
     void testRedirectOutput_FileDoesNotExist() {
         String path = Paths.get("").toAbsolutePath().toString();
-        File testFile = new File(path + "\\" + "nonexistent.txt");
+        File testFile = new File(path + "\\" + "test2.txt");
         assertFalse(testFile.exists());
-        cli.redirectOutput("nonexistent.txt");
+        cli.redirectOutput("test2.txt");
         assertTrue(testFile.exists());
+    }
+
+    @Test
+    void testRedirectOutput_FileExists() throws IOException {
+        String path = Paths.get("").toAbsolutePath().toString();
+        File testFile = new File(path + "\\" + "test.txt");
+        testFile.createNewFile();
+
+        assertTrue(testFile.exists());
+
+        long originalModifiedTime = testFile.lastModified();
+        cli.redirectOutput("test.txt");
+
+        assertTrue(testFile.exists());
+        assertNotEquals(originalModifiedTime, testFile.lastModified());
     }
 
 }
