@@ -34,6 +34,17 @@ public class unameTest {
     }
 
     @Test
+    public void help() {
+        cli.uname("--help");
+        assertTrue(this.outputStream.toString().contains("uname [OPTION]..."));
+    }
+    @Test
+    public void version() {
+        cli.uname("--version");
+        assertTrue(this.outputStream.toString().contains("uname (GNU coreutils)"));
+    }
+
+    @Test
     public void sOptiontrue() {
         cli.uname("-s");
         assertTrue(!this.outputStream.toString().contains("is not recognized"));
