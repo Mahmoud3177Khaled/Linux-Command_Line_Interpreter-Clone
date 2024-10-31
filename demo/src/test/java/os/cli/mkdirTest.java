@@ -81,4 +81,31 @@ public class mkdirTest {
       File f = new File("c://test");
       f.delete();      
    }
+   @Test
+   void mkdirWithANotExistOption(){
+     CLI cli = new CLI("c://");
+     System.setOut(new PrintStream(this.buffer));
+     cli.mkdir("-k");
+     assertTrue(buffer.toString().contains("unrecognized option"));
+     System.setOut(System.out);
+     this.buffer.reset();  
+   }
+   @Test
+   void helpOption(){
+     CLI cli = new CLI("c://");
+     System.setOut(new PrintStream(this.buffer));
+     cli.mkdir("--help");
+     assertTrue(buffer.toString().contains("mkdir [OPTION]... DIRECTORY..."));
+     System.setOut(System.out);
+     this.buffer.reset();  
+   }
+   @Test
+   void versionOption(){
+     CLI cli = new CLI("c://");
+     System.setOut(new PrintStream(this.buffer));
+     cli.mkdir("--version");
+     assertTrue(buffer.toString().contains("mkdir (GNU coreutils) 8.32"));
+     System.setOut(System.out);
+     this.buffer.reset();  
+   }
 }
