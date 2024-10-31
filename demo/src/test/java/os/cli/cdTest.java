@@ -101,4 +101,10 @@ public class cdTest {
         assertEquals(cli.currentDir + "\\", outputStream.toString().trim());
     }
 
+    @Test
+    public void testPwdPhysical() {
+        cli.pwd("-p");
+        assertEquals(cli.currentDir + "\\", outputStream.toString().trim());
+    }
+
 }
