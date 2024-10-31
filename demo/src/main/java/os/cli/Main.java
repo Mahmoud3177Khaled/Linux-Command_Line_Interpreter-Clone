@@ -2234,9 +2234,9 @@ Written by Philopateer Karam.
                 );
             } 
 
-            if(MyArg.equals("-version")) {
+            if(MyArg.equals("--version")) {
                 System.out.println("""
-                    uname (GNU coreutils) <version_number>\r
+                    uname (GNU coreutils) 2.0\r
                     Copyright (C) <year> Free Software Foundation, Inc.\r
                     License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.\r
                     This is free software: you are free to change and redistribute it.\r
