@@ -2207,6 +2207,46 @@ Written by Philopateer Karam.
             if(MyArg.isEmpty()) {
                 continue;
             }
+
+            if (MyArg.equals("--help")) {
+                System.out.println("""
+                    Usage: uname [OPTION]...\r
+                    Print certain system information.  With no OPTION, same as -s.\r
+                    \r
+                        -a, --all                print all information, in the following order,\r
+                                                except omit -p and -i if unknown:\r
+                        -s, --kernel-name        print the kernel name\r
+                        -n, --nodename           print the network node hostname\r
+                        -r, --kernel-release     print the kernel release\r
+                        -v, --kernel-version     print the kernel version\r
+                        -m, --machine            print the machine hardware name\r
+                        -p, --processor          print the processor type (non-portable)\r
+                        -i, --hardware-platform  print the hardware platform (non-portable)\r
+                        -o, --operating-system   print the operating system\r
+                            --help     display this help and exit\r
+                            --version  output version information and exit\r
+                    \r
+                    GNU coreutils online help: <https://www.gnu.org/software/coreutils/>\r
+                    Report uname translation bugs to <https://translationproject.org/team/>\r
+                    Full documentation at: <https://www.gnu.org/software/coreutils/uname>\r
+                    or available locally via: info '(coreutils) uname invocation'\r
+                    """ 
+                );
+            } 
+
+            if(MyArg.equals("-version")) {
+                System.out.println("""
+                    uname (GNU coreutils) <version_number>\r
+                    Copyright (C) <year> Free Software Foundation, Inc.\r
+                    License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.\r
+                    This is free software: you are free to change and redistribute it.\r
+                    There is NO WARRANTY, to the extent permitted by law.\r
+                    \r
+                    Written by David MacKenzie.\r
+                    """ 
+                );
+            }
+
             if (MyArg.equals("-s")) {
                 System.out.print(System.getProperty("os.name") + " ");
             }
