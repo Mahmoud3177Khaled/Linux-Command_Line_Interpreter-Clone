@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: os.cli.unameTest
 -------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.198 s -- in os.cli.unameTest
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.455 s -- in os.cli.unameTest
