@@ -22,6 +22,15 @@ public class echoTest {
    }
 
    @Test
+   void option_E(){
+      CLI cli = new CLI("c://");
+      System.setOut(new PrintStream(this.buffer));
+      cli.echo("-E \\\\Hello\\n W\\torld!\\n");
+      assertEquals("\\\\Hello\\n W\\torld!\\n\n",buffer.toString().replace(System.lineSeparator(), "\n"));
+      System.setOut(System.out);
+      this.buffer.reset();        
+   }
+   @Test
    void option_e_with_n(){
       CLI cli = new CLI("c://");
       System.setOut(new PrintStream(this.buffer));
