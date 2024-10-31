@@ -21,6 +21,15 @@ public class manTest {
       this.buffer.reset();  
     }
     @Test
+    void manANotExistCommand(){
+      CLI cli = new CLI("c://");
+      System.setOut(new PrintStream(this.buffer));
+      cli.man("car");
+      assertTrue(buffer.toString().contains("no entry for"));
+      System.setOut(System.out);
+      this.buffer.reset();  
+    }
+    @Test
     void makeOneDir(){
         CLI cli = new CLI("c://");
         cli.mkdir("test1");
