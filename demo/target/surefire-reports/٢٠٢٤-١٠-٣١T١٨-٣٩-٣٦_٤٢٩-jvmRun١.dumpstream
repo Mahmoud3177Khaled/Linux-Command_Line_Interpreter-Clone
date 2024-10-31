@@ -1,0 +1,6 @@
+# Created at ٢٠٢٤-١٠-٣١T١٨:٣٩:٣٧.٣٥٨
+[SUREFIRE] std/in stream corrupted
+
+# Created at ٢٠٢٤-١٠-٣١T١٨:٤٠:٠٧.٣٤٨
+Surefire is going to kill self fork JVM. The exit has elapsed 30 seconds after System.exit(0).
+

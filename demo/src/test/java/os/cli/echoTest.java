@@ -1,6 +1,7 @@
 package os.cli;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
@@ -21,6 +22,15 @@ public class echoTest {
       this.buffer.reset();        
    }
 
+   @Test
+   void option_E(){
+      CLI cli = new CLI("c://");
+      System.setOut(new PrintStream(this.buffer));
+      cli.echo("-E \\\\Hello\\n W\\torld!\\n");
+      assertEquals("\\\\Hello\\n W\\torld!\\n\n",buffer.toString().replace(System.lineSeparator(), "\n"));
+      System.setOut(System.out);
+      this.buffer.reset();        
+   }
    @Test
    void option_e_with_n(){
       CLI cli = new CLI("c://");
@@ -122,6 +132,33 @@ public class echoTest {
          in.close();
       } catch (Exception e) {
       }
+   }
+   @Test
+   void echoWithANotExistOption(){
+     CLI cli = new CLI("c://");
+     System.setOut(new PrintStream(this.buffer));
+     cli.echo("-k");
+     assertTrue(buffer.toString().contains("invalid option"));
+     System.setOut(System.out);
+     this.buffer.reset();  
+   }
+   @Test
+   void helpOption(){
+     CLI cli = new CLI("c://");
+     System.setOut(new PrintStream(this.buffer));
+     cli.echo("--help");
+     assertTrue(buffer.toString().contains("echo [OPTION]... [STRING]..."));
+     System.setOut(System.out);
+     this.buffer.reset();  
+   }
+   @Test
+   void versionOption(){
+     CLI cli = new CLI("c://");
+     System.setOut(new PrintStream(this.buffer));
+     cli.echo("--version");
+     assertTrue(buffer.toString().contains("echo (GNU coreutils) 8.32"));
+     System.setOut(System.out);
+     this.buffer.reset();  
    }
 
 }

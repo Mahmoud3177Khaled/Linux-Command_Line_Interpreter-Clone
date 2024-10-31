@@ -76,46 +76,52 @@ public class rmTest {
         }
         cli.rm("c:\\test1\\test3 test1\\test4 c://test1.txt test2.txt");
         assertTrue(!f1.exists() && !f2.exists() && !f3.exists() && !f4.exists());
-        f1.delete();
-        f2.delete();
         f3.delete();
         f4.delete();
+        f1.delete();
+        f2.delete();
         fd1.delete();
         fd2.delete();
     }
     @Test
-    void makeDirAndItsParents(){
+    void rmFileAndItsChildren(){
         CLI cli = new CLI("c://");
-        cli.mkdir("-p a/b/c/d/e/f/g/h");
-        File f = new File("c://a/b/c/d/e/f/g/h");
-        assertTrue(f.exists());
-        f.delete();
-        f = new File("c://a/b/c/d/e/f/g");       
-        f.delete();
-        f = new File("c://a/b/c/d/e/f");       
-        f.delete();
-        f = new File("c://a/b/c/d/e");       
-        f.delete();
-        f = new File("c://a/b/c/d");       
-        f.delete();
-        f = new File("c://a/b/c");       
-        f.delete();
-        f = new File("c://a/b");       
-        f.delete();
-        f = new File("c://a");       
-        f.delete();
+        File f = new File("c://a");
+        File f1 = new File("c://a/test1.txt");
+        File f2 = new File("c://a/test2.txt");
+        File f3 = new File("c:\\a\\test1\\test3.txt");
+        File f4 = new File("c:\\a\\test1\\test4.txt");
+        try {
+            f.mkdir();
+            f1.createNewFile();
+            f2.createNewFile();
+            f3.createNewFile();
+            f4.createNewFile();
+        } catch (IOException ex) {
+        }
+        cli.rm("-r a");
+        assertTrue(!f.exists());
+        f3.delete();
+        f4.delete();
+        f1.delete();
+        f2.delete();
+        f.delete();    
     }
     public ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
-   @Test
-   void withVerbose(){
-      CLI cli = new CLI("c://");
-      System.setOut(new PrintStream(this.buffer));
-      cli.mkdir("-v test");
-      assertEquals("mkdir: created directory 'test'",buffer.toString().substring(0,buffer.toString().length()-2));
-      System.setOut(System.out);
-      this.buffer.reset();  
-      File f = new File("c://test");
-      f.delete();      
-   }
+    @Test
+    void withVerbose() throws IOException{
+        System.setOut(new PrintStream(this.buffer));
+        CLI cli = new CLI("c://");
+        File fd = new File("c://test");
+        File f = new File("c://test/test.txt");
+        fd.mkdir();
+        f.createNewFile();
+        cli.rm("-v test/test.txt");
+        assertEquals("removed 'test/test.txt' ",buffer.toString().substring(0,buffer.toString().length()-2));
+        System.setOut(System.out);
+        this.buffer.reset();  
+        f.delete();      
+        fd.delete();      
+    }
 }
