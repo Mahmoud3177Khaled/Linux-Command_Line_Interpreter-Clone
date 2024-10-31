@@ -13,7 +13,6 @@ import java.io.PrintStream;
 public class pipeTest {
     @Test
     void echo_rm(){
-        System.setOut(new PrintStream(this.buffer));
         CLI cli = new CLI("c://");
         File d = new File("c://a");
         d.mkdir();
@@ -21,6 +20,14 @@ public class pipeTest {
         File f = new File("c://a/test.txt");
         assertTrue(!f.exists());
         f.delete();
+        d.delete();
+    }
+    @Test
+    void mkdir_rm(){
+        CLI cli = new CLI("c://");
+        cli.pipe("mkdir a  | rm -d  a");
+        File d = new File("c://a");
+        assertTrue(!d.exists());
         d.delete();
     }
     @Test

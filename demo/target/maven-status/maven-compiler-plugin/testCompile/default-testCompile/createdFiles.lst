@@ -2,6 +2,8 @@ os\cli\redirectOutputTest.class
 os\cli\catTests.class
 os\cli\pwdTest.class
 os\cli\rmTest.class
+os\cli\unameTest.class
+os\cli\cpTests.class
 os\cli\rmdirTest.class
 os\cli\touchTest.class
 os\cli\mkdirTest.class
