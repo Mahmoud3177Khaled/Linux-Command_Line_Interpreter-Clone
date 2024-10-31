@@ -107,4 +107,10 @@ public class cdTest {
         assertEquals(cli.currentDir + "\\", outputStream.toString().trim());
     }
 
+    @Test
+    public void testPwdHelp() {
+        cli.pwd("--help");
+        assertTrue(outputStream.toString().contains("Print the name of the current working directory."));
+    }
+
 }
