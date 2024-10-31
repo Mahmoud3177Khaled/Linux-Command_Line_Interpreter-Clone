@@ -1957,8 +1957,10 @@ Written by Philopateer Karam.
 
             File folderToDelete = new File(this.currentDir, Folder);
 
-            if (Folder.charAt(1) == ':') {
-                folderToDelete = new File(Folder);
+            if(Folder.length() > 1) {
+                if (Folder.charAt(1) == ':') {
+                    folderToDelete = new File(Folder);
+                }
             }
 
             if (!folderToDelete.exists()) {
@@ -2067,8 +2069,10 @@ Written by Philopateer Karam.
 
             File FileToPrint = new File(this.currentDir, file);
 
-            if (file.charAt(1) == ':') {
-                FileToPrint = new File(file);
+            if(file.length() > 1) {
+                if (file.charAt(1) == ':') {
+                    FileToPrint = new File(file);
+                }
             }
 
             if(MyArgs.length > 1) {
