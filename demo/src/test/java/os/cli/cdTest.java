@@ -125,4 +125,20 @@ public class cdTest {
         assertEquals(path + "\\", Files.readString(filePath).trim());
     }
 
+    @Test
+    public void testPwdAppendToFile() throws IOException {
+        String path = Paths.get("").toAbsolutePath().toString();
+        Path filePath = Paths.get(path + "\\", "test.txt");
+
+
+        cli.pwd("-l > " + "test.txt");
+        assertTrue(Files.exists(filePath));
+        assertEquals(path + "\\", Files.readString(filePath).trim());
+
+        cli.pwd("-p >> " + "test.txt");
+        String fileContent = Files.readString(filePath);
+        assertTrue(fileContent.startsWith(path + "\\"));
+        assertTrue(fileContent.endsWith(path + "\\" + path + "\\"));
+    }
+
 }
