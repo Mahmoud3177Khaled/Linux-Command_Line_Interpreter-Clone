@@ -57,18 +57,31 @@ public class rmTest {
         f4.delete();
     }
     @Test
-    void makeMoreOneDirWithDifferentPaths(){
+    void rmMoreOneFileWithDifferentPaths(){
         CLI cli = new CLI("c://");
-        cli.mkdir("c://test1 test2 c:\\test1\\test3 test1\\test4");
-        File f1 = new File("c://test1");
-        File f2 = new File("c://test2");
-        File f3 = new File("c:\\test1\\test3");
-        File f4 = new File("c:\\test1\\test4");
-        assertTrue(f1.exists() && f2.exists() && f3.exists() && f4.exists());
+        File f1 = new File("c://test1.txt");
+        File f2 = new File("c://test2.txt");
+        File fd1 = new File("c://test1");
+        File fd2 = new File("c://test2");
+        File f3 = new File("c:\\test1\\test3.txt");
+        File f4 = new File("c:\\test1\\test4.txt");
+        try {
+            fd1.mkdir();
+            fd2.mkdir();
+            f1.createNewFile();
+            f2.createNewFile();
+            f3.createNewFile();
+            f4.createNewFile();
+        } catch (IOException ex) {
+        }
+        cli.rm("c:\\test1\\test3 test1\\test4 c://test1.txt test2.txt");
+        assertTrue(!f1.exists() && !f2.exists() && !f3.exists() && !f4.exists());
         f1.delete();
         f2.delete();
         f3.delete();
         f4.delete();
+        fd1.delete();
+        fd2.delete();
     }
     @Test
     void makeDirAndItsParents(){
