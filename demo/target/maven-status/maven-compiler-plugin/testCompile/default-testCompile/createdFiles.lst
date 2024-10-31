@@ -3,11 +3,10 @@ os\cli\catTests.class
 os\cli\pwdTest.class
 os\cli\manTest.class
 os\cli\rmTest.class
+os\cli\cpTests.class
+os\cli\rmdirTest.class
 os\cli\touchTest.class
 os\cli\mkdirTest.class
 os\cli\cdTest.class
 os\cli\pipeTest.class
 os\cli\echoTest.class
-os\cli\unameTest.class
-os\cli\cpTests.class
-os\cli\rmdirTest.class
