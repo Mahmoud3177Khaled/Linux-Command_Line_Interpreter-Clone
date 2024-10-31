@@ -124,4 +124,31 @@ public class rmTest {
         f.delete();      
         fd.delete();      
     }
+    @Test
+    void rmWithANotExistOption(){
+        CLI cli = new CLI("c://");
+        System.setOut(new PrintStream(this.buffer));
+        cli.rm("-k");
+        assertTrue(buffer.toString().contains("unrecognized option"));
+        System.setOut(System.out);
+        this.buffer.reset();  
+    }
+    @Test
+    void helpOption(){
+        CLI cli = new CLI("c://");
+        System.setOut(new PrintStream(this.buffer));
+        cli.rm("--help");
+        assertTrue(buffer.toString().contains("rm [OPTION]... [FILE]..."));
+        System.setOut(System.out);
+        this.buffer.reset();  
+    }
+    @Test
+    void versionOption(){
+        CLI cli = new CLI("c://");
+        System.setOut(new PrintStream(this.buffer));
+        cli.rm("--version");
+        assertTrue(buffer.toString().contains("rm (GNU coreutils) 8.32"));
+        System.setOut(System.out);
+        this.buffer.reset();  
+    }
 }

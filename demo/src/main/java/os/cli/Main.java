@@ -392,7 +392,7 @@ class CLI {
         f.mkdir();
     }
 
-    public String makeAbsolutePath(String path) {
+    private  String makeAbsolutePath(String path) {
         if ((!path.contains("\\") && !path.contains("/")) || (path.charAt(1) != ':')) {
             path = currentDir + "\\" + path;
         }
@@ -884,10 +884,7 @@ Written by Philopateer Karam.
                                                  avoid all symlinks; print the actual physical directory
                                    
                                           --help
-                                                 display this help and exit
-                                   
-                                          --version
-                                                 output version information and exit""" );
+                                                 display this help and exit. """ );
             } else if (com.equals("touch")) {
                 System.out.println("""
                            NAME
@@ -898,28 +895,7 @@ Written by Philopateer Karam.
                            
                            DESCRIPTION
                                   The  touch command updates the access and modification timestamps of the specified FILEs.  If FILE does not exist, and if the -c option is not given, an empty file is created.
-                           
-                           OPTIONS
-                                  -a, --time=atime
-                                         change only the access time
-                           
-                                  -m, --time=mtime
-                                         change only the modification time
-                           
-                                  -c, --no-create
-                                         do not create any files
-                           
-                                  -d, --date=STRING
-                                         parse STRING and use it instead of the current time
-                           
-                                  -r, --reference=FILE
-                                         use this file's times instead of the current time
-                           
-                                  --help
-                                         display this help and exit
-                           
-                                  --version
-                                        output version information and exit"""
+                           """
                 );
             } else if (com.equals("clear")) {
                 System.out.println("""
@@ -945,13 +921,7 @@ Written by Philopateer Karam.
     DESCRIPTION
        Output who is currently logged in according to FILE.  If FILE is not specified, use /var/run/utmp.  /var/log/wtmp as FILE is common.
     
-    OPTIONS
-       -h, --help
-              display this help and exit
-    
-       --version
-              output version information and exit               
-                """);
+    """);
             } else if (com.equals("more")) {
                 System.out.println("""
     NAME
@@ -962,31 +932,6 @@ Written by Philopateer Karam.
     
     DESCRIPTION
        more is a filter for paging through text one screenful at a time. This command is mostly used for viewing large files or command output.
-    
-    OPTIONS
-       -d     Prompt with [Press space to continue, 'q' to quit.] and display "[Press h for instructions.]" at the bottom of each screen.
-    
-       -f     Count logical, rather than screen lines (i.e., long lines are not wrapped).
-    
-       -p     Clear the screen before displaying each page.
-    
-       -c     Do not scroll. Instead, paint each page directly onto the screen.
-    
-       -s     Squeeze multiple blank lines into one.
-    
-       -u     Suppress underlining.
-    
-       +n     Start displaying each file at line n.
-    
-       /pattern
-              Search for the specified pattern in the text.
-    
-       :n     Go to the next file.
-    
-       :p     Go to the previous file.
-    
-       :q or q
-              Quit.
     
                 """);
             } else if (com.equals("cd")) {
@@ -1101,49 +1046,6 @@ Written by Philopateer Karam.
     DESCRIPTION
        Print information about users who are currently logged in.
     
-    OPTIONS
-       -a, --all
-              Same as -b -d --login -p -r -t -T -u.
-    
-       -b, --boot
-              Time of last system boot.
-    
-       -d, --dead
-              Print dead processes.
-    
-       -H, --heading
-              Print a line of column headings.
-    
-       -l, --login
-              Print system login processes.
-    
-       -m     Same as `who am i'.
-    
-       -p, --process
-              Print active processes spawned by init.
-    
-       -q, --count
-              All login names and number of users logged on.
-    
-       -r, --runlevel
-              Print the current runlevel.
-    
-       -s     Ignored; included for compatibility.
-    
-       -t, --time
-              Print last system clock change.
-    
-       -T, -w, --mesg
-              Add user message status as +, - or ?.
-    
-       -u, --users
-              List users logged in.
-    
-       --help Display this help and exit.
-    
-       --version
-              Output version information and exit.
-               
                 """);
             } else if (com.equals("less")) {
                 System.out.println("""
@@ -1382,15 +1284,7 @@ Written by Philopateer Karam.
     
        -r     Reverse order while sorting.
     
-       -S     Sort by file size.
-    
-       -d, --directory
-              List directories themselves, not their contents.
-    
-       --help Display this help and exit.
-    
-       --version
-              Output version information and exit.                
+       -S     Sort by file size.               
                 """);
             } else if (com.equals("uname")) {
                 System.out.println("""
