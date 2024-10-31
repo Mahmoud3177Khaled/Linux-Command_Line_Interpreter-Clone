@@ -752,7 +752,9 @@ class CLI {
                     newText += text.charAt(i);
                 }
             }
+            if (newText.length() != 0) {
                 lines.add(newText);
+            }
             if (toFile){
                 File f = new File(currentDir +"\\"+ path);
                 if(!f.exists()){
