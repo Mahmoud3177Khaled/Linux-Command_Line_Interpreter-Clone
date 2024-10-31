@@ -64,10 +64,6 @@ public class Main {
                             cli.uname(arg);
                         case "cp" ->
                             cli.cp(arg, input);
-                        // case "<" ->
-                        //     cli.inputOp(arg);
-                        // case "<" ->
-                        //     cli.inputOp(arg);
                         case ">" ->
                             cli.redirectOutput(arg);
                         case "users" ->
@@ -2553,12 +2549,4 @@ Written by Philopateer Karam.
             System.out.println("Error writing to file: " + e.getMessage());
         }
     }
-    // public void inputOp(String com) {                           //20220317
-    //     System.out.println("inputOp called");
-    //     System.out.println("args in comm: " + com);
-    //     String[] MyArgs = proccess_args(com);
-    //     for (int i = 1; i < MyArgs.length; i++) {
-    //         System.out.println(MyArgs[i]);
-    //     }
-    // }
 }
