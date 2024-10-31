@@ -48,4 +48,14 @@ public class echoTest {
         System.setOut(System.out);
         this.buffer.reset();        
      }
+
+     @Test
+     void optione_e_with_b(){
+        CLI cli = new CLI("c://");
+        System.setOut(new PrintStream(this.buffer));
+        cli.echo("-e \\\\Hello\\\\    \\b  \'World!\'");
+        assertEquals("\\Hello\\'World!'\n",buffer.toString().replace(System.lineSeparator(), "\n"));
+        System.setOut(System.out);
+        this.buffer.reset();        
+     }
 }
