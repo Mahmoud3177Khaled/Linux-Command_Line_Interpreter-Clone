@@ -73,6 +73,10 @@ public class Main {
                             cli.redirectOutput(arg);
                         case "users" ->
                             cli.users();
+                        case "who" ->
+                            cli.who();
+                        case "more" ->
+                            cli.more(arg);
                         case "clear" ->
                             cli.clear();
                         case "exit" -> {
@@ -168,38 +172,23 @@ class CLI {
         }
     }
 
-    public void who(String com) {
-        String[] args = proccess_args(com);
-        boolean quietMode = args.length > 0 && "-q".equals(args[0]);
+    public void who() {
+        String command = System.getProperty("os.name").toLowerCase().contains("win")
+                ? "query user" : "who";
 
         try {
-            // Using PowerShell to get the logged-in username
-            ProcessBuilder processBuilder = new ProcessBuilder("powershell.exe",
-                    "-Command",
-                    "Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty UserName");
+            ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
             Process process = processBuilder.start();
 
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                String line;
-                StringBuilder users = new StringBuilder();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            System.out.println("User sessions:");
 
-                while ((line = reader.readLine()) != null) {
-                    String username = line.trim();
-                    if (!quietMode) {
-                        System.out.println(username);
-                    }
-                    users.append(username).append(" ");
-                }
-
-                if (quietMode) {
-                    System.out.println(users.toString().trim());
-                    System.out.println("Total users: " + users.toString().trim().split(" ").length);
-                }
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
             }
-
-            process.waitFor();
-        } catch (IOException | InterruptedException e) {
-            System.out.println("Error executing who command: " + e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -313,6 +302,10 @@ class CLI {
     }
 
     public void more(String com) {
+        if (com.isEmpty()) {
+            System.out.print("more: missing file operand" + "\n");
+            return;
+        }
         try (BufferedReader br = new BufferedReader(new FileReader(this.currentDir + "\\" + com))) {
             String line;
             int countLines = 0;
@@ -1790,7 +1783,7 @@ Written by Philopateer Karam.
     public void redirectOutput(String com) {
         try {
             if (com.isEmpty()) {
-                System.out.println("missing file operand");
+                System.out.println(">: missing file operand");
             } else {
                 File file = new File(this.currentDir, com);
                 if (!file.exists()) {
