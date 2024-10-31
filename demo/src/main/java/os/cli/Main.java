@@ -2184,9 +2184,9 @@ Written by Philopateer Karam.
                         while (scanner.hasNextLine()) {
                             if(options.get("-n") == 1) {
                                 ++lineNum; 
-                                System.err.println(lineNum + "- " + scanner.nextLine());
+                                System.out.println(lineNum + "- " + scanner.nextLine());
                             } else {
-                                System.err.println(scanner.nextLine());
+                                System.out.println(scanner.nextLine());
                             }
 
                         }
