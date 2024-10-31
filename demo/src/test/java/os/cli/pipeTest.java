@@ -31,6 +31,26 @@ public class pipeTest {
         d.delete();
     }
     @Test
+    void cp_rm(){
+        CLI cli = new CLI("c://");
+        File d1 = new File("c://a");
+        File d2 = new File("c://b");
+        File f1 = new File("c://a/f.txt");
+        File f2 = new File("c://b/f.txt");
+        d1.mkdir();
+        d2.mkdir();
+        try {        
+            f1.createNewFile();
+        } catch (IOException ex) {
+        }
+        cli.pipe("cp a/f.txt  b  | rm a/f.txt");
+        assertTrue(!f1.exists() && f2.exists());
+        f1.delete();
+        f2.delete();
+        d1.delete();
+        d2.delete();
+    }
+    @Test
     void removeOneDir(){
         CLI cli = new CLI("c://");
         File f = new File("c://test1");
