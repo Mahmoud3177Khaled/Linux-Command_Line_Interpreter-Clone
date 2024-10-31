@@ -95,4 +95,10 @@ public class cdTest {
         System.setOut(System.out);
     }
 
+    @Test
+    public void testPwdDefault() {
+        cli.pwd("-l");
+        assertEquals(cli.currentDir + "\\", outputStream.toString().trim());
+    }
+
 }
