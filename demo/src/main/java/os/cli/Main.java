@@ -396,7 +396,7 @@ class CLI {
         f.mkdir();
     }
 
-    public String makeAbsolutePath(String path) {
+    private  String makeAbsolutePath(String path) {
         if ((!path.contains("\\") && !path.contains("/")) || (path.charAt(1) != ':')) {
             path = currentDir + "\\" + path;
         }
