@@ -79,6 +79,7 @@ public class Main {
                         case "clear" ->
                             cli.clear();
                         case "exit" -> {
+                            input.close();
                             return;
                         }
                         default ->
@@ -1632,6 +1633,7 @@ Written by Philopateer Karam.
                 }
             }
         }
+        in.close();
     }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -1697,6 +1699,7 @@ Written by Philopateer Karam.
                     UndefinedInput(com);
             }
         }
+        input.close();
     }
 //---------------------------------------------------------------------------------------------------------------
 
