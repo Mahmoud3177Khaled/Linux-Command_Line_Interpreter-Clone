@@ -38,4 +38,22 @@ public class manTest {
       System.setOut(System.out);
       this.buffer.reset();  
     }
+    @Test
+    void helpOption(){
+      CLI cli = new CLI("c://");
+      System.setOut(new PrintStream(this.buffer));
+      cli.man("--help");
+      assertTrue(buffer.toString().contains("Usage: man [OPTION]... [PAGE]..."));
+      System.setOut(System.out);
+      this.buffer.reset();  
+    }
+    @Test
+    void versionOption(){
+      CLI cli = new CLI("c://");
+      System.setOut(new PrintStream(this.buffer));
+      cli.man("--version");
+      assertTrue(buffer.toString().contains("man (GNU man) 2.9.3"));
+      System.setOut(System.out);
+      this.buffer.reset();  
+    }
 }
