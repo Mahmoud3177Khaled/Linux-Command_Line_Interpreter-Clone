@@ -23,15 +23,15 @@ public class cdTest {
     public void setUp() {
         this.cli = new CLI("C:\\");
         System.setOut(new PrintStream(this.outputStream));
-        // Set initial directories for testing
-        cli.currentDir = System.getProperty("user.dir"); // Set to current working directory
-        cli.homeDir = System.getProperty("user.home");   // Set to home directory
+        
+        cli.currentDir = System.getProperty("user.dir");
+        cli.homeDir = System.getProperty("user.home");   
     }
 
     @AfterEach
     public void tearDown() {
-        System.setOut(originalOut);  // Reset console output
-        this.outputStream.reset();        // Clear output
+        System.setOut(originalOut); 
+        this.outputStream.reset();
     }
 
     @Test
@@ -57,12 +57,12 @@ public class cdTest {
     public void testCdToSpecificDirectory() {
         String testDirPath = cli.currentDir + File.separator + "testDir";
         File testDir = new File(testDirPath);
-        testDir.mkdir();  // Create test directory
+        testDir.mkdir(); 
         
         cli.cd("testDir");
         assertEquals(testDirPath, cli.currentDir, "currentDir should be changed to the specified directory");
 
-        testDir.delete();  // Clean up
+        testDir.delete(); 
     }
 
     @Test
