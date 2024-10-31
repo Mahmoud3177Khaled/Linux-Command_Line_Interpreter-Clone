@@ -2,14 +2,17 @@ package os.cli;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Paths;
+import java.nio.file.Path;
+import java.nio.file.Files;
 
 import org.junit.jupiter.api.AfterEach;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class cdTest {
     private CLI cli;
@@ -111,6 +114,71 @@ public class cdTest {
     public void testPwdHelp() {
         cli.pwd("--help");
         assertTrue(outputStream.toString().contains("Print the name of the current working directory."));
+    }
+
+    @Test
+    public void testPwdRedirectToFile() throws IOException {
+        String path = Paths.get("").toAbsolutePath().toString();
+        cli.pwd("-l > " + "test.txt");
+        Path filePath = Paths.get(path + "\\", "test.txt");
+        assertTrue(Files.exists(filePath));
+        assertEquals(path + "\\", Files.readString(filePath).trim());
+    }
+
+    @Test
+    public void testPwdAppendToFile() throws IOException {
+        String path = Paths.get("").toAbsolutePath().toString();
+        Path filePath = Paths.get(path + "\\", "test.txt");
+
+
+        cli.pwd("-l > " + "test.txt");
+        assertTrue(Files.exists(filePath));
+        assertEquals(path + "\\", Files.readString(filePath).trim());
+
+        cli.pwd("-p >> " + "test.txt");
+        String fileContent = Files.readString(filePath);
+        assertTrue(fileContent.startsWith(path + "\\"));
+        assertTrue(fileContent.endsWith(path + "\\" + path + "\\"));
+    }
+
+    @Test
+    public void testPwdUnknownArgument() {
+        cli.pwd("blahblah");
+        String expectedOutput = "blahblah is an unknown argument.\n";
+        String actualOutput = outputStream.toString().replace(System.lineSeparator(), "\n");
+        assertEquals(expectedOutput.replace(System.lineSeparator(), "\n"), actualOutput);
+    }
+
+    @Test
+    public void testRedirectOutput_EmptyCommand() {
+        cli.redirectOutput("");
+        String expectedOutput = ">: missing file operand\n";
+        String actualOutput = outputStream.toString().replace(System.lineSeparator(), "\n");
+        assertEquals(expectedOutput, actualOutput);
+    }
+
+    @Test
+    void testRedirectOutput_FileDoesNotExist() {
+        String path = Paths.get("").toAbsolutePath().toString();
+        File testFile = new File(path + "\\" + "test2.txt");
+        assertFalse(testFile.exists());
+        cli.redirectOutput("test2.txt");
+        assertTrue(testFile.exists());
+    }
+
+    @Test
+    void testRedirectOutput_FileExists() throws IOException {
+        String path = Paths.get("").toAbsolutePath().toString();
+        File testFile = new File(path + "\\" + "test.txt");
+        testFile.createNewFile();
+
+        assertTrue(testFile.exists());
+
+        long originalModifiedTime = testFile.lastModified();
+        cli.redirectOutput("test.txt");
+
+        assertTrue(testFile.exists());
+        assertNotEquals(originalModifiedTime, testFile.lastModified());
     }
 
 }

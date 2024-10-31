@@ -153,7 +153,7 @@ class CLI {
                         + "    Returns 0 unless an invalid option is given or the current directory\n"
                         + "    cannot be read.\n";
             } else {
-                output = com + " is an unknown argument.\n";
+                output = com + " is an unknown argument.";
             }
 
             if (redirectToFile) {
