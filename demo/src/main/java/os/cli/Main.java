@@ -173,24 +173,34 @@ class CLI {
     }
 
     public void who() {
-        String command = System.getProperty("os.name").toLowerCase().contains("win")
-                ? "query user" : "who";
+        String osName = System.getProperty("os.name").toLowerCase();
+        System.out.println("User sessions:");
 
-        try {
-            ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
-            Process process = processBuilder.start();
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            System.out.println("User sessions:");
-
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+        if (osName.contains("win")) {
+            // This is for Windows
+            String userName = System.getenv("USERNAME");
+            String computerName = System.getenv("COMPUTERNAME");
+            if (userName != null && computerName != null) {
+                System.out.println("User: " + userName);
+                System.out.println("Computer: " + computerName);
+                System.out.println("Session: Active");
+            } else {
+                System.out.println("Unable to retrieve session information.");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            // This is for UNIX
+            String userName = System.getenv("USER");
+            String homeDirectory = System.getenv("HOME");
+            if (userName != null && homeDirectory != null) {
+                System.out.println("User: " + userName);
+                System.out.println("Home Directory: " + homeDirectory);
+                System.out.println("Session: Active");
+            } else {
+                System.out.println("Unable to retrieve session information.");
+            }
         }
     }
+
 
     public void ls(String com) { //20220028
         String[] MyArgs = proccess_args(com);
@@ -1799,22 +1809,25 @@ Written by Philopateer Karam.
     }
 
     public void users() {
-        String command = System.getProperty("os.name").toLowerCase().contains("win")
-                ? "query user" : "who";
+        String osName = System.getProperty("os.name").toLowerCase();
+        System.out.println("Currently logged in users:");
 
-        try {
-            ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
-            Process process = processBuilder.start();
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            System.out.println("Currently logged in users:");
-
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+        if (osName.contains("win")) {
+            // This is for Windows
+            String userName = System.getenv("USERNAME");
+            if (userName != null) {
+                System.out.println("User: " + userName);
+            } else {
+                System.out.println("Unable to retrieve user information.");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            // This is for UNIX
+            String userName = System.getenv("USER");
+            if (userName != null) {
+                System.out.println("User: " + userName);
+            } else {
+                System.out.println("Unable to retrieve user information.");
+            }
         }
     }
 
