@@ -2,8 +2,11 @@ package os.cli;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Paths;
+import java.nio.file.Path;
+import java.nio.file.Files;
 
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -111,6 +114,15 @@ public class cdTest {
     public void testPwdHelp() {
         cli.pwd("--help");
         assertTrue(outputStream.toString().contains("Print the name of the current working directory."));
+    }
+
+    @Test
+    public void testPwdRedirectToFile() throws IOException {
+        String path = Paths.get("").toAbsolutePath().toString();
+        cli.pwd("-l > " + "test.txt");
+        Path filePath = Paths.get(path + "\\", "test.txt");
+        assertTrue(Files.exists(filePath));
+        assertEquals(path + "\\", Files.readString(filePath).trim());
     }
 
 }
