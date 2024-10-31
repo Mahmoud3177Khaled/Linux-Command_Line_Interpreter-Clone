@@ -559,6 +559,7 @@ class CLI {
         if (!parentOption) {
             for (int i = 0; i < paths.size(); i++) {
                 check_path = makeAbsolutePath(paths.get(i));
+                System.out.println(check_path);
                 f = new File(check_path);
                 String p = f.getParent();
                 pf = new File(p);

@@ -31,4 +31,18 @@ public class mkdirTest {
         f3.delete();
         f4.delete();
     }
+    @Test
+    void makeMoreOneDirWithDifferentPaths(){
+        CLI cli = new CLI("c://");
+        cli.mkdir("c://test1 test2 c:\\test1\\test3 test1\\test4");
+        File f1 = new File("c://test1");
+        File f2 = new File("c://test2");
+        File f3 = new File("c:\\test1\\test3");
+        File f4 = new File("c:\\test1\\test4");
+        assertTrue(f1.exists() && f2.exists() && f3.exists() && f4.exists());
+        f1.delete();
+        f2.delete();
+        f3.delete();
+        f4.delete();
+    }
 }
