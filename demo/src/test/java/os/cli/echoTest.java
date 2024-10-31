@@ -3,7 +3,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Scanner;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 
 public class echoTest {
    public ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -87,4 +90,38 @@ public class echoTest {
       this.buffer.reset();        
    }
    
+   @Test
+   void override() throws FileNotFoundException{
+      CLI cli = new CLI("c://");
+      try {
+         File f = new File("c:\\\\testEchoOption.txt");
+         f.createNewFile();
+         FileWriter fr = new FileWriter(f);
+         fr.write("Good Morning!");
+         fr.close(); 
+         Scanner in = new Scanner(f);
+         cli.echo("Hello World  > testEchoOption.txt");
+         assertEquals("Hello World",in.nextLine());
+         in.close();
+      } catch (Exception e) {
+      }
+   }
+
+   @Test
+   void append() throws FileNotFoundException{
+      CLI cli = new CLI("c://");
+      try {
+         File f = new File("c:\\\\testEchoOption.txt");
+         f.createNewFile();
+         FileWriter fr = new FileWriter(f,true);
+         fr.write("Good Morning!");
+         fr.close(); 
+         Scanner in = new Scanner(f);
+         cli.echo("Hello World  > testEchoOption.txt");
+         assertEquals("Good Morning!Hello World",in.nextLine());
+         in.close();
+      } catch (Exception e) {
+      }
+   }
+
 }

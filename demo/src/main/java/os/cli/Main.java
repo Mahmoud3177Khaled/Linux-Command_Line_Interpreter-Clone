@@ -568,7 +568,7 @@ class CLI {
                 } else {
                     f.mkdir();
                     if (verboseOption) {
-                        System.out.println("mkdir: created directory \'" + paths.get(i) + "\' ");
+                        System.out.println("mkdir: created directory '" + paths.get(i) + "'");
                     }
                 }
             }
