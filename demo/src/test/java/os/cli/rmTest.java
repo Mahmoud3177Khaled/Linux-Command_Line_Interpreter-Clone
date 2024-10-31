@@ -109,15 +109,19 @@ public class rmTest {
     }
     public ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
-   @Test
-   void withVerbose(){
-      CLI cli = new CLI("c://");
-      System.setOut(new PrintStream(this.buffer));
-      cli.mkdir("-v test");
-      assertEquals("mkdir: created directory 'test'",buffer.toString().substring(0,buffer.toString().length()-2));
-      System.setOut(System.out);
-      this.buffer.reset();  
-      File f = new File("c://test");
-      f.delete();      
-   }
+    @Test
+    void withVerbose() throws IOException{
+        System.setOut(new PrintStream(this.buffer));
+        CLI cli = new CLI("c://");
+        File fd = new File("c://test");
+        File f = new File("c://test/test.txt");
+        fd.mkdir();
+        f.createNewFile();
+        cli.rm("-v test/test.txt");
+        assertEquals("removed 'test/test.txt' ",buffer.toString().substring(0,buffer.toString().length()-2));
+        System.setOut(System.out);
+        this.buffer.reset();  
+        f.delete();      
+        fd.delete();      
+    }
 }
