@@ -2,7 +2,11 @@ package os.cli;
 import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 public class mkdirTest {
     @Test
@@ -64,4 +68,17 @@ public class mkdirTest {
         f = new File("c://a");       
         f.delete();
     }
+    public ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+   @Test
+   void withVerbose(){
+      CLI cli = new CLI("c://");
+      System.setOut(new PrintStream(this.buffer));
+      cli.mkdir("-v test");
+      assertEquals("mkdir: created directory 'test'",buffer.toString().substring(0,buffer.toString().length()-2));
+      System.setOut(System.out);
+      this.buffer.reset();  
+      File f = new File("c://test");
+      f.delete();      
+   }
 }
