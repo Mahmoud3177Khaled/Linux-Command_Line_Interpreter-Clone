@@ -141,4 +141,12 @@ public class cdTest {
         assertTrue(fileContent.endsWith(path + "\\" + path + "\\"));
     }
 
+    @Test
+    public void testPwdUnknownArgument() {
+        cli.pwd("blahblah");
+        String expectedOutput = "blahblah is an unknown argument.\n";
+        String actualOutput = outputStream.toString().replace(System.lineSeparator(), "\n");  
+        assertEquals(expectedOutput.replace(System.lineSeparator(), "\n"), actualOutput);
+    }
+
 }
