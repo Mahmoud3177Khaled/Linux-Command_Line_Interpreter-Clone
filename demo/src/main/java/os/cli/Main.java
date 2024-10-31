@@ -2500,7 +2500,13 @@ Written by Philopateer Karam.
         }
 
     }
-
+     public static void appendToFile(String filePath, String text) {
+        try (FileWriter fileWriter = new FileWriter(filePath, true)) { 
+            fileWriter.write(text + System.lineSeparator());
+        } catch (IOException e) {
+            System.out.println("Error writing to file: " + e.getMessage());
+        }
+    }
     // public void inputOp(String com) {                           //20220317
     //     System.out.println("inputOp called");
     //     System.out.println("args in comm: " + com);
