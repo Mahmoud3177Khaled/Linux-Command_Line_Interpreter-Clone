@@ -6,9 +6,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
-import java.nio.file.Paths;
 import java.util.Scanner;
 
 import org.junit.jupiter.api.AfterEach;
@@ -17,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("ConvertToTryWithResources")
 public class catTests {
     CLI cli;
     private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

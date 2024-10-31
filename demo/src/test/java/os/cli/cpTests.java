@@ -3,20 +3,18 @@ package os.cli;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
-import java.nio.file.Paths;
 import java.util.Scanner;
 
 import org.junit.jupiter.api.AfterEach;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+// @SuppressWarnings("UseSpecificCatch")
+@SuppressWarnings("ConvertToTryWithResources")
 public class cpTests {
     CLI cli;
     private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -61,7 +59,7 @@ public class cpTests {
 
         assertTrue(this.outputStream.toString().contains("cp (GNU coreutils)"));
     }
-    
+
 
     @Test
     public void cpFileToFile() {
@@ -222,7 +220,7 @@ public class cpTests {
             destdir.delete();
 
 
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             assertTrue(false);
         }
     }
@@ -249,7 +247,7 @@ public class cpTests {
             destfile.delete();
 
 
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             assertTrue(false);
         }
 
@@ -277,7 +275,7 @@ public class cpTests {
             destfile.delete();
 
 
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             assertTrue(false);
         }
 
@@ -305,7 +303,7 @@ public class cpTests {
             destfile.delete();
 
 
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             assertTrue(false);
         }
 
@@ -333,7 +331,7 @@ public class cpTests {
             destfile.delete();
 
 
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             assertTrue(false);
         }
 
@@ -361,7 +359,7 @@ public class cpTests {
             destfile.delete();
 
 
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             assertTrue(false);
         }
 
@@ -389,7 +387,7 @@ public class cpTests {
             destfile.delete();
 
 
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             assertTrue(false);
         }
 

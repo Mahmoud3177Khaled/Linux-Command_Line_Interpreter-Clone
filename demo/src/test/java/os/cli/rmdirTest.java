@@ -3,12 +3,9 @@ package os.cli;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
-import java.nio.file.Paths;
 
 import org.junit.jupiter.api.AfterEach;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,8 +55,6 @@ public class rmdirTest {
     
     @Test
     public void rmdirOnANonExistingFolder() {
-        File FolderToRemove = new File(cli.currentDir, "ANonExistingfolder");
-
         cli.rmdir("ANonExistingfolder");
         assertTrue(this.outputStream.toString().contains("Error: Folder does not exists"), 
         "Error is output as the folder doesn't exist");
