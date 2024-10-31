@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -93,8 +92,8 @@ public class Main {
 
 class CLI {
 
-    private String currentDir;
-    private String homeDir;
+    public String currentDir;
+    public String homeDir;
 
     public CLI(String currentDir) {
         this.currentDir = currentDir;
