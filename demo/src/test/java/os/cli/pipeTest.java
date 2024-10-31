@@ -51,6 +51,15 @@ public class pipeTest {
         d2.delete();
     }
     @Test
+    void cd_pwd() throws IOException{
+        System.setOut(new PrintStream(this.buffer));
+        CLI cli = new CLI("c://");
+        cli.pipe("cd Users | pwd");
+        assertEquals("c:\\Users\\",buffer.toString().substring(0,buffer.toString().length()-2));
+        System.setOut(System.out);
+        this.buffer.reset();  
+    }
+    @Test
     void removeOneDir(){
         CLI cli = new CLI("c://");
         File f = new File("c://test1");
