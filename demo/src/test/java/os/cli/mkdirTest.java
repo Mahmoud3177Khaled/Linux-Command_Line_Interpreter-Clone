@@ -1,10 +1,7 @@
 package os.cli;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.File;
-import java.io.FileNotFoundException;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 public class mkdirTest {
@@ -44,5 +41,27 @@ public class mkdirTest {
         f2.delete();
         f3.delete();
         f4.delete();
+    }
+    @Test
+    void makeDirAndItsParents(){
+        CLI cli = new CLI("c://");
+        cli.mkdir("-p a/b/c/d/e/f/g/h");
+        File f = new File("c://a/b/c/d/e/f/g/h");
+        assertTrue(f.exists());
+        f.delete();
+        f = new File("c://a/b/c/d/e/f/g");       
+        f.delete();
+        f = new File("c://a/b/c/d/e/f");       
+        f.delete();
+        f = new File("c://a/b/c/d/e");       
+        f.delete();
+        f = new File("c://a/b/c/d");       
+        f.delete();
+        f = new File("c://a/b/c");       
+        f.delete();
+        f = new File("c://a/b");       
+        f.delete();
+        f = new File("c://a");       
+        f.delete();
     }
 }

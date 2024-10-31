@@ -1,0 +1,8 @@
+os\cli\redirectOutputTest.class
+os\cli\catTests.class
+os\cli\pwdTest.class
+os\cli\rmdirTest.class
+os\cli\touchTest.class
+os\cli\mkdirTest.class
+os\cli\cdTest.class
+os\cli\echoTest.class
