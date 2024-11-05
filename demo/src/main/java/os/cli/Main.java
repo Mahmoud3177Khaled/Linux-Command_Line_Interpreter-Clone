@@ -1,4 +1,4 @@
-package os.cli;
+// package os.cli;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -1589,7 +1589,6 @@ Written by Philopateer Karam.
                     UndefinedInput(com);
             }
         }
-        input.close();
     }
 //---------------------------------------------------------------------------------------------------------------
 
